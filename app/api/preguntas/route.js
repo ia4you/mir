@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -6,6 +8,11 @@ export const dynamic = "force-dynamic";
 // Nunca se selecciona la columna `correcta` aquí: la respuesta correcta solo
 // se consulta en el backend, en /api/sesiones/[id]/respuestas, al corregir.
 export async function GET(request) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const especialidad = searchParams.get("especialidad");
   const anioParam = searchParams.get("anio");

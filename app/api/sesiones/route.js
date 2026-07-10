@@ -1,18 +1,28 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+const LIMITE_DIARIO_FREE = 10;
+
 // Solo sesiones ya finalizadas (duracion_segundos se rellena al terminar el
 // test en /test/[id]); las abandonadas a medias no aparecen en el historial.
 export async function GET() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
   try {
     const { rows } = await query(
       `SELECT id, fecha, modo, especialidad, total_preguntas, aciertos, duracion_segundos
        FROM sesiones
-       WHERE duracion_segundos IS NOT NULL
+       WHERE duracion_segundos IS NOT NULL AND user_id = $1
        ORDER BY fecha DESC
-       LIMIT 20`
+       LIMIT 20`,
+      [session.user.id]
     );
     return NextResponse.json(
       rows.map((r) => ({
@@ -33,6 +43,11 @@ export async function GET() {
 }
 
 export async function POST(request) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
   const body = await request.json().catch(() => null);
   if (!body || !body.modo || !Number.isInteger(body.total_preguntas)) {
     return NextResponse.json(
@@ -42,13 +57,33 @@ export async function POST(request) {
   }
 
   const { modo, especialidad = null, total_preguntas } = body;
+  const userId = session.user.id;
 
   try {
+    if (session.user.plan !== "premium") {
+      const { rows } = await query(
+        `SELECT COALESCE(SUM(total_preguntas), 0)::int AS total
+         FROM sesiones
+         WHERE user_id = $1 AND duracion_segundos IS NOT NULL AND DATE(fecha) = CURRENT_DATE`,
+        [userId]
+      );
+      if (rows[0].total >= LIMITE_DIARIO_FREE) {
+        return NextResponse.json(
+          {
+            error: "limite_diario",
+            message:
+              "Has alcanzado el límite diario de 10 preguntas. Hazte premium para acceso ilimitado.",
+          },
+          { status: 403 }
+        );
+      }
+    }
+
     const { rows } = await query(
-      `INSERT INTO sesiones (modo, especialidad, total_preguntas, aciertos)
-       VALUES ($1, $2, $3, 0)
+      `INSERT INTO sesiones (modo, especialidad, total_preguntas, aciertos, user_id)
+       VALUES ($1, $2, $3, 0, $4)
        RETURNING id`,
-      [modo, especialidad, total_preguntas]
+      [modo, especialidad, total_preguntas, userId]
     );
     return NextResponse.json({ id: rows[0].id }, { status: 201 });
   } catch (err) {

@@ -56,6 +56,8 @@ export default function Configuracion() {
 
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
+  const [limiteAlcanzado, setLimiteAlcanzado] = useState(false);
+  const [mensajeLimite, setMensajeLimite] = useState("");
 
   useEffect(() => {
     fetch("/api/especialidades")
@@ -94,6 +96,16 @@ export default function Configuracion() {
           total_preguntas: preguntas.length,
         }),
       });
+
+      if (resSesion.status === 403) {
+        const data = await resSesion.json().catch(() => null);
+        if (data?.error === "limite_diario") {
+          setMensajeLimite(data.message);
+          setLimiteAlcanzado(true);
+          setEnviando(false);
+          return;
+        }
+      }
       if (!resSesion.ok) throw new Error("No se pudo crear la sesión");
       const { id } = await resSesion.json();
 
@@ -194,6 +206,33 @@ export default function Configuracion() {
           {enviando ? "Preparando test…" : "Empezar test"}
         </button>
       </div>
+
+      {limiteAlcanzado && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-white p-5 text-center shadow-lg">
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-light text-2xl">
+              ⭐
+            </div>
+            <p className="mt-3 text-lg font-bold text-ink">Límite diario alcanzado</p>
+            <p className="mt-1 text-sm text-ink-muted">{mensajeLimite}</p>
+            <div className="mt-5 flex flex-col gap-2">
+              <Link
+                href="/premium"
+                className="flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-white"
+              >
+                Hazte premium
+              </Link>
+              <button
+                type="button"
+                onClick={() => setLimiteAlcanzado(false)}
+                className="h-11 w-full rounded-xl border border-track font-bold text-ink"
+              >
+                Ahora no
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <BottomNav />
     </div>

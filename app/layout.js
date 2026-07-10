@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
+import Providers from "./providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -38,10 +39,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="es">
       <body className={`${inter.variable} font-sans antialiased bg-surface text-ink`}>
-        <div className="mx-auto min-h-screen w-full max-w-md bg-surface">
-          {children}
-        </div>
-        <ServiceWorkerRegister />
+        <Providers>
+          <div className="mx-auto min-h-screen w-full max-w-md bg-surface">
+            {children}
+          </div>
+          <ServiceWorkerRegister />
+        </Providers>
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import BottomNav from "../components/BottomNav";
 import FieldCard from "../components/FieldCard";
 import Chip from "../components/Chip";
@@ -31,6 +32,7 @@ const FUENTES = [
 ];
 
 export default function Perfil() {
+  const { data: session } = useSession();
   const [meta, setMeta] = useState(20);
   const [temporizadorActivo, setTemporizadorActivoState] = useState(false);
   const [segundos, setSegundosState] = useState(60);
@@ -82,6 +84,27 @@ export default function Perfil() {
       </header>
 
       <div className="mt-5 flex flex-col gap-4 px-5">
+        <FieldCard label="Cuenta">
+          <p className="text-lg font-bold text-ink">{session?.user?.name}</p>
+          <p className="text-sm text-ink-muted">{session?.user?.email}</p>
+          <span
+            className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-bold ${
+              session?.user?.plan === "premium"
+                ? "bg-brand-light text-brand"
+                : "bg-track text-ink-muted"
+            }`}
+          >
+            Plan {session?.user?.plan === "premium" ? "Premium" : "Free"}
+          </span>
+          <button
+            type="button"
+            onClick={() => signOut({ callbackUrl: "/login" })}
+            className="mt-4 h-11 w-full rounded-xl border border-track font-bold text-ink"
+          >
+            Cerrar sesión
+          </button>
+        </FieldCard>
+
         <FieldCard label="Meta diaria de preguntas">
           <div className="flex items-center justify-between">
             <button

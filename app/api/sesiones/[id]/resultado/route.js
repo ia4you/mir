@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request, { params }) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
   const sesionId = parseInt(params.id, 10);
   if (!Number.isInteger(sesionId)) {
     return NextResponse.json({ error: "id de sesión inválido" }, { status: 400 });
@@ -11,7 +18,7 @@ export async function GET(request, { params }) {
 
   try {
     const sesionRes = await query(
-      `SELECT id, modo, especialidad, total_preguntas, aciertos, duracion_segundos
+      `SELECT id, modo, especialidad, total_preguntas, aciertos, duracion_segundos, user_id
        FROM sesiones WHERE id = $1`,
       [sesionId]
     );
@@ -19,6 +26,9 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: "Sesión no encontrada" }, { status: 404 });
     }
     const sesion = sesionRes.rows[0];
+    if (sesion.user_id !== Number(session.user.id)) {
+      return NextResponse.json({ error: "No tienes acceso a esta sesión" }, { status: 403 });
+    }
 
     const desgloseRes = await query(
       `SELECT p.especialidad,

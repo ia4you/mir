@@ -1,9 +1,16 @@
 import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request, { params }) {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json({ error: "No autenticado" }, { status: 401 });
+  }
+
   const sesionId = parseInt(params.id, 10);
   if (!Number.isInteger(sesionId)) {
     return NextResponse.json({ error: "id de sesión inválido" }, { status: 400 });
@@ -20,9 +27,12 @@ export async function POST(request, { params }) {
   }
 
   try {
-    const sesionRes = await query(`SELECT id FROM sesiones WHERE id = $1`, [sesionId]);
+    const sesionRes = await query(`SELECT user_id FROM sesiones WHERE id = $1`, [sesionId]);
     if (sesionRes.rows.length === 0) {
       return NextResponse.json({ error: "Sesión no encontrada" }, { status: 404 });
+    }
+    if (sesionRes.rows[0].user_id !== Number(session.user.id)) {
+      return NextResponse.json({ error: "No tienes acceso a esta sesión" }, { status: 403 });
     }
 
     const { rows } = await query(
@@ -37,9 +47,9 @@ export async function POST(request, { params }) {
     const esCorrecta = respuestaDada !== null && respuestaDada === respuestaCorrecta;
 
     await query(
-      `INSERT INTO respuestas_sesion (sesion_id, pregunta_id, respuesta_dada, correcta)
-       VALUES ($1, $2, $3, $4)`,
-      [sesionId, preguntaId, respuestaDada, esCorrecta]
+      `INSERT INTO respuestas_sesion (sesion_id, pregunta_id, respuesta_dada, correcta, user_id)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [sesionId, preguntaId, respuestaDada, esCorrecta, session.user.id]
     );
 
     return NextResponse.json({
