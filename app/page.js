@@ -4,7 +4,7 @@ import { getEspecialidadesConConteo } from "./lib/especialidades";
 export const metadata = {
   title: "Prepara el MIR con preguntas oficiales | MIR Turel",
   description:
-    "1.004 preguntas reales del examen MIR 2021–2025, verificadas de los cuadernillos oficiales del Ministerio de Sanidad. Practica por especialidad, simulacro completo y repaso de fallos.",
+    "Prepara el MIR con 1.004 preguntas oficiales (2021–2025) verificadas de Sanidad. Practica por especialidades, simulacros y repasa tus fallos gratis.",
   alternates: { canonical: "https://mir.turel.es" },
   openGraph: {
     title: "MIR Turel — Banco de preguntas oficiales MIR",
@@ -182,7 +182,18 @@ export default async function LandingPage() {
           <a href="/sitemap.xml">Sitemap</a>
         </nav>
         <div className="mx-auto mt-6 max-w-4xl text-center">
-          <p>Fuentes: cuadernillos oficiales MIR 2021–2025, Ministerio de Sanidad.</p>
+          <p>
+            Fuentes: cuadernillos oficiales MIR 2021–2025,{" "}
+            <a
+              href="https://www.sanidad.gob.es"
+              rel="noopener noreferrer"
+              target="_blank"
+              className="font-semibold text-brand"
+            >
+              Ministerio de Sanidad
+            </a>
+            .
+          </p>
           <p className="mt-2">
             MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
             preparación MIR.
