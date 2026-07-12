@@ -20,7 +20,10 @@ export const viewport = {
   themeColor: "#00878E",
 };
 
-export const revalidate = 3600;
+// El build de Dokploy corre sin acceso a mir-db (red de build aislada de la
+// red de runtime), así que las páginas que consultan la BD no pueden
+// prerenderizarse en build time — se fuerza SSR por request.
+export const dynamic = "force-dynamic";
 
 const PASOS = [
   {

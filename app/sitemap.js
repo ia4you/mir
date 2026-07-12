@@ -2,6 +2,10 @@ import { getEspecialidadesConConteo } from "./lib/especialidades";
 
 const BASE_URL = "https://mir.turel.es";
 
+// El build de Dokploy no tiene acceso a mir-db; se genera en cada request
+// en vez de prerenderizarse en build time.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap() {
   const especialidades = await getEspecialidadesConConteo();
 

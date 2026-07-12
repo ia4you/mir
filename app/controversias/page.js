@@ -8,7 +8,9 @@ export const metadata = {
   alternates: { canonical: "https://mir.turel.es/controversias" },
 };
 
-export const revalidate = 3600;
+// El build de Dokploy no tiene acceso a mir-db; se fuerza SSR por request
+// en vez de prerenderizar en build time.
+export const dynamic = "force-dynamic";
 
 function renderConNegritas(texto) {
   return texto.split(/(\*\*[^*]+\*\*)/g).map((parte, i) => {

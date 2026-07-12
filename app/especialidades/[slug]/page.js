@@ -1,17 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import {
-  getEspecialidadesConConteo,
-  getEspecialidadPorSlug,
-  getPreguntasMuestra,
-} from "../../lib/especialidades";
+import { getEspecialidadPorSlug, getPreguntasMuestra } from "../../lib/especialidades";
 
-export const revalidate = 3600;
-
-export async function generateStaticParams() {
-  const especialidades = await getEspecialidadesConConteo();
-  return especialidades.map((e) => ({ slug: e.slug }));
-}
+// El build de Dokploy no tiene acceso a mir-db, así que no se puede usar
+// generateStaticParams (necesitaría la BD en build time); cada especialidad
+// se renderiza por request en su lugar.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }) {
   const especialidad = await getEspecialidadPorSlug(params.slug);
