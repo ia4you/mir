@@ -5,6 +5,7 @@ import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import FieldCard from "../../components/FieldCard";
+import Logo from "../../components/Logo";
 
 export default function Registro() {
   const router = useRouter();
@@ -58,9 +59,9 @@ export default function Registro() {
 
   return (
     <div className="min-h-screen pb-10">
-      <header className="px-5 pt-safe">
-        <h1 className="text-3xl font-extrabold text-ink">Crear cuenta</h1>
-        <p className="mt-1 text-ink-muted">Empieza a practicar gratis</p>
+      <header className="px-5 pt-safe text-center">
+        <Logo className="mx-auto h-16 w-auto" />
+        <p className="mt-2 text-ink-muted">Empieza a practicar gratis</p>
       </header>
 
       <form onSubmit={registrar} className="mt-6 flex flex-col gap-4 px-5">

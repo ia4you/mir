@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
+import Logo from "./components/Logo";
 
 export const metadata = {
   title: "Prepara el MIR con preguntas oficiales | MIR Turel",
@@ -79,7 +80,11 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <section id="hero" className="px-5 pt-14 pb-12 text-center sm:pt-20 sm:pb-16">
+      <header className="px-5 pt-safe">
+        <Logo className="h-9 w-auto" />
+      </header>
+
+      <section id="hero" className="px-5 pt-10 pb-12 text-center sm:pt-14 sm:pb-16">
         <h1 className="mx-auto max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
           Prepara el MIR con preguntas oficiales
         </h1>
