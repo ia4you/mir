@@ -25,3 +25,15 @@ body {
     padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
   }
 }
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease-out;
+}

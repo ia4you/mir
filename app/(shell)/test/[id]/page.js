@@ -158,14 +158,23 @@ export default function TestPregunta({ params }) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
           </svg>
         </button>
-        <div className="h-2 flex-1 overflow-hidden rounded-full bg-track">
+        {/* Barra de progreso de preguntas: gruesa y con el texto integrado, para
+            que no se confunda visualmente con el chip del temporizador. */}
+        <div className="relative h-8 flex-1 overflow-hidden rounded-full bg-track">
           <div
-            className="h-full rounded-full bg-brand transition-all"
+            className="h-full rounded-full bg-brand-light transition-all"
             style={{ width: `${progreso}%` }}
           />
+          <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-ink">
+            Pregunta {indice + 1} de {preguntas.length}
+          </span>
         </div>
         {estado === "respondiendo" && segundosPorPregunta && tiempoRestante !== null && (
-          <span className="flex-shrink-0 rounded-full bg-brand-light px-3 py-1 text-sm font-bold text-brand">
+          <span className="flex flex-shrink-0 items-center gap-1 rounded-full bg-brand-light px-3 py-1.5 text-sm font-bold text-brand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-3.5 w-3.5">
+              <circle cx="12" cy="12" r="9" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3" />
+            </svg>
             {formatearTiempo(tiempoRestante)}
           </span>
         )}
@@ -175,9 +184,6 @@ export default function TestPregunta({ params }) {
         <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-sm font-bold text-badge-text">
           {preguntaActual.especialidad}
         </span>
-        <p className="mt-3 text-sm text-ink-muted">
-          Pregunta {indice + 1} de {preguntas.length}
-        </p>
 
         <p className="mt-3 text-lg font-medium text-ink">{preguntaActual.pregunta}</p>
 
@@ -204,40 +210,6 @@ export default function TestPregunta({ params }) {
           </button>
         )}
 
-        {estado === "corregido" && (
-          <div
-            className={`mt-4 flex items-center gap-3 rounded-2xl p-4 ${
-              resultado.correcta ? "bg-success-bg" : "bg-danger-bg"
-            }`}
-          >
-            <span
-              className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-white ${
-                resultado.correcta ? "bg-success" : "bg-danger"
-              }`}
-            >
-              {resultado.correcta ? (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
-                </svg>
-              ) : (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
-                </svg>
-              )}
-            </span>
-            <div>
-              <p className={`font-bold ${resultado.correcta ? "text-success-text" : "text-danger-text"}`}>
-                {resultado.correcta ? "Correcto" : "Incorrecto"}
-              </p>
-              {!resultado.correcta && (
-                <p className="text-sm text-danger-text">
-                  La respuesta correcta era {resultado.respuesta_correcta}
-                </p>
-              )}
-            </div>
-          </div>
-        )}
-
         <div className="mt-4 flex flex-col gap-3">
           {opciones.map((o) => (
             <OptionCard
@@ -253,38 +225,91 @@ export default function TestPregunta({ params }) {
           ))}
         </div>
 
-        {estado === "corregido" && (
-          <div className="mt-4 rounded-2xl bg-panel p-4">
-            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
-              Explicación
-            </p>
-            <div className="max-h-40 overflow-y-auto text-sm leading-relaxed text-ink">
-              {resultado.explicacion || "No hay explicación disponible para esta pregunta todavía."}
+        <div className="mt-6">
+          <button
+            type="button"
+            disabled={!seleccionada || enviando}
+            onClick={() => confirmarRespuesta()}
+            className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
+          >
+            {enviando ? "Enviando…" : "Confirmar respuesta"}
+          </button>
+        </div>
+      </main>
+
+      {estado === "corregido" && (
+        <div
+          key={preguntaActual.id}
+          className="fixed inset-0 z-20 flex flex-col bg-surface animate-slide-in-left"
+        >
+          <div className="flex-1 overflow-y-auto px-5 pb-6 pt-safe">
+            <div className="flex items-center gap-3 pt-2">
+              <span
+                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-white ${
+                  resultado.correcta ? "bg-success" : "bg-danger"
+                }`}
+              >
+                {resultado.correcta ? (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                  </svg>
+                )}
+              </span>
+              <p
+                className={`text-2xl font-extrabold ${
+                  resultado.correcta ? "text-success-text" : "text-danger-text"
+                }`}
+              >
+                {resultado.correcta ? "CORRECTO" : "INCORRECTO"}
+              </p>
+            </div>
+
+            <div className="mt-5 flex flex-col gap-2 text-ink">
+              <p>
+                <span className="font-bold">Respondiste: </span>
+                {seleccionada
+                  ? `${seleccionada} — ${preguntaActual[`opcion_${seleccionada.toLowerCase()}`]}`
+                  : "(sin responder — se agotó el tiempo)"}
+              </p>
+              {!resultado.correcta && (
+                <p>
+                  <span className="font-bold">Respuesta correcta: </span>
+                  {resultado.respuesta_correcta} —{" "}
+                  {preguntaActual[`opcion_${String(resultado.respuesta_correcta).toLowerCase()}`]}
+                </p>
+              )}
+            </div>
+
+            <hr className="my-5 border-track" />
+
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
+                Explicación
+              </p>
+              <p className="text-sm leading-relaxed text-ink">
+                {resultado.explicacion || "No hay explicación disponible para esta pregunta todavía."}
+              </p>
             </div>
           </div>
-        )}
 
-        <div className="mt-6">
-          {estado === "respondiendo" ? (
-            <button
-              type="button"
-              disabled={!seleccionada || enviando}
-              onClick={() => confirmarRespuesta()}
-              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
-            >
-              {enviando ? "Enviando…" : "Confirmar respuesta"}
-            </button>
-          ) : (
+          <div className="border-t border-track px-5 py-4 pb-safe">
             <button
               type="button"
               onClick={siguientePregunta}
-              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+              className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
             >
               {indice + 1 < preguntas.length ? "Siguiente pregunta" : "Ver resultados"}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+              </svg>
             </button>
-          )}
+          </div>
         </div>
-      </main>
+      )}
 
       {imagenAmpliada && preguntaActual.imagen_path && (
         <div
