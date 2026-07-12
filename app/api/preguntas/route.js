@@ -33,7 +33,7 @@ export async function GET(request) {
     try {
       const { rows } = await query(
         `SELECT id, año, numero, especialidad, pregunta,
-                opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
+                opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
          FROM preguntas
          WHERE id = ANY($1::int[])`,
         [ids]
@@ -77,7 +77,7 @@ export async function GET(request) {
   try {
     const { rows } = await query(
       `SELECT id, año, numero, especialidad, pregunta,
-              opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
+              opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
        FROM preguntas
        ${where}
        ORDER BY RANDOM()

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import OptionCard from "../../../components/OptionCard";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
@@ -26,12 +27,22 @@ export default function TestPregunta({ params }) {
   const [tiempoRestante, setTiempoRestante] = useState(null);
   const [enviando, setEnviando] = useState(false);
   const [mostrarSalir, setMostrarSalir] = useState(false);
+  const [imagenAmpliada, setImagenAmpliada] = useState(false);
 
   const horaInicioRef = useRef(null);
   const mostrarSalirRef = useRef(false);
   useEffect(() => {
     mostrarSalirRef.current = mostrarSalir;
   }, [mostrarSalir]);
+
+  useEffect(() => {
+    if (!imagenAmpliada) return;
+    function onKeyDown(e) {
+      if (e.key === "Escape") setImagenAmpliada(false);
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [imagenAmpliada]);
 
   useEffect(() => {
     const guardado = sessionStorage.getItem(`mir_test_${sesionId}`);
@@ -100,6 +111,7 @@ export default function TestPregunta({ params }) {
       setSeleccionada(null);
       setEstado("respondiendo");
       setResultado(null);
+      setImagenAmpliada(false);
       return;
     }
 
@@ -131,7 +143,6 @@ export default function TestPregunta({ params }) {
     texto: preguntaActual[`opcion_${letra.toLowerCase()}`],
   })).filter((o) => o.texto);
 
-  const tieneImagen = /imagen/i.test(preguntaActual.pregunta);
   const progreso = ((estado === "corregido" ? indice + 1 : indice) / preguntas.length) * 100;
 
   return (
@@ -168,13 +179,30 @@ export default function TestPregunta({ params }) {
           Pregunta {indice + 1} de {preguntas.length}
         </p>
 
-        {tieneImagen && (
-          <div className="mt-3 rounded-2xl bg-panel p-3 text-sm text-ink-muted">
-            Esta pregunta hace referencia a una imagen del examen original no disponible.
-          </div>
-        )}
-
         <p className="mt-3 text-lg font-medium text-ink">{preguntaActual.pregunta}</p>
+
+        {preguntaActual.imagen_path && (
+          <button
+            type="button"
+            onClick={() => setImagenAmpliada(true)}
+            aria-label="Ampliar imagen de la pregunta"
+            className="relative mt-4 block w-full"
+          >
+            <Image
+              src={preguntaActual.imagen_path}
+              alt="Imagen clínica de la pregunta MIR"
+              width={600}
+              height={400}
+              className="h-auto w-full rounded-lg bg-panel object-contain"
+            />
+            <span className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink/60 text-white">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
+                <circle cx="11" cy="11" r="7" />
+                <path strokeLinecap="round" d="m21 21-4.3-4.3" />
+              </svg>
+            </span>
+          </button>
+        )}
 
         {estado === "corregido" && (
           <div
@@ -257,6 +285,36 @@ export default function TestPregunta({ params }) {
           )}
         </div>
       </main>
+
+      {imagenAmpliada && preguntaActual.imagen_path && (
+        <div
+          className="fixed inset-0 z-40 bg-black/90"
+          onClick={() => setImagenAmpliada(false)}
+        >
+          <button
+            type="button"
+            onClick={() => setImagenAmpliada(false)}
+            aria-label="Cerrar imagen"
+            className="absolute right-4 top-safe z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+            </svg>
+          </button>
+          <div
+            className="absolute inset-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={preguntaActual.imagen_path}
+              alt="Imagen clínica de la pregunta MIR"
+              fill
+              className="object-contain"
+              sizes="100vw"
+            />
+          </div>
+        </div>
+      )}
 
       {mostrarSalir && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
