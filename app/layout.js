@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
+import DisclaimerBanner from "./components/DisclaimerBanner";
 import Providers from "./providers";
 
 const inter = Inter({
@@ -43,6 +44,7 @@ export default function RootLayout({ children }) {
         <Providers>
           {children}
           <ServiceWorkerRegister />
+          <DisclaimerBanner />
         </Providers>
       </body>
     </html>
