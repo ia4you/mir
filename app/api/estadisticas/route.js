@@ -54,15 +54,18 @@ export async function GET(request) {
       Math.round((respondidasHoy / metaDiariaPreguntas) * 100)
     );
 
+    // Partimos de TODAS las especialidades (no solo las ya practicadas) para
+    // que el usuario vea el mapa completo desde el primer día, con 0% en las
+    // que todavía no ha tocado.
     const especialidadesRes = await query(
-      `SELECT p.especialidad,
-              COUNT(*)::int AS total,
+      `SELECT esp.especialidad,
+              COUNT(rs.id)::int AS total,
               COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
-       FROM respuestas_sesion rs
-       JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.user_id = $1
-       GROUP BY p.especialidad
-       ORDER BY total DESC`,
+       FROM (SELECT DISTINCT especialidad FROM preguntas) esp
+       LEFT JOIN preguntas p ON p.especialidad = esp.especialidad
+       LEFT JOIN respuestas_sesion rs ON rs.pregunta_id = p.id AND rs.user_id = $1
+       GROUP BY esp.especialidad
+       ORDER BY total DESC, esp.especialidad ASC`,
       [userId]
     );
 

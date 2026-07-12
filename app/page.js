@@ -38,7 +38,7 @@ const PASOS = [
   },
   {
     titulo: "Responde las preguntas",
-    texto: "Cada pregunta incluye una explicación clínica al corregirla.",
+    texto: "Corrige tus respuestas al instante y consulta la explicación clínica cuando esté disponible.",
     icono: (props) => (
       <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
         <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
@@ -104,7 +104,7 @@ export default async function LandingPage() {
         </div>
 
         <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
-          1.004 preguntas · 21 especialidades · 5 convocatorias · 100% oficial
+          1.004 preguntas oficiales · 21 especialidades · Convocatorias 2021–2025
         </p>
       </section>
 

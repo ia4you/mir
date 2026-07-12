@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import BottomNav from "../../components/BottomNav";
 import FieldCard from "../../components/FieldCard";
@@ -87,15 +88,31 @@ export default function Perfil() {
         <FieldCard label="Cuenta">
           <p className="text-lg font-bold text-ink">{session?.user?.name}</p>
           <p className="text-sm text-ink-muted">{session?.user?.email}</p>
-          <span
-            className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-bold ${
-              session?.user?.plan === "premium"
-                ? "bg-brand-light text-brand"
-                : "bg-track text-ink-muted"
-            }`}
-          >
-            Plan {session?.user?.plan === "premium" ? "Premium" : "Free"}
-          </span>
+
+          <div className="mt-3 flex items-center gap-2">
+            <span
+              className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                session?.user?.plan === "premium"
+                  ? "bg-brand text-white"
+                  : "bg-track text-ink-muted"
+              }`}
+            >
+              {session?.user?.plan === "premium" ? "PREMIUM" : "FREE"}
+            </span>
+            {session?.user?.plan !== "premium" && (
+              <span className="text-sm text-ink-muted">10 preguntas/día</span>
+            )}
+          </div>
+
+          {session?.user?.plan !== "premium" && (
+            <Link
+              href="/premium"
+              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-white"
+            >
+              Hazte Premium →
+            </Link>
+          )}
+
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/login" })}
@@ -180,6 +197,14 @@ export default function Perfil() {
               </div>
             ))}
           </div>
+          <Link
+            href="/controversias"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 block text-sm font-bold text-brand"
+          >
+            Ver preguntas con respuesta oficial cuestionada →
+          </Link>
         </FieldCard>
       </div>
 

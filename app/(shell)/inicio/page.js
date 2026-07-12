@@ -69,6 +69,19 @@ export default function Inicio() {
         <AvisoDesdeUrl />
       </Suspense>
 
+      {session?.user?.plan !== "premium" &&
+        datos &&
+        datos.especialidades.every((e) => e.total === 0) && (
+          <div className="mx-5 mt-4 rounded-2xl bg-brand-light p-4">
+            <p className="text-sm font-semibold text-ink">
+              Estás en el plan gratuito — puedes responder hasta 10 preguntas al día.
+            </p>
+            <Link href="/premium" className="mt-1 inline-block text-sm font-bold text-brand">
+              ¿Quieres acceso ilimitado? Hazte premium →
+            </Link>
+          </div>
+        )}
+
       <div className="mt-5">
         <ResumenDiario
           racha={datos?.racha_dias}
@@ -96,21 +109,14 @@ export default function Inicio() {
           </p>
         )}
 
-        {!error && datos && datos.especialidades.length === 0 && (
-          <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
-            Todavía no has respondido ninguna pregunta. Pulsa{" "}
-            <span className="font-semibold text-brand">Continuar test</span> para empezar a
-            practicar y aquí verás tu progreso por especialidad.
-          </div>
-        )}
-
         {!error && datos && datos.especialidades.length > 0 && (
           <div className="flex flex-col gap-3">
-            {datos.especialidades.slice(0, 5).map((e) => (
+            {datos.especialidades.map((e) => (
               <SpecialtyProgressRow
                 key={e.especialidad}
                 nombre={e.especialidad}
                 porcentaje={e.porcentaje}
+                total={e.total}
               />
             ))}
           </div>

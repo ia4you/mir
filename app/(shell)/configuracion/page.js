@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import BottomNav from "../../components/BottomNav";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import FieldCard from "../../components/FieldCard";
@@ -10,11 +11,12 @@ import Chip from "../../components/Chip";
 import { getTemporizadorDefecto } from "../../lib/preferencias";
 
 const ANIOS = ["2021", "2022", "2023", "2024", "2025"];
+const LIMITE_DIARIO_FREE = 10;
 const OPCIONES_CANTIDAD = [
-  { valor: "10", etiqueta: "10" },
-  { valor: "20", etiqueta: "20" },
-  { valor: "50", etiqueta: "50" },
-  { valor: "simulacro", etiqueta: "Simulacro completo" },
+  { valor: "10", etiqueta: "10", numero: 10 },
+  { valor: "20", etiqueta: "20", numero: 20 },
+  { valor: "50", etiqueta: "50", numero: 50 },
+  { valor: "simulacro", etiqueta: "Simulacro completo", numero: 210 },
 ];
 const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 
@@ -44,6 +46,7 @@ function SelectNativo({ value, onChange, children }) {
 
 export default function Configuracion() {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [especialidades, setEspecialidades] = useState([]);
   const [especialidad, setEspecialidad] = useState("");
@@ -53,6 +56,7 @@ export default function Configuracion() {
     () => getTemporizadorDefecto().activo
   );
   const [segundos, setSegundos] = useState(() => getTemporizadorDefecto().segundos);
+  const [restanteHoy, setRestanteHoy] = useState(null); // null = aún no se sabe
 
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
@@ -65,6 +69,32 @@ export default function Configuracion() {
       .then(setEspecialidades)
       .catch(() => setEspecialidades([]));
   }, []);
+
+  useEffect(() => {
+    if (!session?.user) return;
+    if (session.user.plan === "premium") {
+      setRestanteHoy(Infinity);
+      return;
+    }
+    fetch("/api/estadisticas")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((datos) => {
+        setRestanteHoy(Math.max(0, LIMITE_DIARIO_FREE - datos.meta_diaria.respondidas_hoy));
+      })
+      .catch(() => setRestanteHoy(LIMITE_DIARIO_FREE));
+  }, [session]);
+
+  // si la opción seleccionada deja de caber en lo que queda del día, bajamos
+  // automáticamente a la mayor que sí quepa
+  useEffect(() => {
+    if (restanteHoy === null) return;
+    const actual = OPCIONES_CANTIDAD.find((o) => o.valor === cantidad);
+    if (actual && actual.numero > restanteHoy) {
+      const alternativa = [...OPCIONES_CANTIDAD].reverse().find((o) => o.numero <= restanteHoy);
+      setCantidad(alternativa ? alternativa.valor : OPCIONES_CANTIDAD[0].valor);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [restanteHoy]);
 
   const totalPreguntas = especialidades.reduce((acc, e) => acc + e.total, 0);
 
@@ -164,12 +194,31 @@ export default function Configuracion() {
 
         <FieldCard label="Número de preguntas">
           <div className="flex gap-2">
-            {OPCIONES_CANTIDAD.map((o) => (
-              <Chip key={o.valor} activo={cantidad === o.valor} onClick={() => setCantidad(o.valor)}>
-                {o.etiqueta}
-              </Chip>
-            ))}
+            {OPCIONES_CANTIDAD.map((o) => {
+              const superaLimite = restanteHoy !== null && o.numero > restanteHoy;
+              return (
+                <Chip
+                  key={o.valor}
+                  activo={cantidad === o.valor}
+                  disabled={superaLimite}
+                  onClick={() => setCantidad(o.valor)}
+                >
+                  {o.etiqueta}
+                </Chip>
+              );
+            })}
           </div>
+          {restanteHoy !== null && restanteHoy < Infinity && (
+            <p className="mt-3 text-xs text-ink-muted">
+              {restanteHoy > 0
+                ? `Con tu plan gratuito puedes responder ${restanteHoy} preguntas más hoy.`
+                : "Has agotado tu límite diario del plan gratuito."}{" "}
+              <Link href="/premium" className="font-bold text-brand">
+                Hazte premium
+              </Link>{" "}
+              para acceso ilimitado.
+            </p>
+          )}
         </FieldCard>
 
         <FieldCard label="Temporizador">
@@ -200,7 +249,7 @@ export default function Configuracion() {
         <button
           type="button"
           onClick={empezarTest}
-          disabled={enviando}
+          disabled={enviando || restanteHoy === 0}
           className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
         >
           {enviando ? "Preparando test…" : "Empezar test"}

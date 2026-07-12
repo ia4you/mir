@@ -68,7 +68,12 @@ export default function Estadisticas() {
         {!error && datos && datos.especialidades.length > 0 && (
           <div className="flex flex-col gap-3">
             {datos.especialidades.map((e) => (
-              <SpecialtyProgressRow key={e.especialidad} nombre={e.especialidad} porcentaje={e.porcentaje} />
+              <SpecialtyProgressRow
+                key={e.especialidad}
+                nombre={e.especialidad}
+                porcentaje={e.porcentaje}
+                total={e.total}
+              />
             ))}
           </div>
         )}
