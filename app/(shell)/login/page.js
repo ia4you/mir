@@ -4,12 +4,12 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import FieldCard from "../components/FieldCard";
+import FieldCard from "../../components/FieldCard";
 
 function FormularioLogin() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrl = searchParams.get("callbackUrl") || "/inicio";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

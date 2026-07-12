@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import BottomNav from "../components/BottomNav";
-import ToggleSwitch from "../components/ToggleSwitch";
-import FieldCard from "../components/FieldCard";
-import Chip from "../components/Chip";
-import { getTemporizadorDefecto } from "../lib/preferencias";
+import BottomNav from "../../components/BottomNav";
+import ToggleSwitch from "../../components/ToggleSwitch";
+import FieldCard from "../../components/FieldCard";
+import Chip from "../../components/Chip";
+import { getTemporizadorDefecto } from "../../lib/preferencias";
 
 const ANIOS = ["2021", "2022", "2023", "2024", "2025"];
 const OPCIONES_CANTIDAD = [
@@ -128,7 +128,7 @@ export default function Configuracion() {
     <div className="min-h-screen pb-28">
       <header className="flex items-center gap-3 px-5 pt-safe">
         <Link
-          href="/"
+          href="/inicio"
           className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm"
           aria-label="Volver al inicio"
         >

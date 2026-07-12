@@ -12,7 +12,7 @@ export default function Premium() {
         pago online.
       </p>
       <Link
-        href="/"
+        href="/inicio"
         className="mt-6 flex h-12 w-full max-w-xs items-center justify-center rounded-2xl bg-brand font-bold text-white"
       >
         Volver al inicio

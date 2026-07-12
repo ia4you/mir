@@ -10,6 +10,7 @@ const inter = Inter({
 });
 
 export const metadata = {
+  metadataBase: new URL("https://mir.turel.es"),
   title: "MIR Turel",
   description: "Practica el examen MIR con preguntas reales de convocatorias anteriores.",
   manifest: "/manifest.json",
@@ -37,12 +38,10 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es">
+    <html lang="es" className="scroll-smooth">
       <body className={`${inter.variable} font-sans antialiased bg-surface text-ink`}>
         <Providers>
-          <div className="mx-auto min-h-screen w-full max-w-md bg-surface">
-            {children}
-          </div>
+          {children}
           <ServiceWorkerRegister />
         </Providers>
       </body>

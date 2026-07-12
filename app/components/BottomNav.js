@@ -30,7 +30,7 @@ const ICONOS = {
 };
 
 const TABS = [
-  { href: "/", label: "Inicio", icono: "inicio" },
+  { href: "/inicio", label: "Inicio", icono: "inicio" },
   { href: "/configuracion", label: "Práctica", icono: "practica" },
   { href: "/estadisticas", label: "Estadísticas", icono: "estadisticas" },
   { href: "/perfil", label: "Perfil", icono: "perfil" },
@@ -43,7 +43,7 @@ export default function BottomNav() {
     <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-track bg-white pb-safe">
       <div className="flex items-stretch justify-around px-2 pt-2">
         {TABS.map((tab) => {
-          const activo = tab.href === "/" ? pathname === "/" : pathname.startsWith(tab.href);
+          const activo = tab.href === "/inicio" ? pathname === "/inicio" : pathname.startsWith(tab.href);
           const Icono = ICONOS[tab.icono];
           return (
             <Link

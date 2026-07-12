@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import BottomNav from "../components/BottomNav";
-import ResumenDiario from "../components/ResumenDiario";
-import SpecialtyProgressRow from "../components/SpecialtyProgressRow";
-import { getMetaDiaria } from "../lib/preferencias";
+import BottomNav from "../../components/BottomNav";
+import ResumenDiario from "../../components/ResumenDiario";
+import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
+import { getMetaDiaria } from "../../lib/preferencias";
 
 const ETIQUETA_MODO = {
   practica: "Práctica",

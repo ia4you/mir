@@ -1,131 +1,191 @@
-"use client";
-
-import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
-import BottomNav from "./components/BottomNav";
-import ResumenDiario from "./components/ResumenDiario";
-import SpecialtyProgressRow from "./components/SpecialtyProgressRow";
-import { getMetaDiaria } from "./lib/preferencias";
+import { getEspecialidadesConConteo } from "./lib/especialidades";
 
-const MENSAJES_ERROR = {
-  sesion_no_encontrada: "No se ha encontrado esa sesión de test. Puede que ya no exista.",
+export const metadata = {
+  title: "Prepara el MIR con preguntas oficiales | MIR Turel",
+  description:
+    "1.004 preguntas reales del examen MIR 2021–2025, verificadas de los cuadernillos oficiales del Ministerio de Sanidad. Practica por especialidad, simulacro completo y repaso de fallos.",
+  alternates: { canonical: "https://mir.turel.es" },
+  openGraph: {
+    title: "MIR Turel — Banco de preguntas oficiales MIR",
+    description: "1.004 preguntas reales verificadas. Gratis.",
+    url: "https://mir.turel.es",
+    siteName: "MIR Turel",
+  },
 };
 
-function AvisoDesdeUrl() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const [avisoUrl, setAvisoUrl] = useState(null);
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#00878E",
+};
 
-  useEffect(() => {
-    const codigo = searchParams.get("error");
-    if (codigo && MENSAJES_ERROR[codigo]) {
-      setAvisoUrl(MENSAJES_ERROR[codigo]);
-      router.replace("/");
-    }
-  }, [searchParams, router]);
+export const revalidate = 3600;
 
-  if (!avisoUrl) return null;
+const PASOS = [
+  {
+    titulo: "Elige especialidad o año",
+    texto: "Practica por bloque temático o repasa una convocatoria completa.",
+    icono: (props) => (
+      <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M4 5.5c2-1 5-1 8 0v14c-3-1-6-1-8 0v-14Z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M20 5.5c-2-1-5-1-8 0v14c3-1 6-1 8 0v-14Z" />
+      </svg>
+    ),
+  },
+  {
+    titulo: "Responde las preguntas",
+    texto: "Cada pregunta incluye una explicación clínica al corregirla.",
+    icono: (props) => (
+      <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
+      </svg>
+    ),
+  },
+  {
+    titulo: "Ve tu progreso por especialidad",
+    texto: "Detecta tus puntos débiles y enfoca el repaso donde más falta hace.",
+    icono: (props) => (
+      <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M5 20V10M12 20V4M19 20v-7" />
+      </svg>
+    ),
+  },
+];
+
+const TESTIMONIOS = [
+  {
+    nombre: "Marta G.",
+    ciudad: "Sevilla",
+    texto: "Repasar por especialidad me ha ayudado a detectar mis puntos débiles antes del examen.",
+  },
+  {
+    nombre: "Javier R.",
+    ciudad: "Madrid",
+    texto: "Las preguntas son iguales que las del examen real, se nota que están bien verificadas.",
+  },
+  {
+    nombre: "Lucía M.",
+    ciudad: "Valencia",
+    texto: "Poder practicar unos minutos cada día desde el móvil me ha hecho mucho más constante.",
+  },
+];
+
+export default async function LandingPage() {
+  const especialidades = await getEspecialidadesConConteo();
 
   return (
-    <div className="mx-5 mt-4 flex items-start justify-between gap-3 rounded-2xl bg-badge-bg p-3 text-sm text-badge-text">
-      <span>{avisoUrl}</span>
-      <button
-        type="button"
-        onClick={() => setAvisoUrl(null)}
-        aria-label="Cerrar aviso"
-        className="flex-shrink-0 font-bold"
-      >
-        ×
-      </button>
-    </div>
-  );
-}
+    <div className="min-h-screen bg-surface">
+      <section id="hero" className="px-5 pt-14 pb-12 text-center sm:pt-20 sm:pb-16">
+        <h1 className="mx-auto max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
+          Prepara el MIR con preguntas oficiales
+        </h1>
+        <p className="mx-auto mt-4 max-w-xl text-ink-muted sm:text-lg">
+          1.004 preguntas reales de las convocatorias 2021–2025, verificadas de los cuadernillos
+          oficiales del Ministerio de Sanidad
+        </p>
 
-export default function Inicio() {
-  const { data: session } = useSession();
-  const [datos, setDatos] = useState(null);
-  const [error, setError] = useState(false);
+        <div className="mx-auto mt-7 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+          <Link
+            href="/registro"
+            className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          >
+            Empezar gratis
+          </Link>
+          <a
+            href="#como-funciona"
+            className="flex h-14 items-center justify-center rounded-2xl border-2 border-brand px-8 text-lg font-bold text-brand"
+          >
+            Ver cómo funciona
+          </a>
+        </div>
 
-  useEffect(() => {
-    fetch(`/api/estadisticas?meta=${getMetaDiaria()}`)
-      .then((r) => {
-        if (!r.ok) throw new Error("fallo");
-        return r.json();
-      })
-      .then(setDatos)
-      .catch(() => setError(true));
-  }, []);
+        <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
+          1.004 preguntas · 21 especialidades · 5 convocatorias · 100% oficial
+        </p>
+      </section>
 
-  return (
-    <div className="min-h-screen pb-28">
-      <header className="px-5 pt-safe">
-        <p className="text-ink-muted">Hola,</p>
-        <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
-      </header>
+      <section id="como-funciona" className="px-5 py-12 sm:py-16">
+        <h2 className="text-center text-2xl font-extrabold text-ink">Cómo funciona</h2>
+        <div className="mx-auto mt-8 grid max-w-4xl gap-5 sm:grid-cols-3">
+          {PASOS.map((paso, i) => (
+            <div key={paso.titulo} className="rounded-2xl bg-white p-5 text-center shadow-sm">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-light text-brand">
+                <paso.icono className="h-6 w-6" />
+              </div>
+              <p className="mt-3 text-xs font-bold uppercase tracking-wide text-brand">
+                Paso {i + 1}
+              </p>
+              <h3 className="mt-1 text-lg font-bold text-ink">{paso.titulo}</h3>
+              <p className="mt-1 text-sm text-ink-muted">{paso.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
-      <Suspense fallback={null}>
-        <AvisoDesdeUrl />
-      </Suspense>
+      <section id="especialidades" className="px-5 py-12 sm:py-16">
+        <h2 className="text-center text-2xl font-extrabold text-ink">Especialidades</h2>
+        <div className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          {especialidades.map((e) => (
+            <Link
+              key={e.slug}
+              href={`/especialidades/${e.slug}`}
+              className="flex flex-col justify-between rounded-2xl bg-white p-4 shadow-sm active:bg-brand-light"
+            >
+              <span className="font-bold text-ink">{e.nombre}</span>
+              <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>
+            </Link>
+          ))}
+        </div>
+      </section>
 
-      <div className="mt-5">
-        <ResumenDiario
-          racha={datos?.racha_dias}
-          metaDiariaPct={datos?.meta_diaria.porcentaje}
-        />
-      </div>
+      <section id="testimonios" className="px-5 py-12 sm:py-16">
+        <h2 className="text-center text-2xl font-extrabold text-ink">
+          Lo que dicen nuestros usuarios
+        </h2>
+        <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
+          {TESTIMONIOS.map((t) => (
+            <div key={t.nombre} className="rounded-2xl bg-white p-5 shadow-sm">
+              <p className="text-sm text-ink">&ldquo;{t.texto}&rdquo;</p>
+              <p className="mt-3 text-sm font-bold text-ink">
+                {t.nombre} <span className="font-normal text-ink-muted">— {t.ciudad}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="mx-auto mt-4 max-w-4xl text-center text-xs text-ink-muted">
+          Testimonios ilustrativos — se sustituirán por opiniones reales de usuarios.
+        </p>
+      </section>
 
-      <section className="mt-5 px-5">
+      <section className="px-5 py-14 text-center sm:py-16">
+        <h2 className="text-2xl font-extrabold text-ink">Empieza hoy</h2>
+        <p className="mt-2 text-ink-muted">Empieza gratis — sin tarjeta de crédito</p>
         <Link
-          href="/configuracion"
-          className="flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          href="/registro"
+          className="mx-auto mt-6 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
         >
-          Continuar test
+          Crear cuenta gratis
         </Link>
       </section>
 
-      <section className="mt-7 px-5">
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
-          Especialidades
-        </h2>
-
-        {error && (
-          <p className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
-            No se ha podido cargar tu progreso. Inténtalo de nuevo más tarde.
+      <footer className="border-t border-track px-5 py-10 text-sm text-ink-muted">
+        <nav className="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-6 gap-y-2 text-center font-semibold text-brand">
+          <a href="#hero">Inicio</a>
+          <a href="#especialidades">Especialidades</a>
+          <Link href="/controversias">Controversias</Link>
+          <Link href="/login">Login</Link>
+          <Link href="/registro">Registro</Link>
+          <a href="/sitemap.xml">Sitemap</a>
+        </nav>
+        <div className="mx-auto mt-6 max-w-4xl text-center">
+          <p>Fuentes: cuadernillos oficiales MIR 2021–2025, Ministerio de Sanidad.</p>
+          <p className="mt-2">
+            MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
+            preparación MIR.
           </p>
-        )}
-
-        {!error && datos && datos.especialidades.length === 0 && (
-          <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
-            Todavía no has respondido ninguna pregunta. Pulsa{" "}
-            <span className="font-semibold text-brand">Continuar test</span> para empezar a
-            practicar y aquí verás tu progreso por especialidad.
-          </div>
-        )}
-
-        {!error && datos && datos.especialidades.length > 0 && (
-          <div className="flex flex-col gap-3">
-            {datos.especialidades.slice(0, 5).map((e) => (
-              <SpecialtyProgressRow
-                key={e.especialidad}
-                nombre={e.especialidad}
-                porcentaje={e.porcentaje}
-              />
-            ))}
-          </div>
-        )}
-
-        {!error && !datos && (
-          <div className="flex flex-col gap-3">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-white shadow-sm" />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <BottomNav />
+        </div>
+      </footer>
     </div>
   );
 }

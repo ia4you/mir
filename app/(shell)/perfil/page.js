@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { useSession, signOut } from "next-auth/react";
-import BottomNav from "../components/BottomNav";
-import FieldCard from "../components/FieldCard";
-import Chip from "../components/Chip";
-import ToggleSwitch from "../components/ToggleSwitch";
+import BottomNav from "../../components/BottomNav";
+import FieldCard from "../../components/FieldCard";
+import Chip from "../../components/Chip";
+import ToggleSwitch from "../../components/ToggleSwitch";
 import {
   getMetaDiaria,
   setMetaDiaria,
   getTemporizadorDefecto,
   setTemporizadorDefecto,
-} from "../lib/preferencias";
+} from "../../lib/preferencias";
 
 const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 

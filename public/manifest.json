@@ -1,7 +1,7 @@
 {
   "name": "MIR Turel",
   "short_name": "MIR",
-  "start_url": "/",
+  "start_url": "/inicio",
   "display": "standalone",
   "background_color": "#00878E",
   "theme_color": "#00878E",

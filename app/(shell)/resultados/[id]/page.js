@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
+import SpecialtyProgressRow from "../../../components/SpecialtyProgressRow";
 
 export default function Resultados({ params }) {
   const router = useRouter();
@@ -132,7 +132,7 @@ export default function Resultados({ params }) {
           {repasando ? "Preparando…" : "Repasar fallos"}
         </button>
         <Link
-          href="/"
+          href="/inicio"
           className="flex h-14 flex-1 items-center justify-center rounded-2xl bg-brand font-bold text-white active:bg-brand-dark"
         >
           Volver al inicio

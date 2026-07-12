@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import FieldCard from "../components/FieldCard";
+import FieldCard from "../../components/FieldCard";
 
 export default function Registro() {
   const router = useRouter();
@@ -48,7 +48,7 @@ export default function Registro() {
         router.push("/login");
         return;
       }
-      router.push("/");
+      router.push("/inicio");
       router.refresh();
     } catch {
       setError("No se ha podido crear la cuenta. Inténtalo de nuevo.");

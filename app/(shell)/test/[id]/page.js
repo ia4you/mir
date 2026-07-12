@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import OptionCard from "../../components/OptionCard";
+import OptionCard from "../../../components/OptionCard";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
 
@@ -115,7 +115,7 @@ export default function TestPregunta({ params }) {
 
   function salir() {
     sessionStorage.removeItem(`mir_test_${sesionId}`);
-    router.push("/");
+    router.push("/inicio");
   }
 
   if (!preguntas || !preguntaActual) {
