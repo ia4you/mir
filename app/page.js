@@ -80,8 +80,21 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <header className="px-5 pt-safe">
-        <Logo className="h-9 w-auto" />
+      <header className="flex items-center justify-between gap-3 border-b border-track bg-white px-5 pb-3 pt-safe">
+        <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
+          <Logo className="h-12 w-auto" />
+        </Link>
+        <nav className="flex items-center gap-2 sm:gap-3">
+          <Link href="/login" className="whitespace-nowrap text-xs font-bold text-ink sm:text-sm">
+            Iniciar sesión
+          </Link>
+          <Link
+            href="/registro"
+            className="whitespace-nowrap rounded-xl bg-brand px-3 py-2 text-xs font-bold text-white shadow-sm active:bg-brand-dark sm:px-4 sm:text-sm"
+          >
+            Registrarse
+          </Link>
+        </nav>
       </header>
 
       <section id="hero" className="px-5 pt-10 pb-12 text-center sm:pt-14 sm:pb-16">
