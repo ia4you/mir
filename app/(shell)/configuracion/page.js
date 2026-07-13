@@ -288,7 +288,7 @@ export default function Configuracion() {
                 href="/premium"
                 className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark"
               >
-                Hazte Premium →
+                Hazte Premium por 4,99€/mes →
               </Link>
               <Link
                 href="/inicio"

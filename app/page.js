@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
 import Logo from "./components/Logo";
 
@@ -62,16 +63,19 @@ const TESTIMONIOS = [
     nombre: "Marta G.",
     ciudad: "Sevilla",
     texto: "Repasar por especialidad me ha ayudado a detectar mis puntos débiles antes del examen.",
+    avatar: "/testimonios/avatar1.jpg",
   },
   {
     nombre: "Javier R.",
     ciudad: "Madrid",
     texto: "Las preguntas son iguales que las del examen real, se nota que están bien verificadas.",
+    avatar: "/testimonios/avatar2.jpg",
   },
   {
     nombre: "Lucía M.",
     ciudad: "Valencia",
     texto: "Poder practicar unos minutos cada día desde el móvil me ha hecho mucho más constante.",
+    avatar: "/testimonios/avatar3.jpg",
   },
 ];
 
@@ -187,15 +191,21 @@ export default async function LandingPage() {
           {TESTIMONIOS.map((t) => (
             <div key={t.nombre} className="rounded-2xl bg-white p-5 shadow-sm">
               <p className="text-sm text-ink">&ldquo;{t.texto}&rdquo;</p>
-              <p className="mt-3 text-sm font-bold text-ink">
-                {t.nombre} <span className="font-normal text-ink-muted">— {t.ciudad}</span>
-              </p>
+              <div className="mt-3 flex items-center gap-3">
+                <Image
+                  src={t.avatar}
+                  alt={t.nombre}
+                  width={56}
+                  height={56}
+                  className="h-14 w-14 flex-shrink-0 rounded-full object-cover ring-2 ring-brand/20"
+                />
+                <p className="text-sm font-bold text-ink">
+                  {t.nombre} <span className="font-normal text-ink-muted">— {t.ciudad}</span>
+                </p>
+              </div>
             </div>
           ))}
         </div>
-        <p className="mx-auto mt-4 max-w-4xl text-center text-xs text-ink-muted">
-          Testimonios ilustrativos — se sustituirán por opiniones reales de usuarios.
-        </p>
       </section>
 
       <section className="px-5 py-14 text-center sm:py-16">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const FILAS_COMPARATIVA = [
@@ -24,23 +25,28 @@ function Celda({ valor }) {
 }
 
 export default function Premium() {
-  const { data: session } = useSession();
-  const [email, setEmail] = useState("");
-  const [estado, setEstado] = useState("idle"); // idle | enviando | ok | error
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [enviando, setEnviando] = useState(false);
+  const [error, setError] = useState("");
 
-  async function apuntarse(e) {
-    e.preventDefault();
-    setEstado("enviando");
+  const esPremium = session?.user?.plan === "premium";
+
+  async function suscribirse() {
+    setError("");
+    if (status !== "authenticated") {
+      router.push("/login?callbackUrl=/premium");
+      return;
+    }
+    setEnviando(true);
     try {
-      const res = await fetch("/api/lista-espera", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email || session?.user?.email }),
-      });
-      if (!res.ok) throw new Error();
-      setEstado("ok");
-    } catch {
-      setEstado("error");
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "No se ha podido iniciar el pago");
+      window.location.href = data.url;
+    } catch (e) {
+      setError(e.message || "No se ha podido iniciar el pago. Inténtalo de nuevo.");
+      setEnviando(false);
     }
   }
 
@@ -79,37 +85,28 @@ export default function Premium() {
 
       <div className="mt-6 w-full max-w-sm rounded-2xl bg-brand-light p-4">
         <p className="text-sm font-bold uppercase tracking-wide text-brand">Precio</p>
-        <p className="mt-1 text-2xl font-extrabold text-ink">Próximamente</p>
-        <p className="mt-1 text-sm text-ink-muted">Lista de espera</p>
+        <p className="mt-1 text-2xl font-extrabold text-ink">4,99€/mes</p>
+        <p className="mt-1 text-sm text-ink-muted">Cancela cuando quieras</p>
       </div>
 
-      {estado === "ok" ? (
+      {esPremium ? (
         <div className="mt-6 w-full max-w-sm rounded-2xl bg-success-bg p-4 text-sm font-semibold text-success-text">
-          ¡Listo! Te avisaremos en cuanto Premium esté disponible.
+          Ya eres usuario premium — gracias por tu apoyo ❤️
         </div>
       ) : (
-        <form onSubmit={apuntarse} className="mt-6 flex w-full max-w-sm flex-col gap-3">
-          <input
-            type="email"
-            required
-            value={email || session?.user?.email || ""}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="tu@email.com"
-            className="h-12 w-full rounded-xl border border-track bg-white px-4 text-center font-medium text-ink focus:border-brand focus:outline-none"
-          />
-          {estado === "error" && (
-            <p className="text-sm font-semibold text-danger-text">
-              No se ha podido registrar tu email. Inténtalo de nuevo.
-            </p>
+        <>
+          {error && (
+            <p className="mt-6 text-sm font-semibold text-danger-text">{error}</p>
           )}
           <button
-            type="submit"
-            disabled={estado === "enviando"}
-            className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+            type="button"
+            onClick={suscribirse}
+            disabled={enviando}
+            className="mt-6 flex h-14 w-full max-w-sm items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
           >
-            {estado === "enviando" ? "Enviando…" : "Apúntame a la lista"}
+            {enviando ? "Redirigiendo…" : "Suscribirme por 4,99€/mes"}
           </button>
-        </form>
+        </>
       )}
 
       <Link
