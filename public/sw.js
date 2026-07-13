@@ -1,8 +1,14 @@
-// Service worker mínimo: solo lo justo para que la PWA sea instalable y los
-// assets estáticos carguen algo más rápido en visitas repetidas. La API
-// nunca se cachea — los datos (preguntas, sesiones, estadísticas) deben
-// venir siempre frescos del servidor.
-const CACHE_NAME = "mir-turel-v1";
+// Service worker mínimo: solo lo justo para que la PWA sea instalable y
+// funcione algo offline. Estrategia network-first — la red manda siempre
+// que haya conexión, y solo se sirve de caché si la red falla. Con
+// cache-first (versión anterior) un usuario que ya hubiera cargado una
+// página se quedaba con esa versión para siempre, sin ver nunca los
+// cambios de despliegues posteriores, aunque el servidor ya sirviera algo
+// distinto (así se quedó "pegado" el temporizador desactivado para
+// usuarios que habían visitado /test antes de activarlo en Configuración).
+// La API nunca se cachea — los datos (preguntas, sesiones, estadísticas)
+// deben venir siempre frescos del servidor.
+const CACHE_NAME = "mir-turel-v2";
 
 self.addEventListener("install", () => {
   self.skipWaiting();
@@ -25,17 +31,13 @@ self.addEventListener("fetch", (event) => {
   if (url.pathname.startsWith("/api/")) return; // nunca cachear la API
 
   event.respondWith(
-    caches.open(CACHE_NAME).then(async (cache) => {
-      const cached = await cache.match(request);
-      const network = fetch(request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            cache.put(request, response.clone());
-          }
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
+    fetch(request)
+      .then((response) => {
+        if (response && response.status === 200) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+        }
+        return response;
+      })
+      .catch(() => caches.match(request))
   );
 });
