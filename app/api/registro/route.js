@@ -4,11 +4,25 @@ import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
+const REGEX_NUMERO = /\d/;
+const REGEX_MAYUSCULA = /[A-Z]/;
+const REGEX_SIMBOLO = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+
+function passwordEsFuerte(password) {
+  return (
+    password.length >= 8 &&
+    REGEX_NUMERO.test(password) &&
+    REGEX_MAYUSCULA.test(password) &&
+    REGEX_SIMBOLO.test(password)
+  );
+}
+
 export async function POST(request) {
   const body = await request.json().catch(() => null);
   const nombre = body?.nombre?.trim();
   const email = body?.email?.toLowerCase().trim();
   const password = body?.password;
+  const terminosAceptados = body?.terminos === true;
 
   if (!nombre || !email || !password) {
     return NextResponse.json(
@@ -16,9 +30,18 @@ export async function POST(request) {
       { status: 400 }
     );
   }
-  if (password.length < 6) {
+  if (!passwordEsFuerte(password)) {
     return NextResponse.json(
-      { error: "La contraseña debe tener al menos 6 caracteres" },
+      {
+        error:
+          "La contraseña debe tener al menos 8 caracteres, un número, un símbolo y una mayúscula",
+      },
+      { status: 400 }
+    );
+  }
+  if (!terminosAceptados) {
+    return NextResponse.json(
+      { error: "Debes aceptar los términos de uso y el aviso legal" },
       { status: 400 }
     );
   }
@@ -31,8 +54,8 @@ export async function POST(request) {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const { rows } = await query(
-      `INSERT INTO usuarios (nombre, email, password_hash, plan)
-       VALUES ($1, $2, $3, 'free')
+      `INSERT INTO usuarios (nombre, email, password_hash, plan, terminos_aceptados, terminos_fecha)
+       VALUES ($1, $2, $3, 'free', TRUE, NOW())
        RETURNING id`,
       [nombre, email, passwordHash]
     );

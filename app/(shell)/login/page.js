@@ -6,6 +6,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import FieldCard from "../../components/FieldCard";
 import Logo from "../../components/Logo";
+import PasswordInput from "../../components/PasswordInput";
 
 function FormularioLogin() {
   const router = useRouter();
@@ -51,12 +52,9 @@ function FormularioLogin() {
       </FieldCard>
 
       <FieldCard label="Contraseña">
-        <input
-          type="password"
-          required
+        <PasswordInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
           placeholder="••••••••"
         />
       </FieldCard>

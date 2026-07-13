@@ -6,6 +6,14 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import FieldCard from "../../components/FieldCard";
 import Logo from "../../components/Logo";
+import PasswordInput from "../../components/PasswordInput";
+
+const REQUISITOS_PASSWORD = [
+  { label: "Mínimo 8 caracteres", test: (p) => p.length >= 8 },
+  { label: "Al menos un número", test: (p) => /\d/.test(p) },
+  { label: "Al menos un símbolo", test: (p) => /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(p) },
+  { label: "Al menos una mayúscula", test: (p) => /[A-Z]/.test(p) },
+];
 
 export default function Registro() {
   const router = useRouter();
@@ -14,9 +22,13 @@ export default function Registro() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmar, setConfirmar] = useState("");
+  const [terminos, setTerminos] = useState(false);
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
   const [mostrarBienvenida, setMostrarBienvenida] = useState(false);
+
+  const passwordValida = REQUISITOS_PASSWORD.every((r) => r.test(password));
+  const puedeEnviar = passwordValida && terminos;
 
   async function registrar(e) {
     e.preventDefault();
@@ -26,8 +38,12 @@ export default function Registro() {
       setError("Las contraseñas no coinciden.");
       return;
     }
-    if (password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
+    if (!passwordValida) {
+      setError("La contraseña no cumple los requisitos mínimos.");
+      return;
+    }
+    if (!terminos) {
+      setError("Debes aceptar los términos de uso y el aviso legal.");
       return;
     }
 
@@ -36,7 +52,7 @@ export default function Registro() {
       const res = await fetch("/api/registro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nombre, email, password }),
+        body: JSON.stringify({ nombre, email, password, terminos }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -90,26 +106,62 @@ export default function Registro() {
         </FieldCard>
 
         <FieldCard label="Contraseña">
-          <input
-            type="password"
-            required
+          <PasswordInput
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
-            placeholder="Mínimo 6 caracteres"
+            placeholder="Mínimo 8 caracteres"
           />
+          <ul className="mt-3 flex flex-col gap-1.5">
+            {REQUISITOS_PASSWORD.map((r) => {
+              const cumplido = r.test(password);
+              return (
+                <li
+                  key={r.label}
+                  className={`flex items-center gap-2 text-xs font-medium ${
+                    cumplido ? "text-success-text" : "text-ink-muted"
+                  }`}
+                >
+                  <span
+                    className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[10px] ${
+                      cumplido ? "bg-success text-white" : "bg-track text-ink-muted"
+                    }`}
+                  >
+                    {cumplido ? "✓" : "·"}
+                  </span>
+                  {r.label}
+                </li>
+              );
+            })}
+          </ul>
         </FieldCard>
 
         <FieldCard label="Confirmar contraseña">
-          <input
-            type="password"
-            required
+          <PasswordInput
             value={confirmar}
             onChange={(e) => setConfirmar(e.target.value)}
-            className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
             placeholder="Repite la contraseña"
           />
         </FieldCard>
+
+        <label className="flex items-start gap-2 px-1 text-sm text-ink-muted">
+          <input
+            type="checkbox"
+            checked={terminos}
+            onChange={(e) => setTerminos(e.target.checked)}
+            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-track text-brand focus:outline-none focus:ring-2 focus:ring-brand"
+          />
+          <span>
+            He leído y acepto los{" "}
+            <Link
+              href="/aviso-legal"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-brand"
+            >
+              Términos de uso y Aviso legal
+            </Link>
+          </span>
+        </label>
 
         {error && (
           <p className="rounded-2xl bg-danger-bg p-4 text-sm font-semibold text-danger-text">
@@ -119,7 +171,7 @@ export default function Registro() {
 
         <button
           type="submit"
-          disabled={enviando}
+          disabled={enviando || !puedeEnviar}
           className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
         >
           {enviando ? "Creando cuenta…" : "Crear cuenta"}
