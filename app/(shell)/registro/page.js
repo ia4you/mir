@@ -16,6 +16,7 @@ export default function Registro() {
   const [confirmar, setConfirmar] = useState("");
   const [error, setError] = useState("");
   const [enviando, setEnviando] = useState(false);
+  const [mostrarBienvenida, setMostrarBienvenida] = useState(false);
 
   async function registrar(e) {
     e.preventDefault();
@@ -49,8 +50,9 @@ export default function Registro() {
         router.push("/login");
         return;
       }
-      router.push("/inicio");
       router.refresh();
+      setEnviando(false);
+      setMostrarBienvenida(true);
     } catch {
       setError("No se ha podido crear la cuenta. Inténtalo de nuevo.");
       setEnviando(false);
@@ -130,6 +132,48 @@ export default function Registro() {
           </Link>
         </p>
       </form>
+
+      {mostrarBienvenida && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-lg">
+            <p className="text-xl font-extrabold text-ink">¡Bienvenido/a a MIR Turel! 🎉</p>
+            <p className="mt-2 font-semibold text-ink">Estás en el plan gratuito.</p>
+
+            <ul className="mt-4 flex flex-col gap-2 text-left text-sm text-ink">
+              <li className="flex items-start gap-2">
+                <span className="text-brand">•</span> Hasta 10 preguntas por día
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-brand">•</span> Acceso a las 21 especialidades
+              </li>
+              <li className="flex items-start gap-2">
+                <span className="text-brand">•</span> Historial y estadísticas incluidos
+              </li>
+            </ul>
+
+            <p className="mt-4 text-sm font-semibold text-ink">
+              ¿Quieres practicar sin límites?
+            </p>
+
+            <div className="mt-4 flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => router.push("/premium")}
+                className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark"
+              >
+                Hazte Premium →
+              </button>
+              <button
+                type="button"
+                onClick={() => router.push("/inicio")}
+                className="h-12 w-full rounded-xl border border-track font-bold text-ink"
+              >
+                Empezar gratis
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

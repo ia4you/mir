@@ -292,35 +292,51 @@ export default function TestPregunta({ params }) {
                 Explicación
               </p>
               {resultado.explicacion ? (
-                <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
+                <div className="flex flex-col items-start gap-2">
+                  {resultado.explicacion_calidad === "orientativa" && (
+                    <span className="rounded-full bg-warning-bg px-3 py-1 text-xs font-bold text-warning-text">
+                      💡 Explicación orientativa — contrasta con tu manual
+                    </span>
+                  )}
+                  {resultado.explicacion_calidad === "controversia" && (
+                    <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
+                      ⚠️ Respuesta oficial cuestionada
+                    </span>
+                  )}
+                  <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
+                  {resultado.explicacion_calidad === "controversia" && (
+                    <Link href="/controversias" target="_blank" className="text-sm font-bold text-brand">
+                      Ver /controversias →
+                    </Link>
+                  )}
+                </div>
               ) : resultado.explicacion_calidad === "sin_imagen" ? (
                 <div className="flex flex-col items-start gap-2">
-                  <span className="rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
-                    Sin imagen disponible
+                  <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
+                    🖼️ Sin imagen disponible
                   </span>
                   <p className="text-sm leading-relaxed text-ink-muted">
-                    Esta pregunta hace referencia a una imagen clínica del examen original. La
-                    explicación no está disponible sin acceso a esa imagen.
+                    Esta pregunta hace referencia a una imagen clínica del examen original.
+                    Explicación no disponible.
                   </p>
                 </div>
               ) : resultado.explicacion_calidad === "controversia" ? (
                 <div className="flex flex-col items-start gap-2">
-                  <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
-                    Respuesta cuestionada
+                  <span className="flex items-center gap-1.5 rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
+                    ⚠️ Respuesta cuestionada
                   </span>
                   <p className="text-sm leading-relaxed text-ink-muted">
-                    La respuesta oficial de esta pregunta ha sido cuestionada por la comunidad
-                    médica. Consulta la sección{" "}
+                    La respuesta oficial de esta pregunta ha sido cuestionada.{" "}
                     <Link href="/controversias" target="_blank" className="font-bold text-brand">
-                      Controversias
-                    </Link>{" "}
-                    para más información.
+                      Ver /controversias
+                    </Link>
+                    .
                   </p>
                 </div>
               ) : (
                 <div className="flex flex-col items-start gap-2">
-                  <span className="rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
-                    No disponible
+                  <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
+                    📚 No disponible
                   </span>
                   <p className="text-sm leading-relaxed text-ink-muted">
                     Explicación no disponible para esta pregunta.

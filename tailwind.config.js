@@ -37,6 +37,9 @@ module.exports = {
         },
         warning: {
           DEFAULT: "#C58D04", // barras de progreso medias
+          bg: "#FBEFD1", // badge "explicación orientativa"
+          border: "#E8C874",
+          text: "#8A6100",
         },
         badge: {
           bg: "#DDEDFF", // etiqueta de especialidad en la pregunta

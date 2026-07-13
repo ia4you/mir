@@ -89,30 +89,6 @@ export default function Perfil() {
           <p className="text-lg font-bold text-ink">{session?.user?.name}</p>
           <p className="text-sm text-ink-muted">{session?.user?.email}</p>
 
-          <div className="mt-3 flex items-center gap-2">
-            <span
-              className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
-                session?.user?.plan === "premium"
-                  ? "bg-brand text-white"
-                  : "bg-track text-ink-muted"
-              }`}
-            >
-              {session?.user?.plan === "premium" ? "PREMIUM" : "FREE"}
-            </span>
-            {session?.user?.plan !== "premium" && (
-              <span className="text-sm text-ink-muted">10 preguntas/día</span>
-            )}
-          </div>
-
-          {session?.user?.plan !== "premium" && (
-            <Link
-              href="/premium"
-              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-white"
-            >
-              Hazte Premium →
-            </Link>
-          )}
-
           <button
             type="button"
             onClick={() => signOut({ callbackUrl: "/login" })}
@@ -120,6 +96,36 @@ export default function Perfil() {
           >
             Cerrar sesión
           </button>
+        </FieldCard>
+
+        <FieldCard label="Mi plan">
+          <div className="flex items-center gap-2">
+            <span
+              className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                session?.user?.plan === "premium"
+                  ? "bg-brand text-white"
+                  : "bg-track text-ink-muted"
+              }`}
+            >
+              {session?.user?.plan === "premium" ? "PREMIUM" : "GRATUITO"}
+            </span>
+            <span className="text-sm text-ink-muted">
+              {session?.user?.plan === "premium" ? "Preguntas ilimitadas" : "10 preguntas/día"}
+            </span>
+          </div>
+
+          {session?.user?.plan === "premium" ? (
+            <p className="mt-3 text-sm font-semibold text-ink">
+              Gracias por ser usuario premium ❤️
+            </p>
+          ) : (
+            <Link
+              href="/premium"
+              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-white"
+            >
+              Hazte Premium →
+            </Link>
+          )}
         </FieldCard>
 
         <FieldCard label="Meta diaria de preguntas">

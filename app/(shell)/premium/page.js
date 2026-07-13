@@ -4,11 +4,24 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 
-const VENTAJAS = [
-  "Preguntas ilimitadas, sin el límite de 10 al día del plan gratuito",
-  "Acceso completo a las 1.004 preguntas oficiales de las 5 convocatorias",
-  "Simulacros completos sin restricciones",
+const FILAS_COMPARATIVA = [
+  { caracteristica: "Preguntas por día", free: "10", premium: "∞" },
+  { caracteristica: "Acceso a especialidades", free: "Todas", premium: "Todas" },
+  { caracteristica: "Historial y estadísticas", free: true, premium: true },
+  { caracteristica: "Repaso de fallos", free: true, premium: true },
+  { caracteristica: "Simulacro completo", free: false, premium: true },
+  { caracteristica: "Sin límite diario", free: false, premium: true },
 ];
+
+function Celda({ valor }) {
+  if (valor === true) {
+    return <span className="text-success">✓</span>;
+  }
+  if (valor === false) {
+    return <span className="text-danger">✗</span>;
+  }
+  return <span>{valor}</span>;
+}
 
 export default function Premium() {
   const { data: session } = useSession();
@@ -36,30 +49,38 @@ export default function Premium() {
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-light text-3xl">
         ⭐
       </div>
-      <h1 className="mt-5 text-2xl font-extrabold text-ink">MIR Turel Premium</h1>
-      <p className="mt-2 text-ink-muted">
-        Prepara el MIR sin límites diarios, con acceso completo al banco de preguntas.
-      </p>
+      <h1 className="mt-5 text-2xl font-extrabold text-ink">Plan Premium — MIR Turel</h1>
+      <p className="mt-2 text-ink-muted">Prepara el MIR sin límites</p>
 
-      <ul className="mt-6 flex w-full max-w-sm flex-col gap-3 text-left">
-        {VENTAJAS.map((v) => (
-          <li key={v} className="flex items-start gap-3 rounded-2xl bg-white p-4 shadow-sm">
-            <span className="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-success text-white">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-3.5 w-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
-              </svg>
-            </span>
-            <span className="text-sm font-medium text-ink">{v}</span>
-          </li>
-        ))}
-      </ul>
+      <div className="mt-6 w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-sm">
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-track bg-panel">
+              <th className="px-3 py-2.5 font-bold text-ink">Característica</th>
+              <th className="px-3 py-2.5 text-center font-bold text-ink-muted">Free</th>
+              <th className="px-3 py-2.5 text-center font-bold text-brand">Premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            {FILAS_COMPARATIVA.map((fila) => (
+              <tr key={fila.caracteristica} className="border-b border-track last:border-0">
+                <td className="px-3 py-2.5 text-ink">{fila.caracteristica}</td>
+                <td className="px-3 py-2.5 text-center text-ink-muted">
+                  <Celda valor={fila.free} />
+                </td>
+                <td className="px-3 py-2.5 text-center font-semibold text-ink">
+                  <Celda valor={fila.premium} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       <div className="mt-6 w-full max-w-sm rounded-2xl bg-brand-light p-4">
         <p className="text-sm font-bold uppercase tracking-wide text-brand">Precio</p>
         <p className="mt-1 text-2xl font-extrabold text-ink">Próximamente</p>
-        <p className="mt-1 text-sm text-ink-muted">
-          Estamos preparando el pago online. Apúntate y te avisamos en cuanto esté disponible.
-        </p>
+        <p className="mt-1 text-sm text-ink-muted">Lista de espera</p>
       </div>
 
       {estado === "ok" ? (
@@ -86,7 +107,7 @@ export default function Premium() {
             disabled={estado === "enviando"}
             className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
           >
-            {estado === "enviando" ? "Enviando…" : "Avisadme cuando esté disponible"}
+            {estado === "enviando" ? "Enviando…" : "Apúntame a la lista"}
           </button>
         </form>
       )}

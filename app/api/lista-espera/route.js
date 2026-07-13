@@ -17,10 +17,10 @@ export async function POST(request) {
 
   try {
     await query(
-      `INSERT INTO lista_espera_premium (email, user_id)
-       VALUES ($1, $2)
+      `INSERT INTO lista_espera (email)
+       VALUES ($1)
        ON CONFLICT (email) DO NOTHING`,
-      [email, session?.user?.id || null]
+      [email]
     );
     return NextResponse.json({ ok: true });
   } catch (err) {

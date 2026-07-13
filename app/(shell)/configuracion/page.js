@@ -61,7 +61,6 @@ export default function Configuracion() {
   const [enviando, setEnviando] = useState(false);
   const [error, setError] = useState("");
   const [limiteAlcanzado, setLimiteAlcanzado] = useState(false);
-  const [mensajeLimite, setMensajeLimite] = useState("");
 
   useEffect(() => {
     fetch("/api/especialidades")
@@ -130,7 +129,6 @@ export default function Configuracion() {
       if (resSesion.status === 403) {
         const data = await resSesion.json().catch(() => null);
         if (data?.error === "limite_diario") {
-          setMensajeLimite(data.message);
           setLimiteAlcanzado(true);
           setEnviando(false);
           return;
@@ -202,22 +200,38 @@ export default function Configuracion() {
                   activo={cantidad === o.valor}
                   disabled={superaLimite}
                   onClick={() => setCantidad(o.valor)}
+                  title={
+                    superaLimite && restanteHoy > 0
+                      ? `Límite diario: te quedan ${restanteHoy} preguntas hoy`
+                      : undefined
+                  }
                 >
+                  {superaLimite && "🔒 "}
                   {o.etiqueta}
                 </Chip>
               );
             })}
           </div>
           {restanteHoy !== null && restanteHoy < Infinity && (
-            <p className="mt-3 text-xs text-ink-muted">
-              {restanteHoy > 0
-                ? `Con tu plan gratuito puedes responder ${restanteHoy} preguntas más hoy.`
-                : "Has agotado tu límite diario del plan gratuito."}{" "}
-              <Link href="/premium" className="font-bold text-brand">
-                Hazte premium
-              </Link>{" "}
-              para acceso ilimitado.
-            </p>
+            <>
+              {restanteHoy > 0 ? (
+                <p className="mt-3 text-xs text-ink-muted">
+                  Con tu plan gratuito puedes responder {restanteHoy} preguntas más hoy.{" "}
+                  <Link href="/premium" className="font-bold text-brand">
+                    Hazte premium
+                  </Link>{" "}
+                  para acceso ilimitado.
+                </p>
+              ) : (
+                <p className="mt-3 rounded-xl bg-danger-bg p-3 text-xs font-semibold text-danger-text">
+                  Has alcanzado tu límite diario. Vuelve mañana o{" "}
+                  <Link href="/premium" className="font-bold underline">
+                    hazte premium
+                  </Link>
+                  .
+                </p>
+              )}
+            </>
           )}
         </FieldCard>
 
@@ -258,26 +272,28 @@ export default function Configuracion() {
 
       {limiteAlcanzado && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-xs rounded-2xl bg-white p-5 text-center shadow-lg">
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-brand-light text-2xl">
-              ⭐
+          <div className="w-full max-w-xs rounded-2xl bg-white p-6 text-center shadow-lg">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-light text-3xl">
+              🌙
             </div>
-            <p className="mt-3 text-lg font-bold text-ink">Límite diario alcanzado</p>
-            <p className="mt-1 text-sm text-ink-muted">{mensajeLimite}</p>
+            <p className="mt-3 text-lg font-extrabold text-ink">Has alcanzado tu límite diario</p>
+            <p className="mt-2 text-sm text-ink-muted">
+              Hoy ya has respondido 10 preguntas. Vuelve mañana para seguir practicando, o
+              hazte premium para practicar sin límites.
+            </p>
             <div className="mt-5 flex flex-col gap-2">
               <Link
                 href="/premium"
-                className="flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-white"
+                className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark"
               >
-                Hazte premium
+                Hazte Premium →
               </Link>
-              <button
-                type="button"
-                onClick={() => setLimiteAlcanzado(false)}
-                className="h-11 w-full rounded-xl border border-track font-bold text-ink"
+              <Link
+                href="/inicio"
+                className="flex h-12 w-full items-center justify-center rounded-xl border border-track font-bold text-ink"
               >
-                Ahora no
-              </button>
+                Volver al inicio
+              </Link>
             </div>
           </div>
         </div>
