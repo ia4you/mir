@@ -75,11 +75,30 @@ const TESTIMONIOS = [
   },
 ];
 
+const SCHEMA_ORGANIZACION = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: "MIR Turel",
+  url: "https://mir.turel.es",
+  description:
+    "Plataforma de preparación del examen MIR con 1.004 preguntas oficiales de las convocatorias 2021-2025 del Ministerio de Sanidad.",
+  educationalCredentialAwarded: "Médico Interno Residente (MIR)",
+  provider: {
+    "@type": "Organization",
+    name: "MIR Turel",
+    url: "https://mir.turel.es",
+  },
+};
+
 export default async function LandingPage() {
   const especialidades = await getEspecialidadesConConteo();
 
   return (
     <div className="min-h-screen bg-surface">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORGANIZACION) }}
+      />
       <header className="flex items-center justify-between gap-3 border-b border-track bg-white px-5 py-3 pt-safe">
         <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
           <Logo className="h-11 w-auto sm:h-12" />

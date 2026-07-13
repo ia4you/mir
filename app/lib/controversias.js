@@ -3,6 +3,8 @@ import path from "path";
 import { query } from "../../lib/db";
 
 const FILE_PATH = path.join(process.cwd(), "preguntas_controvertidas.md");
+const CAMPOS =
+  "id, año, numero, especialidad, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, correcta";
 
 function limpiar(texto) {
   return texto.replace(/\s+/g, " ").trim();
@@ -24,11 +26,11 @@ function parseIdPairs(cabecera) {
         numero = Number(mAlt[2]);
       }
     }
-    return { id: Number(m[1]), anio, numero };
+    return { anio, numero };
   });
 }
 
-function parseArchivo() {
+function parseArchivoMd() {
   const raw = readFileSync(FILE_PATH, "utf-8");
   const chunks = raw.split(/\n(?=## id )/).slice(1);
 
@@ -44,13 +46,8 @@ function parseArchivo() {
     const cabecera = lineas[0];
     const resto = lineas.slice(1).join("\n").trim();
 
-    const idPairs = parseIdPairs(cabecera);
+    const idPairs = parseIdPairs(cabecera).filter((p) => p.anio && p.numero);
     if (idPairs.length === 0) continue;
-
-    const mTitulo = cabecera.match(/—\s*(.*)$/);
-    const titulo = mTitulo
-      ? mTitulo[1].trim()
-      : `Pregunta ${idPairs[0].anio}-${idPairs[0].numero}`;
 
     let oficial = null;
     let objecion = null;
@@ -70,32 +67,46 @@ function parseArchivo() {
       if (mPorQue) objecion = limpiar(mPorQue[1]);
     }
 
-    if (!oficial || !objecion) continue;
+    if (!objecion) continue;
 
-    entradas.push({ ids: idPairs, titulo, oficial, objecion });
+    // cada (año, numero) del encabezado se trata como una fila independiente
+    // (en la práctica casi todos los encabezados listan un único id)
+    for (const { anio, numero } of idPairs) {
+      entradas.push({ anio, numero, objecion });
+    }
   }
   return entradas;
 }
 
 export async function getControversias() {
-  const entradas = parseArchivo();
-  const todosLosIds = entradas.flatMap((e) => e.ids.map((x) => x.id));
+  const entradasMd = parseArchivoMd();
 
-  const { rows } = await query(
-    `SELECT id, especialidad, pregunta FROM preguntas WHERE id = ANY($1::int[])`,
-    [todosLosIds]
+  const anios = entradasMd.map((e) => e.anio);
+  const numeros = entradasMd.map((e) => e.numero);
+  const { rows: rowsMd } = await query(
+    `SELECT ${CAMPOS} FROM preguntas
+     WHERE (año, numero) IN (SELECT * FROM UNNEST($1::int[], $2::int[]))`,
+    [anios, numeros]
   );
-  const porId = new Map(rows.map((r) => [r.id, r]));
+  const datosPorClave = new Map(rowsMd.map((r) => [`${r.año}-${r.numero}`, r]));
 
-  return entradas
-    .map((e) => ({
-      ...e,
-      ids: e.ids.map((x) => ({ ...x, ...porId.get(x.id) })),
-    }))
-    .filter((e) => e.ids.every((x) => x.pregunta))
-    .sort((a, b) => {
-      const A = a.ids[0];
-      const B = b.ids[0];
-      return A.anio - B.anio || A.numero - B.numero;
-    });
+  const vistos = new Set();
+  const desdeMd = [];
+  for (const e of entradasMd) {
+    const clave = `${e.anio}-${e.numero}`;
+    if (vistos.has(clave)) continue; // evita duplicados si el .md repite un id
+    const datos = datosPorClave.get(clave);
+    if (!datos) continue; // id del .md que ya no resuelve a una pregunta real
+    vistos.add(clave);
+    desdeMd.push({ ...datos, objecion: e.objecion });
+  }
+
+  const { rows: rowsBd } = await query(
+    `SELECT ${CAMPOS} FROM preguntas WHERE explicacion_calidad = 'controversia'`
+  );
+  const soloBd = rowsBd
+    .filter((r) => !vistos.has(`${r.año}-${r.numero}`))
+    .map((r) => ({ ...r, objecion: null }));
+
+  return [...desdeMd, ...soloBd].sort((a, b) => a.año - b.año || a.numero - b.numero);
 }

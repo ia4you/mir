@@ -28,8 +28,27 @@ export default async function EspecialidadPage({ params }) {
 
   const preguntas = await getPreguntasMuestra(especialidad.nombre, 3);
 
+  const schemaCurso = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: `Preguntas MIR de ${especialidad.nombre}`,
+    description: `${especialidad.total} preguntas oficiales de ${especialidad.nombre} de las convocatorias MIR 2021-2025.`,
+    provider: {
+      "@type": "Organization",
+      name: "MIR Turel",
+      url: "https://mir.turel.es",
+    },
+    url: `https://mir.turel.es/especialidades/${especialidad.slug}`,
+    educationalLevel: "Professional",
+    inLanguage: "es",
+  };
+
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaCurso) }}
+      />
       <div className="mx-auto max-w-2xl">
         <Link href="/" className="text-sm font-semibold text-brand">
           ← Volver a inicio
