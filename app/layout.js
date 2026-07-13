@@ -1,4 +1,5 @@
 import { Inter } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import DisclaimerBanner from "./components/DisclaimerBanner";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }) {
           <ServiceWorkerRegister />
           <DisclaimerBanner />
         </Providers>
+        <GoogleAnalytics gaId="G-CSHZ2YHZ02" />
       </body>
     </html>
   );
