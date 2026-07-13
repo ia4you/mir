@@ -36,7 +36,7 @@ export async function POST(request, { params }) {
     }
 
     const { rows } = await query(
-      `SELECT correcta, explicacion FROM preguntas WHERE id = $1`,
+      `SELECT correcta, explicacion, explicacion_calidad FROM preguntas WHERE id = $1`,
       [preguntaId]
     );
     if (rows.length === 0) {
@@ -56,6 +56,7 @@ export async function POST(request, { params }) {
       correcta: esCorrecta,
       respuesta_correcta: respuestaCorrecta,
       explicacion: rows[0].explicacion,
+      explicacion_calidad: rows[0].explicacion_calidad,
     });
   } catch (err) {
     console.error(err);

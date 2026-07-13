@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
@@ -290,9 +291,42 @@ export default function TestPregunta({ params }) {
               <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
                 Explicación
               </p>
-              <p className="text-sm leading-relaxed text-ink">
-                {resultado.explicacion || "No hay explicación disponible para esta pregunta todavía."}
-              </p>
+              {resultado.explicacion ? (
+                <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
+              ) : resultado.explicacion_calidad === "sin_imagen" ? (
+                <div className="flex flex-col items-start gap-2">
+                  <span className="rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
+                    Sin imagen disponible
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink-muted">
+                    Esta pregunta hace referencia a una imagen clínica del examen original. La
+                    explicación no está disponible sin acceso a esa imagen.
+                  </p>
+                </div>
+              ) : resultado.explicacion_calidad === "controversia" ? (
+                <div className="flex flex-col items-start gap-2">
+                  <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
+                    Respuesta cuestionada
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink-muted">
+                    La respuesta oficial de esta pregunta ha sido cuestionada por la comunidad
+                    médica. Consulta la sección{" "}
+                    <Link href="/controversias" target="_blank" className="font-bold text-brand">
+                      Controversias
+                    </Link>{" "}
+                    para más información.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col items-start gap-2">
+                  <span className="rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
+                    No disponible
+                  </span>
+                  <p className="text-sm leading-relaxed text-ink-muted">
+                    Explicación no disponible para esta pregunta.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
