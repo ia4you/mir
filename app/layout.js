@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import DisclaimerBanner from "./components/DisclaimerBanner";
+import InstallBanner from "./components/InstallBanner";
 import Providers from "./providers";
 
 const inter = Inter({
@@ -46,6 +47,7 @@ export default function RootLayout({ children }) {
           {children}
           <ServiceWorkerRegister />
           <DisclaimerBanner />
+          <InstallBanner />
         </Providers>
         <GoogleAnalytics gaId="G-CSHZ2YHZ02" />
       </body>
