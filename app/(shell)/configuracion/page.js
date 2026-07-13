@@ -238,7 +238,9 @@ export default function Configuracion() {
         <FieldCard label="Temporizador">
           <div className="flex items-center justify-between">
             <span className="font-semibold text-ink">
-              {temporizadorActivo ? `${segundos} segundos por pregunta` : "Sin límite de tiempo"}
+              {temporizadorActivo
+                ? `Con temporizador — ${segundos} segundos por pregunta`
+                : "Sin temporizador"}
             </span>
             <ToggleSwitch activo={temporizadorActivo} onChange={setTemporizadorActivo} />
           </div>
