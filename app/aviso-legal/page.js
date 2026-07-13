@@ -87,10 +87,10 @@ export default function AvisoLegalPage() {
             <h2 className="text-lg font-bold text-ink">Contacto</h2>
             <p className="mt-2">
               Para cualquier duda, consulta o solicitud relacionada con este aviso legal, puedes
-              escribir a{" "}
-              <a href="mailto:contacto@mir.turel.es" className="font-semibold text-brand">
-                contacto@mir.turel.es
-              </a>
+              escribirnos desde nuestro{" "}
+              <Link href="/contacto" className="font-semibold text-brand">
+                formulario de contacto
+              </Link>
               .
             </p>
           </section>

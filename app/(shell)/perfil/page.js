@@ -212,6 +212,12 @@ export default function Perfil() {
             Ver preguntas con respuesta oficial cuestionada →
           </Link>
         </FieldCard>
+
+        <FieldCard label="Ayuda">
+          <Link href="/contacto" className="block text-sm font-bold text-brand">
+            Contacto y soporte →
+          </Link>
+        </FieldCard>
       </div>
 
       {confirmandoReset && (
