@@ -105,7 +105,7 @@ export default async function LandingPage() {
       />
       <header className="flex items-center justify-between gap-3 border-b border-track bg-white px-5 py-3 pt-safe">
         <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
-          <Logo className="h-11 w-auto sm:h-12" />
+          <Logo className="h-11 w-auto sm:h-12 md:h-14 lg:h-16" />
         </Link>
         <nav className="hidden items-center gap-3 sm:flex">
           <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
