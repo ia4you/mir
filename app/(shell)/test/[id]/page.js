@@ -29,6 +29,8 @@ export default function TestPregunta({ params }) {
   const [enviando, setEnviando] = useState(false);
   const [mostrarSalir, setMostrarSalir] = useState(false);
   const [imagenAmpliada, setImagenAmpliada] = useState(false);
+  const [mostrarExplicacion, setMostrarExplicacion] = useState(true);
+  const [cerrandoTarjeta, setCerrandoTarjeta] = useState(false);
 
   const horaInicioRef = useRef(null);
   const mostrarSalirRef = useRef(false);
@@ -75,9 +77,11 @@ export default function TestPregunta({ params }) {
         setResultado(data);
         if (data.correcta) setAciertos((a) => a + 1);
         setEstado("corregido");
+        setMostrarExplicacion(true);
       } catch (e) {
         setResultado({ correcta: false, respuesta_correcta: "-", explicacion: null });
         setEstado("corregido");
+        setMostrarExplicacion(true);
       } finally {
         setEnviando(false);
       }
@@ -113,6 +117,8 @@ export default function TestPregunta({ params }) {
       setEstado("respondiendo");
       setResultado(null);
       setImagenAmpliada(false);
+      setMostrarExplicacion(true);
+      setCerrandoTarjeta(false);
       return;
     }
 
@@ -129,6 +135,14 @@ export default function TestPregunta({ params }) {
   function salir() {
     sessionStorage.removeItem(`mir_test_${sesionId}`);
     router.push("/inicio");
+  }
+
+  function cerrarExplicacion() {
+    setCerrandoTarjeta(true);
+  }
+
+  function abrirExplicacion() {
+    setMostrarExplicacion(true);
   }
 
   if (!preguntas || !preguntaActual) {
@@ -181,7 +195,11 @@ export default function TestPregunta({ params }) {
         )}
       </header>
 
-      <main className="mt-5 px-5">
+      <main
+        className={`mt-5 px-5 ${
+          estado === "corregido" && !mostrarExplicacion ? "pb-32" : ""
+        }`}
+      >
         <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-sm font-bold text-badge-text">
           {preguntaActual.especialidad}
         </span>
@@ -226,47 +244,91 @@ export default function TestPregunta({ params }) {
           ))}
         </div>
 
-        <div className="mt-6">
-          <button
-            type="button"
-            disabled={!seleccionada || enviando}
-            onClick={() => confirmarRespuesta()}
-            className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
-          >
-            {enviando ? "Enviando…" : "Confirmar respuesta"}
-          </button>
-        </div>
+        {estado === "respondiendo" && (
+          <div className="mt-6">
+            <button
+              type="button"
+              disabled={!seleccionada || enviando}
+              onClick={() => confirmarRespuesta()}
+              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
+            >
+              {enviando ? "Enviando…" : "Confirmar respuesta"}
+            </button>
+          </div>
+        )}
       </main>
 
-      {estado === "corregido" && (
+      {estado === "corregido" && !mostrarExplicacion && (
+        <div className="fixed inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 border-t border-track bg-surface px-5 py-4 pb-safe">
+          <button
+            type="button"
+            onClick={abrirExplicacion}
+            className="text-sm font-bold text-ink-muted underline-offset-2 hover:underline"
+          >
+            Ver explicación
+          </button>
+          <button
+            type="button"
+            onClick={siguientePregunta}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          >
+            {indice + 1 < preguntas.length ? "Siguiente pregunta" : "Ver resultados"}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      {estado === "corregido" && mostrarExplicacion && (
         <div
           key={preguntaActual.id}
-          className="fixed inset-0 z-20 flex flex-col bg-surface animate-slide-in-left"
+          className={`fixed inset-0 z-20 flex flex-col bg-surface ${
+            cerrandoTarjeta ? "animate-slide-out-left" : "animate-slide-in-left"
+          }`}
+          onAnimationEnd={() => {
+            if (cerrandoTarjeta) {
+              setMostrarExplicacion(false);
+              setCerrandoTarjeta(false);
+            }
+          }}
         >
           <div className="flex-1 overflow-y-auto px-5 pb-6 pt-safe">
-            <div className="flex items-center gap-3 pt-2">
-              <span
-                className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-white ${
-                  resultado.correcta ? "bg-success" : "bg-danger"
-                }`}
+            <div className="flex items-center justify-between gap-3 pt-2">
+              <div className="flex items-center gap-3">
+                <span
+                  className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-white ${
+                    resultado.correcta ? "bg-success" : "bg-danger"
+                  }`}
+                >
+                  {resultado.correcta ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                    </svg>
+                  )}
+                </span>
+                <p
+                  className={`text-2xl font-extrabold ${
+                    resultado.correcta ? "text-success-text" : "text-danger-text"
+                  }`}
+                >
+                  {resultado.correcta ? "CORRECTO" : "INCORRECTO"}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={cerrarExplicacion}
+                aria-label="Cerrar explicación"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
               >
-                {resultado.correcta ? (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
-                  </svg>
-                ) : (
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
-                  </svg>
-                )}
-              </span>
-              <p
-                className={`text-2xl font-extrabold ${
-                  resultado.correcta ? "text-success-text" : "text-danger-text"
-                }`}
-              >
-                {resultado.correcta ? "CORRECTO" : "INCORRECTO"}
-              </p>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-ink">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                </svg>
+              </button>
             </div>
 
             <div className="mt-5 flex flex-col gap-2 text-ink">
