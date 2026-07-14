@@ -145,7 +145,7 @@ export default async function LandingPage() {
         </div>
 
         <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
-          1.004 preguntas oficiales · 21 especialidades · Convocatorias 2021–2025
+          1.004 preguntas oficiales · 23 especialidades · Convocatorias 2021–2025
         </p>
       </section>
 

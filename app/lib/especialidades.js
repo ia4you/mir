@@ -58,8 +58,12 @@ export const DESCRIPCIONES = {
     "Medicina Familiar y Comunitaria integra el abordaje del paciente crónico, la prevención y la atención continuada. En el MIR conecta contenidos de múltiples especialidades desde una perspectiva de atención primaria.",
   Dermatología:
     "Dermatología cubre las lesiones cutáneas más prevalentes, desde el melanoma hasta las dermatosis inflamatorias. El reconocimiento de patrones visuales es clave para resolver sus preguntas.",
+  Bioestadística:
+    "Bioestadística y Epidemiología tiene un peso creciente en el MIR, con preguntas sobre diseño de estudios, medidas de frecuencia y de asociación, y la interpretación de pruebas diagnósticas. Exige manejar con soltura conceptos como sensibilidad, especificidad, intervalos de confianza y los distintos tipos de sesgo para interpretar correctamente los resultados de ensayos clínicos y metaanálisis.",
+  "Ética médica":
+    "Ética y Legislación Médica evalúa el manejo de situaciones clínicas complejas desde el respeto a la autonomía del paciente: consentimiento informado, capacidad para decidir, limitación del esfuerzo terapéutico y voluntades anticipadas. El MIR también incide en el secreto profesional y la confidencialidad, así como en los principios de beneficencia, no maleficencia y justicia distributiva.",
   Miscelánea:
-    "Miscelánea agrupa preguntas de bioestadística, epidemiología, salud pública, ética médica y otras áreas transversales del MIR. Es el bloque más heterogéneo del examen y exige una preparación específica más allá de las especialidades clínicas clásicas.",
+    "Miscelánea agrupa preguntas transversales del MIR que no encajan en una especialidad clínica clásica, como genética básica, inmunología general o valoración geriátrica. Es el bloque más heterogéneo del examen y exige una preparación específica más allá de las especialidades clínicas clásicas.",
 };
 
 export async function getEspecialidadesConConteo() {
