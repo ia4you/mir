@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
+import AvatarUploader from "../../components/AvatarUploader";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
@@ -60,8 +61,9 @@ export default function Inicio() {
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="px-5 pt-safe">
-        <p className="text-ink-muted">Hola,</p>
+      <header className="flex flex-col items-center px-5 pt-safe text-center">
+        <AvatarUploader />
+        <p className="mt-3 text-ink-muted">Hola,</p>
         <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
       </header>
 

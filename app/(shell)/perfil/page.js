@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import AvatarUploader from "../../components/AvatarUploader";
 import BottomNav from "../../components/BottomNav";
 import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
@@ -80,8 +81,10 @@ export default function Perfil() {
 
   return (
     <div className="min-h-screen pb-28">
-      <header className="px-5 pt-safe">
-        <h1 className="text-2xl font-extrabold text-ink">Perfil</h1>
+      <header className="flex flex-col items-center px-5 pt-safe text-center">
+        <AvatarUploader />
+        <p className="mt-3 text-ink-muted">Hola,</p>
+        <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
       </header>
 
       <div className="mt-5 flex flex-col gap-4 px-5">
