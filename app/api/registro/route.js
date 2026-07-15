@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { query } from "@/lib/db";
+import { mailer } from "@/lib/mailer";
 
 export const dynamic = "force-dynamic";
 
@@ -56,9 +57,29 @@ export async function POST(request) {
     const { rows } = await query(
       `INSERT INTO usuarios (nombre, email, password_hash, plan, terminos_aceptados, terminos_fecha)
        VALUES ($1, $2, $3, 'free', TRUE, NOW())
-       RETURNING id`,
+       RETURNING id, terminos_fecha`,
       [nombre, email, passwordHash]
     );
+
+    // el email es solo una notificación extra — si falla, el usuario ya quedó
+    // registrado en la BD, así que no debe romper la respuesta al usuario
+    try {
+      await mailer.sendMail({
+        from: process.env.SMTP_FROM,
+        to: process.env.SMTP_TO,
+        subject: `Nuevo registro en MIR Turel — ${nombre}`,
+        text: [
+          `Nombre: ${nombre}`,
+          `Email: ${email}`,
+          `Fecha: ${rows[0].terminos_fecha.toISOString()}`,
+          `Plan: free`,
+          "",
+          "Ver en el panel: https://mir.turel.es/admin",
+        ].join("\n"),
+      });
+    } catch (err) {
+      console.error("Error enviando email de notificación de registro:", err);
+    }
 
     return NextResponse.json({ id: rows[0].id }, { status: 201 });
   } catch (err) {
