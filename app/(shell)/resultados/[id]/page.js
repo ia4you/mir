@@ -156,7 +156,9 @@ export default function Resultados({ params }) {
         <section className="mt-6 px-5">
           <div className="rounded-2xl bg-white p-4 shadow-sm">
             {resumen.iaDisponible && resumen.analisisNarrativo && (
-              <p className="text-sm leading-relaxed text-ink">{resumen.analisisNarrativo}</p>
+              <p className="whitespace-pre-line text-sm leading-relaxed text-ink">
+                {resumen.analisisNarrativo}
+              </p>
             )}
 
             {(resumen.etiquetas.fuertes.length > 0 || resumen.etiquetas.debiles.length > 0) && (
