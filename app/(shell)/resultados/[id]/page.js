@@ -12,6 +12,8 @@ export default function Resultados({ params }) {
   const [datos, setDatos] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [repasando, setRepasando] = useState(false);
+  const [resumen, setResumen] = useState(null);
+  const [resumenCargando, setResumenCargando] = useState(true);
 
   useEffect(() => {
     fetch(`/api/sesiones/${sesionId}/resultado`)
@@ -28,6 +30,19 @@ export default function Resultados({ params }) {
       router.replace("/?error=sesion_no_encontrada");
     }
   }, [notFound, router]);
+
+  // Se pide solo cuando /resultado ya confirmó que la sesión existe y es
+  // accesible, para no gastar una llamada de IA en sesiones inválidas.
+  // Si falla por cualquier motivo (red, 401/403/404/500), resumen se queda
+  // en null y la pantalla sigue funcionando solo con los datos de `datos`.
+  useEffect(() => {
+    if (!datos) return;
+    fetch(`/api/sesiones/${sesionId}/resumen-test`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setResumen)
+      .catch(() => setResumen(null))
+      .finally(() => setResumenCargando(false));
+  }, [datos, sesionId]);
 
   async function repasarFallos() {
     if (!datos || datos.preguntas_falladas.length === 0 || repasando) return;
@@ -75,6 +90,13 @@ export default function Resultados({ params }) {
 
   const sinFallos = datos.preguntas_falladas.length === 0;
 
+  const tieneContenidoResumen =
+    resumen &&
+    ((resumen.iaDisponible && resumen.analisisNarrativo) ||
+      resumen.etiquetas.fuertes.length > 0 ||
+      resumen.etiquetas.debiles.length > 0 ||
+      resumen.etiquetas.posibleDesactualizacion);
+
   return (
     <div className="min-h-screen pb-10">
       <header className="rounded-b-3xl bg-brand px-5 pb-8 pt-safe text-center text-white">
@@ -118,6 +140,56 @@ export default function Resultados({ params }) {
                 variante="plain"
               />
             ))}
+          </div>
+        </section>
+      )}
+
+      {resumenCargando && (
+        <section className="mt-6 px-5">
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <p className="text-sm text-ink-muted">Analizando tu rendimiento…</p>
+          </div>
+        </section>
+      )}
+
+      {!resumenCargando && tieneContenidoResumen && (
+        <section className="mt-6 px-5">
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            {resumen.iaDisponible && resumen.analisisNarrativo && (
+              <p className="text-sm leading-relaxed text-ink">{resumen.analisisNarrativo}</p>
+            )}
+
+            {(resumen.etiquetas.fuertes.length > 0 || resumen.etiquetas.debiles.length > 0) && (
+              <div
+                className={`flex flex-wrap gap-2 ${
+                  resumen.iaDisponible && resumen.analisisNarrativo ? "mt-3" : ""
+                }`}
+              >
+                {resumen.etiquetas.fuertes.map((tema) => (
+                  <span
+                    key={`fuerte-${tema}`}
+                    className="rounded-full bg-success-bg px-3 py-1 text-xs font-bold text-success-text"
+                  >
+                    {tema}
+                  </span>
+                ))}
+                {resumen.etiquetas.debiles.map((tema) => (
+                  <span
+                    key={`debil-${tema}`}
+                    className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text"
+                  >
+                    {tema}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {resumen.etiquetas.posibleDesactualizacion && (
+              <p className="mt-3 rounded-xl bg-warning-bg p-2 text-xs font-semibold text-warning-text">
+                Puede que tus fallos se concentren en contenido más reciente: revisa las guías
+                actualizadas de tus temas débiles.
+              </p>
+            )}
           </div>
         </section>
       )}
