@@ -101,10 +101,35 @@ export async function GET(request, { params }) {
 
     const fallos = sesion.total_preguntas - sesion.aciertos;
 
+    // Clasificación de fallos por calidad de la explicación oficial: algunas
+    // preguntas del banco tienen la respuesta oficial cuestionada por la
+    // comunidad médica (controversia) o son de dificultad muy alta
+    // (orientativa); fallarlas no refleja el nivel real del estudiante igual
+    // que un fallo normal, así que se muestran por separado.
+    const fallosCalidadRes = await query(
+      `SELECT p.explicacion_calidad
+       FROM respuestas_sesion rs
+       JOIN preguntas p ON p.id = rs.pregunta_id
+       WHERE rs.sesion_id = $1 AND rs.correcta = false`,
+      [sesionId]
+    );
+
+    let fallosControvertidos = 0;
+    let fallosDificiles = 0;
+    let fallosNormales = 0;
+    for (const { explicacion_calidad } of fallosCalidadRes.rows) {
+      if (explicacion_calidad === "controversia") fallosControvertidos++;
+      else if (explicacion_calidad === "orientativa") fallosDificiles++;
+      else fallosNormales++;
+    }
+
     const { texto: analisisNarrativo, proveedor } = await generarAnalisisNarrativo({
       totalPreguntas: sesion.total_preguntas,
       aciertos: sesion.aciertos,
       fallos,
+      fallosControvertidos,
+      fallosDificiles,
+      fallosNormales,
       fuertes,
       debiles,
       posibleDesactualizacion,
@@ -117,6 +142,12 @@ export async function GET(request, { params }) {
         fuertes: fuertes.map((f) => f.especialidad),
         debiles: debiles.map((d) => d.especialidad),
         posibleDesactualizacion,
+      },
+      desgloseFallos: {
+        aciertos: sesion.aciertos,
+        controvertidos: fallosControvertidos,
+        dificiles: fallosDificiles,
+        normales: fallosNormales,
       },
       analisisNarrativo,
       iaUsada: proveedor,

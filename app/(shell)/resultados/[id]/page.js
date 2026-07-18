@@ -95,7 +95,8 @@ export default function Resultados({ params }) {
     ((resumen.iaDisponible && resumen.analisisNarrativo) ||
       resumen.etiquetas.fuertes.length > 0 ||
       resumen.etiquetas.debiles.length > 0 ||
-      resumen.etiquetas.posibleDesactualizacion);
+      resumen.etiquetas.posibleDesactualizacion ||
+      Boolean(resumen.desgloseFallos));
 
   return (
     <div className="min-h-screen pb-10">
@@ -191,6 +192,32 @@ export default function Resultados({ params }) {
                 Puede que tus fallos se concentren en contenido más reciente: revisa las guías
                 actualizadas de tus temas débiles.
               </p>
+            )}
+
+            {resumen.desgloseFallos && (
+              <div className="mt-3 flex flex-wrap gap-2 border-t border-track pt-3">
+                <span className="rounded-full bg-success-bg px-3 py-1 text-xs font-semibold text-success-text">
+                  🎯 {resumen.desgloseFallos.aciertos} correctas
+                </span>
+                {resumen.desgloseFallos.controvertidos > 0 && (
+                  <Link
+                    href="/controversias"
+                    className="rounded-full bg-warning-bg px-3 py-1 text-xs font-semibold text-warning-text"
+                  >
+                    ⚠️ {resumen.desgloseFallos.controvertidos} con respuesta oficial cuestionada
+                  </Link>
+                )}
+                {resumen.desgloseFallos.dificiles > 0 && (
+                  <span className="rounded-full bg-track px-3 py-1 text-xs font-semibold text-ink-muted">
+                    💡 {resumen.desgloseFallos.dificiles} de alta dificultad
+                  </span>
+                )}
+                {resumen.desgloseFallos.normales > 0 && (
+                  <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-semibold text-danger-text">
+                    ❌ {resumen.desgloseFallos.normales} a repasar
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </section>
