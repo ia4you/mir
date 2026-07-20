@@ -3,9 +3,11 @@ import Link from "next/link";
 import { getEspecialidadPorSlug, getPreguntasMuestra } from "../../lib/especialidades";
 
 // El build de Dokploy no tiene acceso a mir-db, así que no se puede usar
-// generateStaticParams (necesitaría la BD en build time); cada especialidad
-// se renderiza por request en su lugar.
-export const dynamic = "force-dynamic";
+// generateStaticParams (necesitaría la BD en build time). En su lugar, cada
+// especialidad se renderiza on-demand en la primera petición y Next.js
+// cachea el HTML resultante durante `revalidate` segundos (ISR), sirviendo
+// esa versión cacheada al resto de peticiones en vez de re-consultar la BD.
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }) {
   const especialidad = await getEspecialidadPorSlug(params.slug);
