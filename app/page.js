@@ -131,7 +131,7 @@ export default async function LandingPage() {
 
         <div className="mx-auto mt-7 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
           <Link
-            href="/registro"
+            href="/demo"
             className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
           >
             Empezar gratis
