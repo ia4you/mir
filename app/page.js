@@ -107,13 +107,22 @@ export default async function LandingPage() {
         <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
           <Logo className="h-11 w-auto sm:h-12 md:h-14 lg:h-16" />
         </Link>
-        <nav className="hidden items-center gap-3 sm:flex">
-          <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
+        <nav className="flex items-center gap-3">
+          <Link
+            href="/login"
+            className="whitespace-nowrap rounded-lg px-2 py-1 text-xs font-bold text-brand sm:hidden"
+          >
+            Login
+          </Link>
+          <Link
+            href="/login"
+            className="hidden whitespace-nowrap text-sm font-bold text-ink sm:inline"
+          >
             Login
           </Link>
           <Link
             href="/registro"
-            className="whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white shadow-sm active:bg-brand-dark"
+            className="hidden whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white shadow-sm active:bg-brand-dark sm:inline-block"
           >
             Registro
           </Link>
