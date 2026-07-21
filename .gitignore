@@ -36,3 +36,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Nunca committear el keystore de firma
+*.jks
+*.keystore
+key.properties

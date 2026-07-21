@@ -41,6 +41,9 @@ export default function Perfil() {
   const [confirmandoReset, setConfirmandoReset] = useState(false);
   const [reseteando, setReseteando] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [errorEliminar, setErrorEliminar] = useState("");
 
   useEffect(() => {
     setMeta(getMetaDiaria());
@@ -76,6 +79,20 @@ export default function Perfil() {
     } finally {
       setReseteando(false);
       setConfirmandoReset(false);
+    }
+  }
+
+  async function eliminarCuenta() {
+    setEliminando(true);
+    setErrorEliminar("");
+    try {
+      const res = await fetch("/api/perfil/cuenta", { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      await signOut({ callbackUrl: "/" });
+    } catch {
+      setErrorEliminar("No se ha podido eliminar la cuenta. Inténtalo de nuevo.");
+      setEliminando(false);
+      setConfirmandoEliminar(false);
     }
   }
 
@@ -221,6 +238,17 @@ export default function Perfil() {
             Contacto y soporte →
           </Link>
         </FieldCard>
+
+        <div className="mt-2 flex flex-col items-center gap-2">
+          {errorEliminar && <p className="text-xs text-danger-text">{errorEliminar}</p>}
+          <button
+            type="button"
+            onClick={() => setConfirmandoEliminar(true)}
+            className="text-xs font-semibold text-danger underline-offset-2 hover:underline"
+          >
+            Eliminar mi cuenta
+          </button>
+        </div>
       </div>
 
       {confirmandoReset && (
@@ -246,6 +274,36 @@ export default function Perfil() {
                 className="h-11 flex-1 rounded-xl bg-danger font-bold text-white disabled:opacity-60"
               >
                 {reseteando ? "Borrando…" : "Resetear"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmandoEliminar && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-white p-5 shadow-lg">
+            <p className="text-lg font-bold text-ink">¿Eliminar tu cuenta?</p>
+            <p className="mt-1 text-sm text-ink-muted">
+              Se borrará tu cuenta, tu historial de tests y tus respuestas de forma permanente.
+              Esta acción no se puede deshacer.
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmandoEliminar(false)}
+                disabled={eliminando}
+                className="h-11 flex-1 rounded-xl border border-track font-bold text-ink disabled:opacity-60"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={eliminarCuenta}
+                disabled={eliminando}
+                className="h-11 flex-1 rounded-xl bg-danger font-bold text-white disabled:opacity-60"
+              >
+                {eliminando ? "Eliminando…" : "Eliminar"}
               </button>
             </div>
           </div>
