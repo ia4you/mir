@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MIR Turel</string>
+    <string name="title_activity_main">MIR Turel</string>
+    <string name="package_name">es.turel.mir</string>
+    <string name="custom_url_scheme">es.turel.mir</string>
+</resources>
