@@ -8,6 +8,8 @@ import AvatarUploader from "../../components/AvatarUploader";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
+import PushBanner from "../../components/PushBanner";
+import AndroidPushRegister from "../../components/AndroidPushRegister";
 import { getMetaDiaria } from "../../lib/preferencias";
 
 const MENSAJES_ERROR = {
@@ -83,6 +85,9 @@ export default function Inicio() {
             </Link>
           </div>
         )}
+
+      <PushBanner />
+      <AndroidPushRegister />
 
       <div className="mt-5">
         <ResumenDiario

@@ -23,6 +23,37 @@ self.addEventListener("activate", (event) => {
   );
 });
 
+self.addEventListener("push", (event) => {
+  if (!event.data) return;
+  let datos;
+  try {
+    datos = event.data.json();
+  } catch {
+    datos = { title: "MIR Turel", body: event.data.text() };
+  }
+
+  event.waitUntil(
+    self.registration.showNotification(datos.title || "MIR Turel", {
+      body: datos.body,
+      icon: "/icons/icon-192.png",
+      badge: "/icons/icon-192.png",
+      data: { url: datos.url || "/inicio" },
+    })
+  );
+});
+
+self.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || "/inicio";
+  event.waitUntil(
+    self.clients.matchAll({ type: "window" }).then((clients) => {
+      const existente = clients.find((c) => c.url.includes(url));
+      if (existente) return existente.focus();
+      return self.clients.openWindow(url);
+    })
+  );
+});
+
 self.addEventListener("fetch", (event) => {
   const { request } = event;
   if (request.method !== "GET") return;

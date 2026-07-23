@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
+import EvolucionAciertosChart from "../../components/EvolucionAciertosChart";
 import { getMetaDiaria } from "../../lib/preferencias";
 
 const ETIQUETA_MODO = {
@@ -47,6 +48,12 @@ export default function Estadisticas() {
           metaDiariaPct={datos?.meta_diaria.porcentaje}
         />
       </div>
+
+      {sesiones && sesiones.length > 0 && (
+        <div className="mt-7">
+          <EvolucionAciertosChart sesiones={sesiones} />
+        </div>
+      )}
 
       <section className="mt-7 px-5">
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
