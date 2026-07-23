@@ -60,8 +60,8 @@ export default function EvolucionAciertosChart({ sesiones }) {
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
         Evolución de aciertos
       </h2>
-      <div className="rounded-2xl bg-white p-4 pl-0 shadow-sm">
-        <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1 pl-4">
+      <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1">
           {especialidades.map((esp, i) => (
             <span key={esp} className="flex items-center gap-1.5 text-xs font-semibold text-ink-muted">
               <span
@@ -73,7 +73,7 @@ export default function EvolucionAciertosChart({ sesiones }) {
           ))}
         </div>
         <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={datos} margin={{ top: 8, right: 16, bottom: 0, left: -16 }}>
+          <LineChart data={datos} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
             <CartesianGrid stroke="#DEE5EA" vertical={false} />
             <XAxis
               dataKey="fecha"
