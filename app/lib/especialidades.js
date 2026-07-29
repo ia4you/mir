@@ -101,3 +101,32 @@ export async function getPreguntasMuestra(nombreEspecialidad, limite = 3) {
   );
   return rows;
 }
+
+// Página pública /preguntas/[especialidad]/[id]: solo devuelve la pregunta
+// si su especialidad real corresponde al slug de la URL (evita que
+// /preguntas/cardiologia/42 sirva una pregunta de otra especialidad si
+// alguien cambia el id a mano).
+export async function getPreguntaPublica(especialidadSlug, id) {
+  const idNumerico = parseInt(id, 10);
+  if (!Number.isInteger(idNumerico)) return null;
+
+  const especialidad = await getEspecialidadPorSlug(especialidadSlug);
+  if (!especialidad) return null;
+
+  const { rows } = await query(
+    `SELECT id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e,
+            especialidad, explicacion, imagen_path
+     FROM preguntas
+     WHERE id = $1 AND especialidad = $2`,
+    [idNumerico, especialidad.nombre]
+  );
+  if (rows.length === 0) return null;
+
+  return { ...rows[0], especialidadSlug: especialidad.slug };
+}
+
+// Para el sitemap: id + slug de especialidad de todas las preguntas reales.
+export async function getTodasLasPreguntasParaSitemap() {
+  const { rows } = await query(`SELECT id, especialidad FROM preguntas ORDER BY id`);
+  return rows.map((r) => ({ id: r.id, especialidadSlug: slugify(r.especialidad) }));
+}

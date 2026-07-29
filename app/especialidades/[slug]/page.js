@@ -34,7 +34,7 @@ export default async function EspecialidadPage({ params }) {
   const especialidad = await getEspecialidadPorSlug(params.slug);
   if (!especialidad) notFound();
 
-  const preguntas = await getPreguntasMuestra(especialidad.nombre, 3);
+  const preguntas = await getPreguntasMuestra(especialidad.nombre, 5);
 
   const schemaCurso = {
     "@context": "https://schema.org",
@@ -73,7 +73,9 @@ export default async function EspecialidadPage({ params }) {
           {especialidad.anioMax}
         </p>
 
-        <div className="mt-8 flex flex-col gap-5">
+        <h2 className="mt-10 text-xl font-extrabold text-ink">Preguntas de ejemplo</h2>
+
+        <div className="mt-4 flex flex-col gap-5">
           {preguntas.map((p) => (
             <div key={p.id} className="rounded-2xl bg-white p-5 shadow-sm">
               <h3 className="text-base font-bold leading-snug text-ink">{p.pregunta}</h3>
@@ -89,10 +91,10 @@ export default async function EspecialidadPage({ params }) {
                 })}
               </ul>
               <Link
-                href="/registro"
+                href={`/preguntas/${especialidad.slug}/${p.id}`}
                 className="mt-4 inline-block text-sm font-bold text-brand"
               >
-                Ver respuesta →
+                Ver pregunta completa →
               </Link>
             </div>
           ))}

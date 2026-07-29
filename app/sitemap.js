@@ -1,4 +1,4 @@
-import { getEspecialidadesConConteo } from "./lib/especialidades";
+import { getEspecialidadesConConteo, getTodasLasPreguntasParaSitemap } from "./lib/especialidades";
 
 const BASE_URL = "https://mir.turel.es";
 
@@ -7,7 +7,10 @@ const BASE_URL = "https://mir.turel.es";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap() {
-  const especialidades = await getEspecialidadesConConteo();
+  const [especialidades, preguntas] = await Promise.all([
+    getEspecialidadesConConteo(),
+    getTodasLasPreguntasParaSitemap(),
+  ]);
 
   const estaticas = [
     { url: `${BASE_URL}/`, priority: 1.0, changeFrequency: "weekly" },
@@ -24,7 +27,13 @@ export default async function sitemap() {
     changeFrequency: "monthly",
   }));
 
-  return [...estaticas, ...especialidadesUrls].map((entry) => ({
+  const preguntasUrls = preguntas.map((p) => ({
+    url: `${BASE_URL}/preguntas/${p.especialidadSlug}/${p.id}`,
+    priority: 0.7,
+    changeFrequency: "yearly",
+  }));
+
+  return [...estaticas, ...especialidadesUrls, ...preguntasUrls].map((entry) => ({
     ...entry,
     lastModified: new Date(),
   }));

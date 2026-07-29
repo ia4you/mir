@@ -10,6 +10,7 @@ export default function robots() {
         "/resultados",
         "/estadisticas",
         "/perfil",
+        "/admin",
         "/api",
       ],
     },
