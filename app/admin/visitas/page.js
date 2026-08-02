@@ -64,7 +64,6 @@ export default function AdminVisitas() {
   }
 
   const datosGrafica = datos.por_dia.map((d) => ({ ...d, fechaCorta: formatearFechaCorta(d.fecha) }));
-  const maxTop = Math.max(1, ...datos.top_paginas.map((p) => p.total));
 
   return (
     <div className="flex flex-col gap-6">
@@ -102,36 +101,6 @@ export default function AdminVisitas() {
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </section>
-
-      <section>
-        <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
-          Páginas más visitadas
-        </h2>
-        {datos.top_paginas.length === 0 ? (
-          <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
-            Todavía no hay visitas registradas.
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2 rounded-2xl bg-white p-4 shadow-sm">
-            {datos.top_paginas.map((p) => (
-              <div key={p.pagina} className="flex items-center gap-3">
-                <span className="w-40 flex-shrink-0 truncate text-sm font-semibold text-ink" title={p.pagina}>
-                  {p.pagina}
-                </span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-track">
-                  <div
-                    className="h-full rounded-full bg-brand"
-                    style={{ width: `${(p.total / maxTop) * 100}%` }}
-                  />
-                </div>
-                <span className="w-12 flex-shrink-0 text-right text-sm font-bold text-ink-muted">
-                  {p.total}
-                </span>
-              </div>
-            ))}
-          </div>
-        )}
       </section>
     </div>
   );

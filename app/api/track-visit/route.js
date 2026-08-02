@@ -1,63 +1,18 @@
 import { NextResponse } from "next/server";
-import { pool } from "@/lib/db";
-import { esRutaTrackeada } from "@/lib/visitas";
+import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// Endpoint interno: no lo llama el navegador, solo middleware.js (que corre
-// en el runtime edge y no puede usar el driver `pg`, así que delega aquí el
-// INSERT). Protegido con un secreto compartido en vez de sesión, porque el
-// visitante no está autenticado.
-export async function POST(request) {
-  const secreto = request.headers.get("x-track-secret");
-  if (!secreto || secreto !== process.env.TRACK_SECRET) {
-    return NextResponse.json({ error: "No autorizado" }, { status: 403 });
-  }
-
-  const body = await request.json().catch(() => null);
-  const pagina = body?.pagina;
-  const ipHash = body?.ipHash;
-
-  if (typeof pagina !== "string" || !esRutaTrackeada(pagina)) {
-    return NextResponse.json({ error: "Página no válida" }, { status: 400 });
-  }
-
-  const paginaFinal = pagina.slice(0, 200);
-  const ipHashFinal = typeof ipHash === "string" ? ipHash.slice(0, 64) : null;
-
-  const client = await pool.connect();
+// Lo llama <VisitaTracker /> desde el navegador, una vez al día por
+// dispositivo (controlado con localStorage en el cliente). Sin secreto ni
+// parámetros: el peor caso de abuso es inflar un contador de visitas, no
+// hay datos sensibles de por medio.
+export async function POST() {
   try {
-    await client.query("BEGIN");
-    // pg_advisory_xact_lock serializa por (ip_hash, pagina): si dos
-    // peticiones para el mismo visitante+página llegan casi a la vez, la
-    // segunda espera aquí hasta que la primera confirme, así el NOT EXISTS
-    // de abajo ve ya la fila insertada en vez de correr en paralelo con ella
-    // (un simple SELECT-luego-INSERT sin este lock no evita esa carrera).
-    await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [
-      `${ipHashFinal}:${paginaFinal}`,
-    ]);
-    // $1/$2 se castean explícitamente: al reutilizar el mismo parámetro en
-    // el SELECT de arriba y en el WHERE del subquery, Postgres deducía tipos
-    // distintos para cada aparición ("text" vs "character varying") y
-    // rechazaba la consulta con el error 42P08.
-    await client.query(
-      `INSERT INTO visitas (pagina, ip_hash)
-       SELECT $1::varchar, $2::varchar
-       WHERE NOT EXISTS (
-         SELECT 1 FROM visitas
-         WHERE ip_hash = $2::varchar
-           AND pagina = $1::varchar
-           AND created_at > NOW() - INTERVAL '5 seconds'
-       )`,
-      [paginaFinal, ipHashFinal]
-    );
-    await client.query("COMMIT");
+    await query(`INSERT INTO visitas (fecha) VALUES (CURRENT_DATE) ON CONFLICT DO NOTHING`);
     return NextResponse.json({ ok: true });
   } catch (err) {
-    await client.query("ROLLBACK").catch(() => {});
     console.error(err);
     return NextResponse.json({ error: "No se ha podido registrar la visita" }, { status: 500 });
-  } finally {
-    client.release();
   }
 }
