@@ -35,9 +35,18 @@ function obtenerIp(req) {
 // El driver `pg` necesita Node.js y el middleware corre en el runtime edge,
 // así que el registro no toca la BD directamente: delega en /api/track-visit
 // (ruta Node normal) mediante un fetch interno protegido con TRACK_SECRET.
+//
+// La URL es un loopback fijo a 127.0.0.1, NO new URL("/api/track-visit", req.url):
+// detrás de Traefik, req.url refleja el dominio público con X-Forwarded-Proto
+// "https", así que reconstruirla a partir de req.url hace que el propio
+// contenedor se autollame por HTTPS a su dominio público — ese fetch desde el
+// sandbox del Edge Runtime falla en silencio (se traga el .catch de abajo) y
+// nunca llega a insertar la visita, aunque el mismo endpoint funcione bien
+// probado a mano. Con loopback directo al proceso Node no hay vuelta al
+// exterior ni TLS de por medio.
 async function registrarVisita(req) {
   const ipHash = await hashearIp(obtenerIp(req));
-  await fetch(new URL("/api/track-visit", req.url), {
+  await fetch("http://127.0.0.1:3000/api/track-visit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
