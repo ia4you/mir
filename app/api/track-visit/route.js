@@ -36,13 +36,17 @@ export async function POST(request) {
     await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [
       `${ipHashFinal}:${paginaFinal}`,
     ]);
+    // $1/$2 se castean explícitamente: al reutilizar el mismo parámetro en
+    // el SELECT de arriba y en el WHERE del subquery, Postgres deducía tipos
+    // distintos para cada aparición ("text" vs "character varying") y
+    // rechazaba la consulta con el error 42P08.
     await client.query(
       `INSERT INTO visitas (pagina, ip_hash)
-       SELECT $1, $2
+       SELECT $1::varchar, $2::varchar
        WHERE NOT EXISTS (
          SELECT 1 FROM visitas
-         WHERE ip_hash = $2
-           AND pagina = $1
+         WHERE ip_hash = $2::varchar
+           AND pagina = $1::varchar
            AND created_at > NOW() - INTERVAL '5 seconds'
        )`,
       [paginaFinal, ipHashFinal]
