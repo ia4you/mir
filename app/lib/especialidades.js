@@ -115,7 +115,7 @@ export async function getPreguntaPublica(especialidadSlug, id) {
 
   const { rows } = await query(
     `SELECT id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e,
-            especialidad, explicacion, imagen_path
+            especialidad, explicacion, imagen_path, año
      FROM preguntas
      WHERE id = $1 AND especialidad = $2`,
     [idNumerico, especialidad.nombre]

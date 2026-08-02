@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
   if (!especialidad) return {};
 
   return {
-    title: `Preguntas MIR de ${especialidad.nombre} | MIR Turel`,
+    title: `Preguntas MIR de ${especialidad.nombre} (${especialidad.anioMin}-${especialidad.anioMax}) – Test Online Gratis | MIR Turel`,
     description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR 2021–2025. Practica gratis con preguntas oficiales verificadas.`,
     alternates: {
       canonical: `https://mir.turel.es/especialidades/${especialidad.slug}`,

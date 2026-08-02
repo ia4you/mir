@@ -16,21 +16,26 @@ export const revalidate = 3600;
 
 const LETRAS = ["a", "b", "c", "d", "e"];
 
+function primerasPalabras(texto, n) {
+  return texto.trim().split(/\s+/).slice(0, n).join(" ");
+}
+
 export async function generateMetadata({ params }) {
   const pregunta = await getPreguntaPublica(params.especialidad, params.id);
   if (!pregunta) return {};
 
   const url = `https://mir.turel.es/preguntas/${pregunta.especialidadSlug}/${pregunta.id}`;
   const description = pregunta.pregunta.slice(0, 150);
+  const titulo = `Pregunta MIR de ${pregunta.especialidad} ${pregunta.año} – ${primerasPalabras(pregunta.pregunta, 5)} | MIR Turel`;
 
   return {
-    title: `Pregunta MIR de ${pregunta.especialidad} | MIR Turel`,
+    title: titulo,
     description,
     alternates: {
       canonical: url,
     },
     openGraph: {
-      title: `Pregunta MIR de ${pregunta.especialidad} | MIR Turel`,
+      title: titulo,
       description,
       url,
       siteName: "MIR Turel",
