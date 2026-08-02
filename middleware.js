@@ -77,8 +77,21 @@ const conAuth = withAuth(
   }
 );
 
+function esPrefetch(req) {
+  // Next.js precarga en segundo plano todos los <Link> visibles en una
+  // página (p. ej. la landing "/" enlaza cada especialidad): esas peticiones
+  // pasan por el middleware igual que una navegación real, pero no son
+  // visitas — el visitante nunca ha abierto esa página. Se identifican por
+  // esta cabecera, que solo ponen los prefetches del router de Next.
+  return req.headers.get("Next-Router-Prefetch") === "1";
+}
+
 export default async function middleware(req, event) {
-  if (esRutaTrackeada(req.nextUrl.pathname) && !esBot(req.headers.get("user-agent"))) {
+  if (
+    esRutaTrackeada(req.nextUrl.pathname) &&
+    !esBot(req.headers.get("user-agent")) &&
+    !esPrefetch(req)
+  ) {
     // waitUntil deja que el fetch de tracking termine en segundo plano sin
     // retrasar la respuesta al usuario ni bloquear la petición si falla.
     event.waitUntil(registrarVisita(req));
