@@ -3,7 +3,6 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import DisclaimerBanner from "./components/DisclaimerBanner";
-import InstallBanner from "./components/InstallBanner";
 import VisitaTracker from "./components/VisitaTracker";
 import Providers from "./providers";
 
@@ -48,7 +47,6 @@ export default function RootLayout({ children }) {
           {children}
           <ServiceWorkerRegister />
           <DisclaimerBanner />
-          <InstallBanner />
           <VisitaTracker />
         </Providers>
         <GoogleAnalytics gaId="G-CSHZ2YHZ02" />

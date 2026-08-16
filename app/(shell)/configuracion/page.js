@@ -12,6 +12,8 @@ import { getTemporizadorDefecto } from "../../lib/preferencias";
 
 const ANIOS = ["2021", "2022", "2023", "2024", "2025"];
 const LIMITE_DIARIO_FREE = 10;
+// Examen real: 4 horas para todo el simulacro (no por pregunta).
+const SEGUNDOS_SIMULACRO = 4 * 60 * 60;
 const OPCIONES_CANTIDAD = [
   { valor: "10", etiqueta: "10", numero: 10 },
   { valor: "20", etiqueta: "20", numero: 20 },
@@ -48,9 +50,13 @@ export default function Configuracion() {
   const router = useRouter();
   const { data: session } = useSession();
 
+  const esPremium = session?.user?.plan === "premium";
+
+  const [modoTest, setModoTest] = useState("practica"); // "practica" | "simulacro"
   const [especialidades, setEspecialidades] = useState([]);
   const [especialidad, setEspecialidad] = useState("");
   const [anio, setAnio] = useState("");
+  const [anioSimulacro, setAnioSimulacro] = useState("");
   const [cantidad, setCantidad] = useState("20");
   const [temporizadorActivo, setTemporizadorActivo] = useState(
     () => getTemporizadorDefecto().activo
@@ -97,7 +103,77 @@ export default function Configuracion() {
 
   const totalPreguntas = especialidades.reduce((acc, e) => acc + e.total, 0);
 
+  async function empezarSimulacro() {
+    if (!esPremium) {
+      setError("El simulacro MIR completo es una función premium.");
+      return;
+    }
+    if (!anioSimulacro) {
+      setError("Elige el año del simulacro.");
+      return;
+    }
+    setError("");
+    setEnviando(true);
+    try {
+      const params = new URLSearchParams({
+        anio: anioSimulacro,
+        cantidad: "210",
+        orden: "original",
+      });
+      const resPreguntas = await fetch(`/api/preguntas?${params.toString()}`);
+      if (!resPreguntas.ok) throw new Error("No se pudieron cargar las preguntas");
+      const preguntas = await resPreguntas.json();
+
+      if (preguntas.length === 0) {
+        setError("No hay preguntas disponibles para ese año.");
+        setEnviando(false);
+        return;
+      }
+
+      const resSesion = await fetch("/api/sesiones", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          modo: "simulacro",
+          especialidad: null,
+          total_preguntas: preguntas.length,
+        }),
+      });
+
+      if (resSesion.status === 403) {
+        const data = await resSesion.json().catch(() => null);
+        if (data?.error === "limite_diario") {
+          setLimiteAlcanzado(true);
+          setEnviando(false);
+          return;
+        }
+      }
+      if (!resSesion.ok) throw new Error("No se pudo crear la sesión");
+      const { id } = await resSesion.json();
+
+      sessionStorage.setItem(
+        `mir_test_${id}`,
+        JSON.stringify({
+          preguntas,
+          segundosPorPregunta: null,
+          modoExamen: "simulacro",
+          segundosTotales: SEGUNDOS_SIMULACRO,
+        })
+      );
+
+      router.push(`/test/${id}`);
+    } catch (e) {
+      setError("Ha ocurrido un error al preparar el simulacro. Inténtalo de nuevo.");
+      setEnviando(false);
+    }
+  }
+
   async function empezarTest() {
+    if (modoTest === "simulacro") {
+      await empezarSimulacro();
+      return;
+    }
+
     setError("");
     setEnviando(true);
     try {
@@ -142,6 +218,7 @@ export default function Configuracion() {
         JSON.stringify({
           preguntas,
           segundosPorPregunta: temporizadorActivo ? segundos : null,
+          modoExamen: "practica",
         })
       );
 
@@ -168,93 +245,146 @@ export default function Configuracion() {
       </header>
 
       <div className="mt-5 flex flex-col gap-4 px-5">
-        <FieldCard label="Especialidad">
-          <SelectNativo value={especialidad} onChange={(e) => setEspecialidad(e.target.value)}>
-            <option value="">Todas ({totalPreguntas || "…"})</option>
-            {especialidades.map((e) => (
-              <option key={e.especialidad} value={e.especialidad}>
-                {e.especialidad} ({e.total})
-              </option>
-            ))}
-          </SelectNativo>
-        </FieldCard>
-
-        <FieldCard label="Año">
-          <SelectNativo value={anio} onChange={(e) => setAnio(e.target.value)}>
-            <option value="">Todos los años</option>
-            {ANIOS.map((a) => (
-              <option key={a} value={a}>
-                {a}
-              </option>
-            ))}
-          </SelectNativo>
-        </FieldCard>
-
-        <FieldCard label="Número de preguntas">
+        <FieldCard label="Modo de test">
           <div className="flex gap-2">
-            {OPCIONES_CANTIDAD.map((o) => {
-              const superaLimite = restanteHoy !== null && o.numero > restanteHoy;
-              return (
-                <Chip
-                  key={o.valor}
-                  activo={cantidad === o.valor}
-                  disabled={superaLimite}
-                  onClick={() => setCantidad(o.valor)}
-                  title={
-                    superaLimite && restanteHoy > 0
-                      ? `Límite diario: te quedan ${restanteHoy} preguntas hoy`
-                      : undefined
-                  }
-                >
-                  {superaLimite && "🔒 "}
-                  {o.etiqueta}
-                </Chip>
-              );
-            })}
+            <Chip activo={modoTest === "practica"} onClick={() => setModoTest("practica")}>
+              Práctica
+            </Chip>
+            <Chip
+              activo={modoTest === "simulacro"}
+              disabled={!esPremium}
+              onClick={() => setModoTest("simulacro")}
+              title={!esPremium ? "Función premium — hazte premium para desbloquearla" : undefined}
+            >
+              {!esPremium && "🔒 "}Simulacro MIR
+            </Chip>
           </div>
-          {restanteHoy !== null && restanteHoy < Infinity && (
-            <>
-              {restanteHoy > 0 ? (
-                <p className="mt-3 text-xs text-ink-muted">
-                  Con tu plan gratuito puedes responder {restanteHoy} preguntas más hoy.{" "}
-                  <Link href="/premium" className="font-bold text-brand">
-                    Hazte premium
-                  </Link>{" "}
-                  para acceso ilimitado.
-                </p>
-              ) : (
-                <p className="mt-3 rounded-xl bg-danger-bg p-3 text-xs font-semibold text-danger-text">
-                  Has alcanzado tu límite diario. Vuelve mañana o{" "}
-                  <Link href="/premium" className="font-bold underline">
-                    hazte premium
-                  </Link>
-                  .
-                </p>
+          {!esPremium && (
+            <p className="mt-3 text-xs text-ink-muted">
+              El simulacro MIR completo (examen real cronometrado) es una función premium.{" "}
+              <Link href="/premium" className="font-bold text-brand">
+                Hazte premium
+              </Link>{" "}
+              para desbloquearlo.
+            </p>
+          )}
+        </FieldCard>
+
+        {modoTest === "practica" && (
+          <>
+            <FieldCard label="Especialidad">
+              <SelectNativo value={especialidad} onChange={(e) => setEspecialidad(e.target.value)}>
+                <option value="">Todas ({totalPreguntas || "…"})</option>
+                {especialidades.map((e) => (
+                  <option key={e.especialidad} value={e.especialidad}>
+                    {e.especialidad} ({e.total})
+                  </option>
+                ))}
+              </SelectNativo>
+            </FieldCard>
+
+            <FieldCard label="Año">
+              <SelectNativo value={anio} onChange={(e) => setAnio(e.target.value)}>
+                <option value="">Todos los años</option>
+                {ANIOS.map((a) => (
+                  <option key={a} value={a}>
+                    {a}
+                  </option>
+                ))}
+              </SelectNativo>
+            </FieldCard>
+
+            <FieldCard label="Número de preguntas">
+              <div className="flex gap-2">
+                {OPCIONES_CANTIDAD.map((o) => {
+                  const superaLimite = restanteHoy !== null && o.numero > restanteHoy;
+                  return (
+                    <Chip
+                      key={o.valor}
+                      activo={cantidad === o.valor}
+                      disabled={superaLimite}
+                      onClick={() => setCantidad(o.valor)}
+                      title={
+                        superaLimite && restanteHoy > 0
+                          ? `Límite diario: te quedan ${restanteHoy} preguntas hoy`
+                          : undefined
+                      }
+                    >
+                      {superaLimite && "🔒 "}
+                      {o.etiqueta}
+                    </Chip>
+                  );
+                })}
+              </div>
+              {restanteHoy !== null && restanteHoy < Infinity && (
+                <>
+                  {restanteHoy > 0 ? (
+                    <p className="mt-3 text-xs text-ink-muted">
+                      Con tu plan gratuito puedes responder {restanteHoy} preguntas más hoy.{" "}
+                      <Link href="/premium" className="font-bold text-brand">
+                        Hazte premium
+                      </Link>{" "}
+                      para acceso ilimitado.
+                    </p>
+                  ) : (
+                    <p className="mt-3 rounded-xl bg-danger-bg p-3 text-xs font-semibold text-danger-text">
+                      Has alcanzado tu límite diario. Vuelve mañana o{" "}
+                      <Link href="/premium" className="font-bold underline">
+                        hazte premium
+                      </Link>
+                      .
+                    </p>
+                  )}
+                </>
               )}
-            </>
-          )}
-        </FieldCard>
+            </FieldCard>
 
-        <FieldCard label="Temporizador">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-ink">
-              {temporizadorActivo
-                ? `Con temporizador — ${segundos} segundos por pregunta`
-                : "Sin temporizador"}
-            </span>
-            <ToggleSwitch activo={temporizadorActivo} onChange={setTemporizadorActivo} />
-          </div>
+            <FieldCard label="Temporizador">
+              <div className="flex items-center justify-between">
+                <span className="font-semibold text-ink">
+                  {temporizadorActivo
+                    ? `Con temporizador — ${segundos} segundos por pregunta`
+                    : "Sin temporizador"}
+                </span>
+                <ToggleSwitch activo={temporizadorActivo} onChange={setTemporizadorActivo} />
+              </div>
 
-          {temporizadorActivo && (
-            <div className="mt-3 flex gap-2">
-              {OPCIONES_SEGUNDOS.map((s) => (
-                <Chip key={s} activo={segundos === s} onClick={() => setSegundos(s)}>
-                  {s}s
-                </Chip>
-              ))}
-            </div>
-          )}
-        </FieldCard>
+              {temporizadorActivo && (
+                <div className="mt-3 flex gap-2">
+                  {OPCIONES_SEGUNDOS.map((s) => (
+                    <Chip key={s} activo={segundos === s} onClick={() => setSegundos(s)}>
+                      {s}s
+                    </Chip>
+                  ))}
+                </div>
+              )}
+            </FieldCard>
+          </>
+        )}
+
+        {modoTest === "simulacro" && (
+          <>
+            <FieldCard label="Año del simulacro">
+              <SelectNativo value={anioSimulacro} onChange={(e) => setAnioSimulacro(e.target.value)}>
+                <option value="">Elige un año</option>
+                {ANIOS.map((a) => (
+                  <option key={a} value={a}>
+                    Simulacro MIR {a}
+                  </option>
+                ))}
+              </SelectNativo>
+            </FieldCard>
+
+            <FieldCard label="Cómo funciona el simulacro">
+              <ul className="flex flex-col gap-2 text-sm text-ink">
+                <li>📝 Examen completo del año elegido, en su orden original.</li>
+                <li>⏱️ Temporizador real de 4 horas (240 minutos) para todo el examen.</li>
+                <li>🚫 Sin corrección ni interrupciones durante el test — solo al terminar.</li>
+                <li>🎯 Puntuación final con la fórmula oficial: aciertos − 1/3 de fallos.</li>
+              </ul>
+            </FieldCard>
+          </>
+        )}
 
         {error && (
           <p className="rounded-2xl bg-danger-bg p-4 text-sm font-semibold text-danger-text">
@@ -265,10 +395,18 @@ export default function Configuracion() {
         <button
           type="button"
           onClick={empezarTest}
-          disabled={enviando || restanteHoy === 0}
+          disabled={
+            enviando ||
+            (modoTest === "practica" && restanteHoy === 0) ||
+            (modoTest === "simulacro" && (!esPremium || !anioSimulacro))
+          }
           className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
         >
-          {enviando ? "Preparando test…" : "Empezar test"}
+          {enviando
+            ? "Preparando test…"
+            : modoTest === "simulacro"
+              ? "Empezar simulacro"
+              : "Empezar test"}
         </button>
       </div>
 
@@ -288,7 +426,7 @@ export default function Configuracion() {
                 href="/premium"
                 className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark"
               >
-                Hazte Premium por 4,99€/mes →
+                Hazte Premium por 9,99€/mes →
               </Link>
               <Link
                 href="/inicio"

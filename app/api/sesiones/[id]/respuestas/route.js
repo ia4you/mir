@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { getObjecionParaPregunta, extraerRespuestaRecomendada } from "@/app/lib/controversias";
 
 export const dynamic = "force-dynamic";
 
@@ -36,14 +37,17 @@ export async function POST(request, { params }) {
     }
 
     const { rows } = await query(
-      `SELECT correcta, explicacion, explicacion_calidad FROM preguntas WHERE id = $1`,
+      `SELECT correcta, explicacion, explicacion_calidad, año, numero,
+              opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
+       FROM preguntas WHERE id = $1`,
       [preguntaId]
     );
     if (rows.length === 0) {
       return NextResponse.json({ error: "Pregunta no encontrada" }, { status: 404 });
     }
+    const fila = rows[0];
 
-    const respuestaCorrecta = rows[0].correcta.trim();
+    const respuestaCorrecta = fila.correcta.trim();
     const esCorrecta = respuestaDada !== null && respuestaDada === respuestaCorrecta;
 
     await query(
@@ -52,11 +56,28 @@ export async function POST(request, { params }) {
       [sesionId, preguntaId, respuestaDada, esCorrecta, session.user.id]
     );
 
+    // Para preguntas tipo controversia, la tarjeta de corrección muestra las
+    // 3 perspectivas (oficial / clínicamente recomendada / motivo) igual que
+    // /controversias, en vez de solo remitir a esa página.
+    let controversia = null;
+    if (fila.explicacion_calidad === "controversia") {
+      const objecion = getObjecionParaPregunta(fila.año, fila.numero);
+      controversia = {
+        respuesta_oficial: {
+          letra: respuestaCorrecta,
+          texto: fila[`opcion_${respuestaCorrecta.toLowerCase()}`],
+        },
+        respuesta_recomendada: extraerRespuestaRecomendada(objecion, respuestaCorrecta, fila),
+        motivo: objecion,
+      };
+    }
+
     return NextResponse.json({
       correcta: esCorrecta,
       respuesta_correcta: respuestaCorrecta,
-      explicacion: rows[0].explicacion,
-      explicacion_calidad: rows[0].explicacion_calidad,
+      explicacion: fila.explicacion,
+      explicacion_calidad: fila.explicacion_calidad,
+      controversia,
     });
   } catch (err) {
     console.error(err);

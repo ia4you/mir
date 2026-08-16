@@ -60,6 +60,20 @@ export async function POST(request) {
   const userId = session.user.id;
 
   try {
+    // El simulacro MIR completo (200+ preguntas de golpe) es función premium
+    // explícita: el límite diario de abajo no lo cubriría (solo cuenta
+    // sesiones YA completadas, así que un usuario free podría crear una
+    // sesión de simulacro entera antes de toparse con el límite).
+    if (modo === "simulacro" && session.user.plan !== "premium") {
+      return NextResponse.json(
+        {
+          error: "premium_requerido",
+          message: "El simulacro MIR completo es una función premium.",
+        },
+        { status: 403 }
+      );
+    }
+
     if (session.user.plan !== "premium") {
       const { rows } = await query(
         `SELECT COALESCE(SUM(total_preguntas), 0)::int AS total

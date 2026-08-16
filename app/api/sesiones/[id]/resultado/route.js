@@ -54,6 +54,69 @@ export async function GET(request, { params }) {
         ? Math.round((sesion.aciertos / sesion.total_preguntas) * 1000) / 10
         : 0;
 
+    let simulacro = null;
+    if (sesion.modo === "simulacro") {
+      // fallos_respondidos excluye las dejadas en blanco (respuesta_dada
+      // NULL): la fórmula oficial del MIR solo penaliza fallos "reales".
+      const conteoRes = await query(
+        `SELECT COUNT(*) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos,
+                COUNT(*) FILTER (WHERE rs.respuesta_dada IS NULL)::int AS en_blanco,
+                MIN(p.año)::int AS anio
+         FROM respuestas_sesion rs
+         JOIN preguntas p ON p.id = rs.pregunta_id
+         WHERE rs.sesion_id = $1`,
+        [sesionId]
+      );
+      const { fallos_respondidos, en_blanco, anio } = conteoRes.rows[0];
+      const puntuacion = Math.round((sesion.aciertos - fallos_respondidos / 3) * 100) / 100;
+      const porcentajeEstimado =
+        sesion.total_preguntas > 0
+          ? Math.round((puntuacion / sesion.total_preguntas) * 1000) / 10
+          : 0;
+
+      // Comparativa con simulacros anteriores del usuario: el año de cada
+      // sesión se infiere de sus propias preguntas (no hay columna "año" en
+      // `sesiones`), ya que un simulacro solo contiene preguntas de un año.
+      const historicoRes = await query(
+        `SELECT s.id, s.fecha, s.aciertos, s.total_preguntas, p.año AS anio,
+                COUNT(*) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos
+         FROM sesiones s
+         JOIN respuestas_sesion rs ON rs.sesion_id = s.id
+         JOIN preguntas p ON p.id = rs.pregunta_id
+         WHERE s.user_id = $1 AND s.modo = 'simulacro' AND s.duracion_segundos IS NOT NULL
+         GROUP BY s.id, s.fecha, s.aciertos, s.total_preguntas, p.año
+         ORDER BY s.fecha DESC`,
+        [sesion.user_id]
+      );
+
+      const vistos = new Set([anio]);
+      const comparativaAnios = [];
+      for (const r of historicoRes.rows) {
+        if (r.id === sesion.id || vistos.has(r.anio)) continue;
+        vistos.add(r.anio);
+        const puntuacionAnio = Math.round((r.aciertos - r.fallos_respondidos / 3) * 100) / 100;
+        comparativaAnios.push({
+          anio: r.anio,
+          fecha: r.fecha,
+          puntuacion: puntuacionAnio,
+          porcentaje_estimado:
+            r.total_preguntas > 0
+              ? Math.round((puntuacionAnio / r.total_preguntas) * 1000) / 10
+              : 0,
+        });
+      }
+      comparativaAnios.sort((a, b) => a.anio - b.anio);
+
+      simulacro = {
+        anio,
+        fallos_respondidos,
+        en_blanco,
+        puntuacion,
+        porcentaje_estimado: porcentajeEstimado,
+        comparativa_anios: comparativaAnios,
+      };
+    }
+
     return NextResponse.json({
       sesion_id: sesion.id,
       modo: sesion.modo,
@@ -70,6 +133,7 @@ export async function GET(request, { params }) {
         porcentaje: r.total > 0 ? Math.round((r.aciertos / r.total) * 1000) / 10 : 0,
       })),
       preguntas_falladas: falladasRes.rows.map((r) => r.id),
+      simulacro,
     });
   } catch (err) {
     console.error(err);

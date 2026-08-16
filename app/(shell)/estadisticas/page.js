@@ -1,15 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
-import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
+import EspecialidadesStatsTable from "../../components/EspecialidadesStatsTable";
+import PuntosDebiles from "../../components/PuntosDebiles";
 import EvolucionAciertosChart from "../../components/EvolucionAciertosChart";
 import { getMetaDiaria } from "../../lib/preferencias";
 
 const ETIQUETA_MODO = {
   practica: "Práctica",
   repaso: "Repaso de fallos",
+  puntos_debiles: "Puntos débiles",
+  repaso_errores: "Repaso de errores",
+  simulacro: "Simulacro MIR",
 };
 
 function formatearFecha(iso) {
@@ -73,16 +78,7 @@ export default function Estadisticas() {
         )}
 
         {!error && datos && datos.especialidades.length > 0 && (
-          <div className="flex flex-col gap-3">
-            {datos.especialidades.map((e) => (
-              <SpecialtyProgressRow
-                key={e.especialidad}
-                nombre={e.especialidad}
-                porcentaje={e.porcentaje}
-                total={e.total}
-              />
-            ))}
-          </div>
+          <EspecialidadesStatsTable especialidades={datos.especialidades} />
         )}
 
         {!error && !datos && (
@@ -92,6 +88,19 @@ export default function Estadisticas() {
             ))}
           </div>
         )}
+      </section>
+
+      {!error && datos && datos.especialidades.length > 0 && (
+        <PuntosDebiles especialidades={datos.especialidades} />
+      )}
+
+      <section className="mt-7 px-5">
+        <Link
+          href="/errores"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand font-bold text-brand"
+        >
+          Mis errores →
+        </Link>
       </section>
 
       <section className="mt-7 px-5">

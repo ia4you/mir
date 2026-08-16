@@ -127,6 +127,59 @@ export default function Resultados({ params }) {
         </div>
       </section>
 
+      {datos.modo === "simulacro" && datos.simulacro && (
+        <section className="mt-6 px-5">
+          <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <p className="text-sm font-bold uppercase tracking-wide text-ink-muted">
+              Resultado del Simulacro MIR {datos.simulacro.anio}
+            </p>
+            <p className="mt-2 text-3xl font-extrabold text-ink">
+              {datos.simulacro.puntuacion.toFixed(2)}{" "}
+              <span className="text-base font-semibold text-ink-muted">puntos</span>
+            </p>
+            <p className="text-sm text-ink-muted">
+              {datos.simulacro.porcentaje_estimado}% estimado de aciertos — fórmula oficial
+              (aciertos − 1/3 de fallos)
+            </p>
+
+            <div className="mt-3 grid grid-cols-3 divide-x divide-track border-t border-track pt-3">
+              <div className="text-center">
+                <p className="text-lg font-extrabold text-success">{datos.aciertos}</p>
+                <p className="text-xs text-ink-muted">Aciertos</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-extrabold text-danger">
+                  {datos.simulacro.fallos_respondidos}
+                </p>
+                <p className="text-xs text-ink-muted">Fallos</p>
+              </div>
+              <div className="text-center">
+                <p className="text-lg font-extrabold text-ink-muted">{datos.simulacro.en_blanco}</p>
+                <p className="text-xs text-ink-muted">En blanco</p>
+              </div>
+            </div>
+
+            {datos.simulacro.comparativa_anios.length > 0 && (
+              <div className="mt-4 border-t border-track pt-3">
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
+                  Comparativa con años anteriores
+                </p>
+                <div className="flex flex-col gap-1.5">
+                  {datos.simulacro.comparativa_anios.map((c) => (
+                    <div key={c.anio} className="flex items-center justify-between text-sm">
+                      <span className="text-ink">Simulacro {c.anio}</span>
+                      <span className="font-bold text-ink">
+                        {c.puntuacion.toFixed(2)} pts · {c.porcentaje_estimado}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
       {datos.desglose_especialidad.length > 0 && (
         <section className="mt-6 px-5">
           <h2 className="mb-1 text-sm font-bold uppercase tracking-wide text-ink-muted">

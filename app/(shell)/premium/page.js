@@ -85,7 +85,7 @@ export default function Premium() {
 
       <div className="mt-6 w-full max-w-sm rounded-2xl bg-brand-light p-4">
         <p className="text-sm font-bold uppercase tracking-wide text-brand">Precio</p>
-        <p className="mt-1 text-2xl font-extrabold text-ink">4,99€/mes</p>
+        <p className="mt-1 text-2xl font-extrabold text-ink">9,99€/mes</p>
         <p className="mt-1 text-sm text-ink-muted">Cancela cuando quieras</p>
       </div>
 
@@ -104,7 +104,7 @@ export default function Premium() {
             disabled={enviando}
             className="mt-6 flex h-14 w-full max-w-sm items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
           >
-            {enviando ? "Redirigiendo…" : "Suscribirme por 4,99€/mes"}
+            {enviando ? "Redirigiendo…" : "Suscribirme por 9,99€/mes"}
           </button>
         </>
       )}

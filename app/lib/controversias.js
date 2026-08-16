@@ -78,8 +78,64 @@ function parseArchivoMd() {
   return entradas;
 }
 
+// El .md es un fichero estático desplegado con la app (no cambia en
+// caliente), así que se parsea una sola vez por proceso en vez de en cada
+// petición — tanto getControversias() (página pública) como
+// getObjecionParaPregunta() (tarjeta de corrección del test) lo usan.
+let entradasMdCache = null;
+function getEntradasMdCacheadas() {
+  if (!entradasMdCache) {
+    entradasMdCache = parseArchivoMd();
+  }
+  return entradasMdCache;
+}
+
+// Patrones para localizar, dentro del texto libre de la objeción (redactado
+// por un humano, sin estructura fija), una letra de opción distinta de la
+// oficial que se propone como clínicamente más correcta. Cubren las formas
+// en que aparece en preguntas_controvertidas.md: "(opción B)", "opción B",
+// "es la B" / "sería el D", "..., A)" y el simple "(D)".
+const PATRONES_LETRA_RECOMENDADA = [
+  /\(opci[oó]n\s+([A-E])\)/gi,
+  /\bopci[oó]n\s+([A-E])\b/gi,
+  /\b(?:es|ser[ií]a)\s+(?:la|el)\s+([A-E])\b/gi,
+  /,\s*([A-E])\)/g,
+  /\(([A-E])\)/g,
+];
+
+// Heurística deliberadamente conservadora: si el texto no menciona ninguna
+// letra alternativa clara, o menciona más de una sin poder distinguir cuál
+// es "la" recomendada, se devuelve null en vez de adivinar. Mismo criterio
+// que preguntas_controvertidas.md ya aplica: sin confianza suficiente, no se
+// afirma nada.
+export function extraerRespuestaRecomendada(objecion, letraOficial, fila) {
+  if (!objecion || !fila) return null;
+  const candidatas = new Set();
+  for (const patron of PATRONES_LETRA_RECOMENDADA) {
+    for (const m of objecion.matchAll(patron)) {
+      candidatas.add(m[1].toUpperCase());
+    }
+  }
+  candidatas.delete((letraOficial || "").trim().toUpperCase());
+  if (candidatas.size !== 1) return null;
+  const [letra] = candidatas;
+  const texto = fila[`opcion_${letra.toLowerCase()}`];
+  if (!texto) return null;
+  return { letra, texto };
+}
+
+// Usado por la tarjeta de corrección del test (una pregunta concreta, ya con
+// sus datos de BD a mano) para no depender de la consulta agregada que hace
+// getControversias().
+export function getObjecionParaPregunta(anio, numero) {
+  const encontrada = getEntradasMdCacheadas().find(
+    (e) => e.anio === anio && e.numero === numero
+  );
+  return encontrada ? encontrada.objecion : null;
+}
+
 export async function getControversias() {
-  const entradasMd = parseArchivoMd();
+  const entradasMd = getEntradasMdCacheadas();
 
   const anios = entradasMd.map((e) => e.anio);
   const numeros = entradasMd.map((e) => e.numero);
@@ -98,7 +154,12 @@ export async function getControversias() {
     const datos = datosPorClave.get(clave);
     if (!datos) continue; // id del .md que ya no resuelve a una pregunta real
     vistos.add(clave);
-    desdeMd.push({ ...datos, objecion: e.objecion });
+    const letraOficial = (datos.correcta || "").trim().toUpperCase();
+    desdeMd.push({
+      ...datos,
+      objecion: e.objecion,
+      recomendada: extraerRespuestaRecomendada(e.objecion, letraOficial, datos),
+    });
   }
 
   const { rows: rowsBd } = await query(
@@ -106,7 +167,7 @@ export async function getControversias() {
   );
   const soloBd = rowsBd
     .filter((r) => !vistos.has(`${r.año}-${r.numero}`))
-    .map((r) => ({ ...r, objecion: null }));
+    .map((r) => ({ ...r, objecion: null, recomendada: null }));
 
   return [...desdeMd, ...soloBd].sort((a, b) => a.año - b.año || a.numero - b.numero);
 }

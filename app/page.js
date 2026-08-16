@@ -153,6 +153,20 @@ export default async function LandingPage() {
           </a>
         </div>
 
+        <a
+          href="https://play.google.com/store/apps/details?id=es.turel.mir"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mx-auto mt-5 block w-fit"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://play.google.com/intl/es/badges/static/images/badges/es_badge_web_generic.png"
+            alt="Disponible en Google Play"
+            style={{ height: "60px", width: "auto" }}
+          />
+        </a>
+
         <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
           1.004 preguntas oficiales · 23 especialidades · Convocatorias 2021–2025
         </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,19 +14,33 @@ function formatearTiempo(segundos) {
   return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+// Temporizador global del simulacro (horas:minutos:segundos), distinto del
+// formatearTiempo por pregunta que solo llega a minutos.
+function formatearTiempoLargo(segundos) {
+  const h = Math.floor(segundos / 3600);
+  const m = Math.floor((segundos % 3600) / 60);
+  const s = segundos % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
 export default function TestPregunta({ params }) {
   const router = useRouter();
   const sesionId = params.id;
 
   const [preguntas, setPreguntas] = useState(null);
   const [segundosPorPregunta, setSegundosPorPregunta] = useState(null);
+  const [modoExamen, setModoExamen] = useState("practica"); // "practica" | "simulacro"
+  const [segundosTotales, setSegundosTotales] = useState(null);
   const [indice, setIndice] = useState(0);
   const [seleccionada, setSeleccionada] = useState(null);
   const [estado, setEstado] = useState("respondiendo"); // "respondiendo" | "corregido"
   const [resultado, setResultado] = useState(null);
-  const [aciertos, setAciertos] = useState(0);
   const [tiempoRestante, setTiempoRestante] = useState(null);
+  const [tiempoTotalRestante, setTiempoTotalRestante] = useState(null);
   const [enviando, setEnviando] = useState(false);
+  const [tutorFallo, setTutorFallo] = useState(null);
+  const [tutorFalloCargando, setTutorFalloCargando] = useState(false);
+  const [tutorFalloError, setTutorFalloError] = useState("");
   const [mostrarSalir, setMostrarSalir] = useState(false);
   const [imagenAmpliada, setImagenAmpliada] = useState(false);
   const [mostrarExplicacion, setMostrarExplicacion] = useState(true);
@@ -37,6 +51,14 @@ export default function TestPregunta({ params }) {
   useEffect(() => {
     mostrarSalirRef.current = mostrarSalir;
   }, [mostrarSalir]);
+
+  // Contador de aciertos en un ref (no en estado): en modo simulacro se
+  // necesita su valor actualizado en la misma pasada async en la que se
+  // registra la última respuesta, antes de que React vuelva a renderizar.
+  const aciertosRef = useRef(0);
+  // Evita que el aviso de "se acabó el tiempo" se dispare dos veces si el
+  // intervalo llega a 0 justo cuando ya se estaba confirmando una respuesta.
+  const finalizandoPorTiempoRef = useRef(false);
 
   useEffect(() => {
     if (!imagenAmpliada) return;
@@ -56,38 +78,47 @@ export default function TestPregunta({ params }) {
     const datos = JSON.parse(guardado);
     setPreguntas(datos.preguntas);
     setSegundosPorPregunta(datos.segundosPorPregunta);
+    setModoExamen(datos.modoExamen || "practica");
+    setSegundosTotales(datos.segundosTotales || null);
     horaInicioRef.current = Date.now();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sesionId]);
 
   const preguntaActual = preguntas ? preguntas[indice] : null;
 
-  const confirmarRespuesta = useCallback(
-    async (respuestaForzada) => {
-      if (!preguntaActual || enviando) return;
-      setEnviando(true);
-      const respuestaFinal = respuestaForzada !== undefined ? respuestaForzada : seleccionada;
-      try {
-        const res = await fetch(`/api/sesiones/${sesionId}/respuestas`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pregunta_id: preguntaActual.id, respuesta_dada: respuestaFinal }),
-        });
-        const data = await res.json();
-        setResultado(data);
-        if (data.correcta) setAciertos((a) => a + 1);
-        setEstado("corregido");
-        setMostrarExplicacion(true);
-      } catch (e) {
-        setResultado({ correcta: false, respuesta_correcta: "-", explicacion: null });
-        setEstado("corregido");
-        setMostrarExplicacion(true);
-      } finally {
-        setEnviando(false);
-      }
-    },
-    [preguntaActual, seleccionada, sesionId, enviando]
-  );
+  // Sin useCallback a propósito: en modo simulacro esta función llama a
+  // siguientePregunta() más abajo, y ambas necesitan cerrar siempre sobre el
+  // indice/preguntas/seleccionada MÁS RECIENTES (memoizarla con dependencias
+  // parciales arriesgaría capturar un indice desactualizado).
+  async function confirmarRespuesta(respuestaForzada) {
+    if (!preguntaActual || enviando) return;
+    setEnviando(true);
+    const respuestaFinal = respuestaForzada !== undefined ? respuestaForzada : seleccionada;
+    let data;
+    try {
+      const res = await fetch(`/api/sesiones/${sesionId}/respuestas`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pregunta_id: preguntaActual.id, respuesta_dada: respuestaFinal }),
+      });
+      data = await res.json();
+    } catch (e) {
+      data = { correcta: false, respuesta_correcta: "-", explicacion: null };
+    }
+    if (data.correcta) aciertosRef.current += 1;
+    setEnviando(false);
+
+    // Simulacro: sin corrección ni interrupciones durante el test — se pasa
+    // directamente a la siguiente pregunta (o se finaliza si era la última).
+    if (modoExamen === "simulacro") {
+      await siguientePregunta();
+      return;
+    }
+
+    setResultado(data);
+    setEstado("corregido");
+    setMostrarExplicacion(true);
+  }
 
   // Temporizador por pregunta
   useEffect(() => {
@@ -110,6 +141,37 @@ export default function TestPregunta({ params }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tiempoRestante]);
 
+  // Temporizador global del simulacro (240 min para todo el test, no por
+  // pregunta). Se basa en horaInicioRef en vez de restar 1 en cada tick para
+  // no desincronizarse si el intervalo se pausa (pestaña en segundo plano).
+  useEffect(() => {
+    if (modoExamen !== "simulacro" || !segundosTotales || !preguntas) return;
+    function tick() {
+      const transcurridos = Math.round((Date.now() - horaInicioRef.current) / 1000);
+      const restante = Math.max(0, segundosTotales - transcurridos);
+      setTiempoTotalRestante(restante);
+      if (restante <= 0) {
+        clearInterval(intervalo);
+        finalizarPorTiempoRef.current();
+      }
+    }
+    tick();
+    const intervalo = setInterval(tick, 1000);
+    return () => clearInterval(intervalo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modoExamen, segundosTotales, preguntas]);
+
+  async function finalizarSesion() {
+    const duracionSegundos = Math.round((Date.now() - horaInicioRef.current) / 1000);
+    await fetch(`/api/sesiones/${sesionId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ aciertos: aciertosRef.current, duracion_segundos: duracionSegundos }),
+    }).catch(() => {});
+    sessionStorage.removeItem(`mir_test_${sesionId}`);
+    router.push(`/resultados/${sesionId}`);
+  }
+
   async function siguientePregunta() {
     if (indice + 1 < preguntas.length) {
       setIndice((i) => i + 1);
@@ -119,18 +181,65 @@ export default function TestPregunta({ params }) {
       setImagenAmpliada(false);
       setMostrarExplicacion(true);
       setCerrandoTarjeta(false);
+      setTutorFallo(null);
+      setTutorFalloError("");
       return;
     }
-
-    const duracionSegundos = Math.round((Date.now() - horaInicioRef.current) / 1000);
-    await fetch(`/api/sesiones/${sesionId}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ aciertos, duracion_segundos: duracionSegundos }),
-    }).catch(() => {});
-    sessionStorage.removeItem(`mir_test_${sesionId}`);
-    router.push(`/resultados/${sesionId}`);
+    await finalizarSesion();
   }
+
+  async function pedirTutorFallo() {
+    if (tutorFalloCargando || !preguntaActual) return;
+    setTutorFalloError("");
+    setTutorFalloCargando(true);
+    try {
+      const res = await fetch(`/api/preguntas/${preguntaActual.id}/tutor-fallo`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ respuesta_dada: seleccionada }),
+      });
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setTutorFallo(data.analisis);
+    } catch (e) {
+      setTutorFalloError("No se ha podido generar la explicación. Inténtalo de nuevo.");
+    } finally {
+      setTutorFalloCargando(false);
+    }
+  }
+
+  // Cuando se acaba el tiempo del simulacro, las preguntas no vistas cuentan
+  // como en blanco (sin penalización) en vez de quedar sin registrar.
+  async function finalizarPorTiempo() {
+    if (finalizandoPorTiempoRef.current) return;
+    finalizandoPorTiempoRef.current = true;
+    const restantes = preguntas.slice(indice);
+    for (let i = 0; i < restantes.length; i++) {
+      const pregunta = restantes[i];
+      const esActual = i === 0;
+      if (esActual && enviando) continue; // ya se está confirmando desde otro sitio
+      const respuestaDada = esActual ? seleccionada : null;
+      try {
+        const res = await fetch(`/api/sesiones/${sesionId}/respuestas`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pregunta_id: pregunta.id, respuesta_dada: respuestaDada }),
+        });
+        const data = await res.json().catch(() => null);
+        if (data?.correcta) aciertosRef.current += 1;
+      } catch (e) {
+        // seguimos con las siguientes preguntas aunque una falle
+      }
+    }
+    await finalizarSesion();
+  }
+
+  // "Última versión" de finalizarPorTiempo en una ref: el efecto del
+  // temporizador global solo se registra una vez, así que necesita poder
+  // invocar siempre la versión más reciente (con el indice/preguntas al día)
+  // en vez de la que existía cuando arrancó el intervalo.
+  const finalizarPorTiempoRef = useRef(() => {});
+  finalizarPorTiempoRef.current = finalizarPorTiempo;
 
   function salir() {
     sessionStorage.removeItem(`mir_test_${sesionId}`);
@@ -193,6 +302,19 @@ export default function TestPregunta({ params }) {
             {formatearTiempo(tiempoRestante)}
           </span>
         )}
+        {modoExamen === "simulacro" && tiempoTotalRestante !== null && (
+          <span
+            className={`flex flex-shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold ${
+              tiempoTotalRestante <= 300 ? "bg-danger-bg text-danger-text" : "bg-brand-light text-brand"
+            }`}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-3.5 w-3.5">
+              <circle cx="12" cy="12" r="9" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3" />
+            </svg>
+            {formatearTiempoLargo(tiempoTotalRestante)}
+          </span>
+        )}
       </header>
 
       <main
@@ -245,7 +367,7 @@ export default function TestPregunta({ params }) {
         </div>
 
         {estado === "respondiendo" && (
-          <div className="mt-6">
+          <div className="mt-6 flex flex-col gap-3">
             <button
               type="button"
               disabled={!seleccionada || enviando}
@@ -254,6 +376,16 @@ export default function TestPregunta({ params }) {
             >
               {enviando ? "Enviando…" : "Confirmar respuesta"}
             </button>
+            {modoExamen === "simulacro" && (
+              <button
+                type="button"
+                disabled={enviando}
+                onClick={() => confirmarRespuesta(null)}
+                className="h-12 w-full rounded-2xl border-2 border-track text-sm font-bold text-ink-muted active:bg-track disabled:opacity-60"
+              >
+                Dejar en blanco →
+              </button>
+            )}
           </div>
         )}
       </main>
@@ -351,26 +483,52 @@ export default function TestPregunta({ params }) {
 
             <div>
               <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
-                Explicación
+                {resultado.controversia ? "Respuesta cuestionada" : "Explicación"}
               </p>
-              {resultado.explicacion ? (
+              {resultado.controversia ? (
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-danger-text">
+                      🔴 Respuesta oficial Ministerio
+                    </p>
+                    <p className="mt-1 text-sm text-ink">
+                      {resultado.controversia.respuesta_oficial.letra} —{" "}
+                      {resultado.controversia.respuesta_oficial.texto}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-success-text">
+                      🟢 Respuesta clínicamente recomendada
+                    </p>
+                    <p className="mt-1 text-sm text-ink">
+                      {resultado.controversia.respuesta_recomendada
+                        ? `${resultado.controversia.respuesta_recomendada.letra} — ${resultado.controversia.respuesta_recomendada.texto}`
+                        : "No se identifica una única alternativa clara — ver motivo de la discrepancia."}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+                      📚 Motivo de la discrepancia
+                    </p>
+                    <p className="mt-1 text-sm text-ink-muted">
+                      {resultado.controversia.motivo || "Respuesta cuestionada — sin detalle documentado."}
+                    </p>
+                  </div>
+
+                  <Link href="/controversias" target="_blank" className="text-sm font-bold text-brand">
+                    Ver todas las controversias →
+                  </Link>
+                </div>
+              ) : resultado.explicacion ? (
                 <div className="flex flex-col items-start gap-2">
                   {resultado.explicacion_calidad === "orientativa" && (
                     <span className="rounded-full bg-warning-bg px-3 py-1 text-xs font-bold text-warning-text">
                       💡 Explicación orientativa — contrasta con tu manual
                     </span>
                   )}
-                  {resultado.explicacion_calidad === "controversia" && (
-                    <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
-                      ⚠️ Respuesta oficial cuestionada
-                    </span>
-                  )}
                   <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
-                  {resultado.explicacion_calidad === "controversia" && (
-                    <Link href="/controversias" target="_blank" className="text-sm font-bold text-brand">
-                      Ver /controversias →
-                    </Link>
-                  )}
                 </div>
               ) : resultado.explicacion_calidad === "sin_imagen" ? (
                 <div className="flex flex-col items-start gap-2">
@@ -380,19 +538,6 @@ export default function TestPregunta({ params }) {
                   <p className="text-sm leading-relaxed text-ink-muted">
                     Esta pregunta hace referencia a una imagen clínica del examen original.
                     Explicación no disponible.
-                  </p>
-                </div>
-              ) : resultado.explicacion_calidad === "controversia" ? (
-                <div className="flex flex-col items-start gap-2">
-                  <span className="flex items-center gap-1.5 rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
-                    ⚠️ Respuesta cuestionada
-                  </span>
-                  <p className="text-sm leading-relaxed text-ink-muted">
-                    La respuesta oficial de esta pregunta ha sido cuestionada.{" "}
-                    <Link href="/controversias" target="_blank" className="font-bold text-brand">
-                      Ver /controversias
-                    </Link>
-                    .
                   </p>
                 </div>
               ) : (
@@ -406,6 +551,46 @@ export default function TestPregunta({ params }) {
                 </div>
               )}
             </div>
+
+            {!resultado.correcta && !resultado.controversia && (
+              <div className="mt-5 border-t border-track pt-4">
+                {!tutorFallo && !tutorFalloCargando && (
+                  <button
+                    type="button"
+                    onClick={pedirTutorFallo}
+                    className="flex items-center gap-1.5 text-sm font-bold text-brand"
+                  >
+                    🤔 ¿Por qué he fallado esto?
+                  </button>
+                )}
+
+                {tutorFalloCargando && (
+                  <p className="text-sm text-ink-muted">Analizando tu fallo…</p>
+                )}
+
+                {tutorFalloError && !tutorFalloCargando && (
+                  <div className="flex flex-col items-start gap-2">
+                    <p className="text-sm text-danger-text">{tutorFalloError}</p>
+                    <button
+                      type="button"
+                      onClick={pedirTutorFallo}
+                      className="text-sm font-bold text-brand"
+                    >
+                      Reintentar
+                    </button>
+                  </div>
+                )}
+
+                {tutorFallo && (
+                  <div className="rounded-xl bg-brand-light p-3">
+                    <p className="mb-1 text-xs font-bold uppercase tracking-wide text-brand">
+                      🎓 Tutor IA — ¿por qué he fallado esto?
+                    </p>
+                    <p className="text-sm leading-relaxed text-ink">{tutorFallo}</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="border-t border-track px-5 py-4 pb-safe">

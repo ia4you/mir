@@ -15,9 +15,13 @@ export async function GET(request) {
 
   const { searchParams } = new URL(request.url);
   const especialidad = searchParams.get("especialidad");
+  const especialidadesParam = searchParams.get("especialidades");
   const anioParam = searchParams.get("anio");
   const cantidadParam = searchParams.get("cantidad");
   const idsParam = searchParams.get("ids");
+  // "original" (usado por el Simulacro MIR) devuelve las preguntas en su
+  // orden real de examen (por número) en vez del orden aleatorio por defecto.
+  const orden = searchParams.get("orden") === "original" ? "original" : "random";
 
   // Modo "repaso": pide un listado exacto de preguntas por id (p.ej. las
   // falladas de una sesión anterior), ignorando el resto de filtros y sin
@@ -63,7 +67,16 @@ export async function GET(request) {
 
   const condiciones = [];
   const valores = [];
-  if (especialidad) {
+  // `especialidades` (plural, coma-separada) permite mezclar varias en un
+  // mismo test (p.ej. "entrenar puntos débiles"); si viene, tiene prioridad
+  // sobre `especialidad` (singular).
+  const listaEspecialidades = especialidadesParam
+    ? especialidadesParam.split(",").map((v) => v.trim()).filter(Boolean)
+    : [];
+  if (listaEspecialidades.length > 0) {
+    valores.push(listaEspecialidades);
+    condiciones.push(`especialidad = ANY($${valores.length}::text[])`);
+  } else if (especialidad) {
     valores.push(especialidad);
     condiciones.push(`especialidad = $${valores.length}`);
   }
@@ -72,6 +85,7 @@ export async function GET(request) {
     condiciones.push(`año = $${valores.length}`);
   }
   const where = condiciones.length ? `WHERE ${condiciones.join(" AND ")}` : "";
+  const orderBy = orden === "original" ? "numero ASC" : "RANDOM()";
   valores.push(cantidad);
 
   try {
@@ -80,7 +94,7 @@ export async function GET(request) {
               opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
        FROM preguntas
        ${where}
-       ORDER BY RANDOM()
+       ORDER BY ${orderBy}
        LIMIT $${valores.length}`,
       valores
     );

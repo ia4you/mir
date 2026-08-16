@@ -101,16 +101,37 @@ export default async function ControversiasPage() {
                 })}
               </ul>
 
-              {c.objecion ? (
-                <div className="mt-4">
-                  <p className="text-sm font-bold text-danger-text">⚠️ Respuesta cuestionada</p>
-                  <p className="mt-1 text-sm text-ink-muted">{c.objecion}</p>
+              <div className="mt-4 flex flex-col gap-3 border-t border-track pt-4">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-danger-text">
+                    🔴 Respuesta oficial Ministerio
+                  </p>
+                  <p className="mt-1 text-sm text-ink">
+                    {c.correcta?.trim().toUpperCase()} —{" "}
+                    {c[`opcion_${c.correcta?.trim().toLowerCase()}`]}
+                  </p>
                 </div>
-              ) : (
-                <p className="mt-4 text-sm font-bold text-danger-text">
-                  ⚠️ Respuesta cuestionada — sin detalle disponible
-                </p>
-              )}
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-success-text">
+                    🟢 Respuesta clínicamente recomendada
+                  </p>
+                  <p className="mt-1 text-sm text-ink">
+                    {c.recomendada
+                      ? `${c.recomendada.letra} — ${c.recomendada.texto}`
+                      : "No se identifica una única alternativa clara — ver motivo de la discrepancia."}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+                    📚 Motivo de la discrepancia
+                  </p>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    {c.objecion || "Respuesta cuestionada — sin detalle documentado."}
+                  </p>
+                </div>
+              </div>
             </article>
           ))}
         </div>
