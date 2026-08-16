@@ -13,7 +13,7 @@ export default function PasswordInput({ value, onChange, placeholder, required =
         required={required}
         value={value}
         onChange={onChange}
-        className="h-12 w-full rounded-xl border border-track bg-white px-4 pr-12 font-medium text-ink focus:border-brand focus:outline-none"
+        className="h-12 w-full rounded-xl border border-track bg-card px-4 pr-12 font-medium text-ink focus:border-brand focus:outline-none"
         placeholder={placeholder}
       />
       <button

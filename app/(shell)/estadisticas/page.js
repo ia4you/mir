@@ -66,13 +66,13 @@ export default function Estadisticas() {
         </h2>
 
         {error && (
-          <p className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+          <p className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             No se ha podido cargar tu progreso.
           </p>
         )}
 
         {!error && datos && datos.especialidades.length === 0 && (
-          <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+          <div className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             Todavía no has respondido ninguna pregunta.
           </div>
         )}
@@ -84,7 +84,7 @@ export default function Estadisticas() {
         {!error && !datos && (
           <div className="flex flex-col gap-3">
             {[0, 1].map((i) => (
-              <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-white shadow-sm" />
+              <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-card shadow-sm" />
             ))}
           </div>
         )}
@@ -109,7 +109,7 @@ export default function Estadisticas() {
         </h2>
 
         {sesiones && sesiones.length === 0 && (
-          <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+          <div className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             Todavía no has completado ningún test — ¡empieza desde{" "}
             <span className="font-semibold text-brand">Práctica</span>!
           </div>
@@ -118,7 +118,7 @@ export default function Estadisticas() {
         {sesiones && sesiones.length > 0 && (
           <div className="flex flex-col gap-3">
             {sesiones.map((s) => (
-              <div key={s.id} className="rounded-2xl bg-white p-4 shadow-sm">
+              <div key={s.id} className="rounded-2xl bg-card p-4 shadow-sm">
                 <div className="flex items-start justify-between">
                   <div>
                     <p className="font-semibold text-ink">{s.especialidad || "Todas las especialidades"}</p>
@@ -149,7 +149,7 @@ export default function Estadisticas() {
         {!sesiones && (
           <div className="flex flex-col gap-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-[70px] animate-pulse rounded-2xl bg-white shadow-sm" />
+              <div key={i} className="h-[70px] animate-pulse rounded-2xl bg-card shadow-sm" />
             ))}
           </div>
         )}

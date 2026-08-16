@@ -66,7 +66,7 @@ export default function Contacto() {
                 required
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
-                className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
+                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
                 placeholder="Tu nombre"
               />
             </FieldCard>
@@ -77,7 +77,7 @@ export default function Contacto() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
+                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
                 placeholder="tu@email.com"
               />
             </FieldCard>
@@ -87,7 +87,7 @@ export default function Contacto() {
                 <select
                   value={tipo}
                   onChange={(e) => setTipo(e.target.value)}
-                  className="h-12 w-full appearance-none rounded-xl border border-track bg-white px-4 pr-10 font-semibold text-ink focus:border-brand focus:outline-none"
+                  className="h-12 w-full appearance-none rounded-xl border border-track bg-card px-4 pr-10 font-semibold text-ink focus:border-brand focus:outline-none"
                 >
                   {TIPOS.map((t) => (
                     <option key={t} value={t}>
@@ -113,7 +113,7 @@ export default function Contacto() {
                 rows={5}
                 value={mensaje}
                 onChange={(e) => setMensaje(e.target.value)}
-                className="w-full rounded-xl border border-track bg-white px-4 py-3 font-medium text-ink focus:border-brand focus:outline-none"
+                className="w-full rounded-xl border border-track bg-card px-4 py-3 font-medium text-ink focus:border-brand focus:outline-none"
                 placeholder="Cuéntanos con detalle qué ha pasado o qué te gustaría ver…"
               />
               <p

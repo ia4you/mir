@@ -59,13 +59,19 @@ export default async function ControversiasPage() {
           MIR Turel no modifica las respuestas oficiales en su banco de preguntas.
         </div>
 
+        <div className="mt-4 rounded-2xl border border-warning-border bg-warning-bg p-4 text-sm text-warning-text">
+          ⚠️ Las explicaciones de esta sección reflejan análisis clínico basado en literatura
+          médica. La respuesta válida en el examen MIR es siempre la de la plantilla oficial del
+          Ministerio de Sanidad.
+        </div>
+
         <p className="mt-5 text-sm font-semibold text-ink-muted">
           {controversias.length} preguntas documentadas
         </p>
 
         <div className="mt-8 flex flex-col gap-6">
           {controversias.map((c) => (
-            <article key={c.id} className="rounded-2xl bg-white p-5 shadow-sm">
+            <article key={c.id} className="rounded-2xl bg-card p-5 shadow-sm">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-xs font-bold text-badge-text">
                   {c.especialidad}
@@ -129,6 +135,16 @@ export default async function ControversiasPage() {
                   </p>
                   <p className="mt-1 text-sm text-ink-muted">
                     {c.objecion || "Respuesta cuestionada — sin detalle documentado."}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+                    🎯 Consejo para el examen
+                  </p>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    En el MIR debes marcar la respuesta oficial aunque la evidencia clínica pueda
+                    apuntar a otra dirección.
                   </p>
                 </div>
               </div>

@@ -86,11 +86,11 @@ export default function AdminUsuarios() {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar por nombre o email…"
-          className="h-11 w-full rounded-xl border border-track bg-white px-4 text-sm font-medium text-ink focus:border-brand focus:outline-none sm:w-72"
+          className="h-11 w-full rounded-xl border border-track bg-card px-4 text-sm font-medium text-ink focus:border-brand focus:outline-none sm:w-72"
         />
       </div>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-2xl bg-card shadow-sm">
         <table className="w-full min-w-[900px] text-left text-sm">
           <thead>
             <tr className="border-b border-track bg-panel text-xs font-bold uppercase tracking-wide text-ink-muted">
@@ -163,8 +163,8 @@ export default function AdminUsuarios() {
       </div>
 
       {confirmando && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-xs rounded-2xl bg-white p-5 shadow-lg">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-card p-5 shadow-lg">
             <p className="text-lg font-bold text-ink">¿Cambiar plan?</p>
             <p className="mt-1 text-sm text-ink-muted">
               {confirmando.nombre} pasará a{" "}

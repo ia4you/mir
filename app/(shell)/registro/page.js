@@ -89,7 +89,7 @@ export default function Registro() {
             required
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-            className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
+            className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
             placeholder="Tu nombre"
           />
         </FieldCard>
@@ -100,7 +100,7 @@ export default function Registro() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
+            className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
             placeholder="tu@email.com"
           />
         </FieldCard>
@@ -186,8 +186,8 @@ export default function Registro() {
       </form>
 
       {mostrarBienvenida && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-lg">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-sm rounded-2xl bg-card p-6 text-center shadow-lg">
             <p className="text-xl font-extrabold text-ink">¡Bienvenido/a a MIR Turel! 🎉</p>
             <p className="mt-2 font-semibold text-ink">Estás en el plan gratuito.</p>
 

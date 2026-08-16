@@ -32,7 +32,7 @@ export default function SpecialtyProgressRow({ nombre, porcentaje, total, varian
   }
 
   return (
-    <div className="rounded-2xl bg-white p-4 shadow-sm">
+    <div className="rounded-2xl bg-card p-4 shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className={`h-2.5 w-2.5 rounded-full ${color.dot}`} />

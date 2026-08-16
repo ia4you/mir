@@ -63,7 +63,7 @@ export default function AdminListaEspera() {
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-2xl bg-card shadow-sm">
         <table className="w-full min-w-[400px] text-left text-sm">
           <thead>
             <tr className="border-b border-track bg-panel text-xs font-bold uppercase tracking-wide text-ink-muted">

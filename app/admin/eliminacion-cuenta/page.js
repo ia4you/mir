@@ -85,7 +85,7 @@ export default function AdminEliminacionCuenta() {
         {resumen.total} solicitudes · {resumen.pendientes} pendientes
       </p>
 
-      <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+      <div className="overflow-x-auto rounded-2xl bg-card shadow-sm">
         <table className="w-full min-w-[500px] text-left text-sm">
           <thead>
             <tr className="border-b border-track bg-panel text-xs font-bold uppercase tracking-wide text-ink-muted">

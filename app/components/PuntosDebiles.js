@@ -66,12 +66,12 @@ export default function PuntosDebiles({ especialidades }) {
       </h2>
 
       {debiles.length === 0 ? (
-        <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+        <div className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
           Responde al menos {MIN_RESPUESTAS_PARA_CONTAR} preguntas de una especialidad para que
           detectemos tus puntos débiles.
         </div>
       ) : (
-        <div className="rounded-2xl bg-white p-4 shadow-sm">
+        <div className="rounded-2xl bg-card p-4 shadow-sm">
           <ul className="flex flex-col divide-y divide-track">
             {debiles.map((e, i) => (
               <li key={e.especialidad} className="flex items-center justify-between py-2.5">

@@ -58,7 +58,7 @@ export default function Premium() {
       <h1 className="mt-5 text-2xl font-extrabold text-ink">Plan Premium — MIR Turel</h1>
       <p className="mt-2 text-ink-muted">Prepara el MIR sin límites</p>
 
-      <div className="mt-6 w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-sm">
+      <div className="mt-6 w-full max-w-sm overflow-hidden rounded-2xl bg-card shadow-sm">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-track bg-panel">

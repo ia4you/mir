@@ -7,7 +7,7 @@ export default function DonutProgress({ porcentaje, size = 56, stroke = 6 }) {
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-      <circle cx={centro} cy={centro} r={radio} fill="none" stroke="#DEE5EA" strokeWidth={stroke} />
+      <circle cx={centro} cy={centro} r={radio} fill="none" stroke="var(--track)" strokeWidth={stroke} />
       <circle
         cx={centro}
         cy={centro}

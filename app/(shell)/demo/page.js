@@ -125,7 +125,7 @@ export default function Demo() {
         <Link
           href="/"
           aria-label="Salir de la demo"
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5 text-ink">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
@@ -167,7 +167,7 @@ export default function Demo() {
               height={400}
               className="h-auto w-full rounded-lg bg-panel object-contain"
             />
-            <span className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink/60 text-white">
+            <span className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
                 <circle cx="11" cy="11" r="7" />
                 <path strokeLinecap="round" d="m21 21-4.3-4.3" />
@@ -277,7 +277,7 @@ export default function Demo() {
                   type="button"
                   onClick={cerrarExplicacion}
                   aria-label="Cerrar explicación"
-                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
+                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-ink">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />

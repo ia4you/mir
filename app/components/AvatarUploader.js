@@ -116,7 +116,7 @@ export default function AvatarUploader() {
 
       {toast && (
         <div className="fixed inset-x-0 bottom-24 z-40 flex justify-center px-5">
-          <div className="rounded-full bg-ink px-4 py-2 text-sm font-bold text-white shadow-lg">
+          <div className="rounded-full bg-[#0E171E] px-4 py-2 text-sm font-bold text-white shadow-lg">
             {toast}
           </div>
         </div>

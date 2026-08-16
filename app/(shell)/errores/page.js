@@ -76,7 +76,7 @@ export default function MisErrores() {
       <header className="flex items-center gap-3 px-5 pt-safe">
         <Link
           href="/estadisticas"
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
           aria-label="Volver a estadísticas"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5 text-ink">
@@ -88,7 +88,7 @@ export default function MisErrores() {
 
       <div className="mt-5 px-5">
         {error && (
-          <p className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+          <p className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             No se han podido cargar tus errores.
           </p>
         )}
@@ -96,20 +96,20 @@ export default function MisErrores() {
         {!error && !datos && (
           <div className="flex flex-col gap-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-24 animate-pulse rounded-2xl bg-white shadow-sm" />
+              <div key={i} className="h-24 animate-pulse rounded-2xl bg-card shadow-sm" />
             ))}
           </div>
         )}
 
         {!error && datos && datos.total_preguntas_falladas === 0 && (
-          <div className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+          <div className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             Todavía no has fallado ninguna pregunta. ¡Sigue así!
           </div>
         )}
 
         {!error && datos && datos.total_preguntas_falladas > 0 && (
           <>
-            <div className="rounded-2xl bg-white p-4 shadow-sm">
+            <div className="rounded-2xl bg-card p-4 shadow-sm">
               <p className="text-sm text-ink-muted">
                 Has fallado{" "}
                 <span className="font-bold text-danger">{datos.total_preguntas_falladas}</span>{" "}
@@ -149,7 +149,7 @@ export default function MisErrores() {
                     </div>
                   )}
 
-                  <div className="flex flex-col gap-2 rounded-2xl bg-white p-4 shadow-sm">
+                  <div className="flex flex-col gap-2 rounded-2xl bg-card p-4 shadow-sm">
                     {g.preguntas.map((p) => (
                       <div
                         key={p.id}

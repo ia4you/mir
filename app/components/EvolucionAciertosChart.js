@@ -28,7 +28,7 @@ function TooltipPersonalizado({ active, payload }) {
   if (!punto) return null;
 
   return (
-    <div className="rounded-xl bg-ink px-3 py-2 text-xs font-semibold text-white shadow-lg">
+    <div className="rounded-xl bg-[#0E171E] px-3 py-2 text-xs font-semibold text-white shadow-lg">
       <p>{punto.payload.fechaCompleta}</p>
       <p className="mt-0.5" style={{ color: punto.color }}>
         {punto.dataKey}: {punto.value}%
@@ -60,7 +60,7 @@ export default function EvolucionAciertosChart({ sesiones }) {
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
         Evolución de aciertos
       </h2>
-      <div className="rounded-2xl bg-white p-4 shadow-sm">
+      <div className="rounded-2xl bg-card p-4 shadow-sm">
         <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1">
           {especialidades.map((esp, i) => (
             <span key={esp} className="flex items-center gap-1.5 text-xs font-semibold text-ink-muted">
@@ -74,18 +74,18 @@ export default function EvolucionAciertosChart({ sesiones }) {
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={datos} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
-            <CartesianGrid stroke="#DEE5EA" vertical={false} />
+            <CartesianGrid stroke="var(--track)" vertical={false} />
             <XAxis
               dataKey="fecha"
-              tick={{ fontSize: 11, fill: "#5F6B74" }}
+              tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
               tickLine={false}
-              axisLine={{ stroke: "#DEE5EA" }}
+              axisLine={{ stroke: "var(--track)" }}
             />
             <YAxis
               domain={[0, 100]}
               ticks={[0, 25, 50, 75, 100]}
               tickFormatter={(v) => `${v}%`}
-              tick={{ fontSize: 11, fill: "#5F6B74" }}
+              tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
               tickLine={false}
               axisLine={false}
               width={40}

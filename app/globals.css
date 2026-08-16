@@ -5,6 +5,26 @@
 :root {
   --background: #f1f6f8;
   --foreground: #0e171e;
+
+  --surface: #f1f6f8;
+  --card: #ffffff;
+  --ink: #0e171e;
+  --ink-muted: #5f6b74;
+  --track: #dee5ea;
+  --panel: #eef3f5;
+  --brand-light: #d1f3f4;
+}
+
+/* Paleta oscura: fondo/superficie de app/globals.css según CAMBIO 5.
+   El teal de marca (brand DEFAULT/dark) no cambia entre temas. */
+:root.dark {
+  --surface: #0f172a;
+  --card: #1e293b;
+  --ink: #ffffff;
+  --ink-muted: #94a3b8;
+  --track: #334155;
+  --panel: #1e293b;
+  --brand-light: #0a2c2e;
 }
 
 body {

@@ -18,7 +18,7 @@ export default function EspecialidadesStatsTable({ especialidades }) {
   if (!especialidades || especialidades.length === 0) return null;
 
   return (
-    <div className="overflow-x-auto rounded-2xl bg-white shadow-sm">
+    <div className="overflow-x-auto rounded-2xl bg-card shadow-sm">
       <table className="w-full min-w-[420px] border-collapse text-left text-sm">
         <thead>
           <tr className="border-b border-track text-xs font-bold uppercase tracking-wide text-ink-muted">

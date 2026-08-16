@@ -40,7 +40,7 @@ export default function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-track bg-white pb-safe">
+    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-track bg-card pb-safe">
       <div className="flex items-stretch justify-around px-2 pt-2">
         {TABS.map((tab) => {
           const activo = tab.href === "/inicio" ? pathname === "/inicio" : pathname.startsWith(tab.href);

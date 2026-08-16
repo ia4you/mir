@@ -39,9 +39,24 @@ export const viewport = {
   themeColor: "#00878E",
 };
 
+// Se ejecuta antes de hidratar React para fijar la clase "dark" sin parpadeo
+// (flash of wrong theme). Clave duplicada de CLAVE_TEMA en app/lib/preferencias.js.
+const SCRIPT_TEMA = `
+(function () {
+  try {
+    var t = localStorage.getItem("mir_tema");
+    var oscuro = t === "oscuro" || (t !== "claro" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    document.documentElement.classList.toggle("dark", oscuro);
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className="scroll-smooth">
+    <html lang="es" className="scroll-smooth" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
+      </head>
       <body className={`${inter.variable} font-sans antialiased bg-surface text-ink`}>
         <Providers>
           {children}

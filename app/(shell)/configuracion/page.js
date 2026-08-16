@@ -15,6 +15,7 @@ const LIMITE_DIARIO_FREE = 10;
 // Examen real: 4 horas para todo el simulacro (no por pregunta).
 const SEGUNDOS_SIMULACRO = 4 * 60 * 60;
 const OPCIONES_CANTIDAD = [
+  { valor: "5", etiqueta: "5", numero: 5 },
   { valor: "10", etiqueta: "10", numero: 10 },
   { valor: "20", etiqueta: "20", numero: 20 },
   { valor: "50", etiqueta: "50", numero: 50 },
@@ -28,7 +29,7 @@ function SelectNativo({ value, onChange, children }) {
       <select
         value={value}
         onChange={onChange}
-        className="h-12 w-full appearance-none rounded-xl border border-track bg-white px-4 pr-10 font-semibold text-ink focus:border-brand focus:outline-none"
+        className="h-12 w-full appearance-none rounded-xl border border-track bg-card px-4 pr-10 font-semibold text-ink focus:border-brand focus:outline-none"
       >
         {children}
       </select>
@@ -234,7 +235,7 @@ export default function Configuracion() {
       <header className="flex items-center gap-3 px-5 pt-safe">
         <Link
           href="/inicio"
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-card shadow-sm"
           aria-label="Volver al inicio"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5 text-ink">
@@ -411,8 +412,8 @@ export default function Configuracion() {
       </div>
 
       {limiteAlcanzado && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-xs rounded-2xl bg-white p-6 text-center shadow-lg">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-card p-6 text-center shadow-lg">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-light text-3xl">
               🌙
             </div>

@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-surface pb-10">
-      <header className="flex items-center justify-between gap-3 border-b border-track bg-white px-5 pt-safe pb-4">
+      <header className="flex items-center justify-between gap-3 border-b border-track bg-card px-5 pt-safe pb-4">
         <div>
           <h1 className="text-xl font-extrabold text-ink">Panel de administración</h1>
           <p className="text-sm text-ink-muted">MIR Turel</p>
@@ -19,7 +19,7 @@ export default async function AdminLayout({ children }) {
         </Link>
       </header>
 
-      <div className="bg-white">
+      <div className="bg-card">
         <AdminTabs />
       </div>
 

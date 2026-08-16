@@ -81,7 +81,7 @@ export default async function PreguntaPublicaPage({ params }) {
             return (
               <li
                 key={letra}
-                className="flex items-start gap-3 rounded-2xl border-2 border-track bg-white p-4"
+                className="flex items-start gap-3 rounded-2xl border-2 border-track bg-card p-4"
               >
                 <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full border border-track text-sm font-bold text-ink-muted">
                   {letra.toUpperCase()}

@@ -276,7 +276,7 @@ export default function TestPregunta({ params }) {
           type="button"
           onClick={() => setMostrarSalir(true)}
           aria-label="Salir del test"
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
+          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5 text-ink">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
@@ -342,7 +342,7 @@ export default function TestPregunta({ params }) {
               height={400}
               className="h-auto w-full rounded-lg bg-panel object-contain"
             />
-            <span className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-ink/60 text-white">
+            <span className="pointer-events-none absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 text-white">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4">
                 <circle cx="11" cy="11" r="7" />
                 <path strokeLinecap="round" d="m21 21-4.3-4.3" />
@@ -455,7 +455,7 @@ export default function TestPregunta({ params }) {
                 type="button"
                 onClick={cerrarExplicacion}
                 aria-label="Cerrar explicación"
-                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-white shadow-sm"
+                className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
               >
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-ink">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
@@ -487,6 +487,12 @@ export default function TestPregunta({ params }) {
               </p>
               {resultado.controversia ? (
                 <div className="flex flex-col gap-3">
+                  <div className="rounded-xl border border-warning-border bg-warning-bg p-3 text-xs text-warning-text">
+                    ⚠️ Las explicaciones de esta sección reflejan análisis clínico basado en
+                    literatura médica. La respuesta válida en el examen MIR es siempre la de la
+                    plantilla oficial del Ministerio de Sanidad.
+                  </div>
+
                   <div>
                     <p className="text-xs font-bold uppercase tracking-wide text-danger-text">
                       🔴 Respuesta oficial Ministerio
@@ -514,6 +520,16 @@ export default function TestPregunta({ params }) {
                     </p>
                     <p className="mt-1 text-sm text-ink-muted">
                       {resultado.controversia.motivo || "Respuesta cuestionada — sin detalle documentado."}
+                    </p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+                      🎯 Consejo para el examen
+                    </p>
+                    <p className="mt-1 text-sm text-ink-muted">
+                      En el MIR debes marcar la respuesta oficial aunque la evidencia clínica
+                      pueda apuntar a otra dirección.
                     </p>
                   </div>
 
@@ -639,8 +655,8 @@ export default function TestPregunta({ params }) {
       )}
 
       {mostrarSalir && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-xs rounded-2xl bg-white p-5 shadow-lg">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-card p-5 shadow-lg">
             <p className="text-lg font-bold text-ink">¿Salir del test?</p>
             <p className="mt-1 text-sm text-ink-muted">
               Perderás el progreso de esta sesión y no se guardará el resultado.

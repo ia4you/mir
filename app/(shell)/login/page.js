@@ -46,7 +46,7 @@ function FormularioLogin() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="h-12 w-full rounded-xl border border-track bg-white px-4 font-medium text-ink focus:border-brand focus:outline-none"
+          className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
           placeholder="tu@email.com"
         />
       </FieldCard>

@@ -111,7 +111,7 @@ export default function Inicio() {
         </h2>
 
         {error && (
-          <p className="rounded-2xl bg-white p-4 text-sm text-ink-muted shadow-sm">
+          <p className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             No se ha podido cargar tu progreso. Inténtalo de nuevo más tarde.
           </p>
         )}
@@ -132,7 +132,7 @@ export default function Inicio() {
         {!error && !datos && (
           <div className="flex flex-col gap-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-white shadow-sm" />
+              <div key={i} className="h-[76px] animate-pulse rounded-2xl bg-card shadow-sm" />
             ))}
           </div>
         )}

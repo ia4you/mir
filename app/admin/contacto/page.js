@@ -69,7 +69,7 @@ export default function AdminContacto() {
         {mensajes.map((m) => {
           const abierto = expandidoId === m.id;
           return (
-            <div key={m.id} className="rounded-2xl bg-white shadow-sm">
+            <div key={m.id} className="rounded-2xl bg-card shadow-sm">
               <button
                 type="button"
                 onClick={() => alternarExpandido(m)}
@@ -109,7 +109,7 @@ export default function AdminContacto() {
           );
         })}
         {mensajes.length === 0 && (
-          <p className="rounded-2xl bg-white p-6 text-center text-sm text-ink-muted shadow-sm">
+          <p className="rounded-2xl bg-card p-6 text-center text-sm text-ink-muted shadow-sm">
             Todavía no hay mensajes.
           </p>
         )}

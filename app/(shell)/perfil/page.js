@@ -8,6 +8,7 @@ import BottomNav from "../../components/BottomNav";
 import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
 import ToggleSwitch from "../../components/ToggleSwitch";
+import ThemeToggle from "../../components/ThemeToggle";
 import {
   getMetaDiaria,
   setMetaDiaria,
@@ -148,6 +149,10 @@ export default function Perfil() {
           )}
         </FieldCard>
 
+        <FieldCard label="Apariencia">
+          <ThemeToggle />
+        </FieldCard>
+
         <FieldCard label="Meta diaria de preguntas">
           <div className="flex items-center justify-between">
             <button
@@ -252,8 +257,8 @@ export default function Perfil() {
       </div>
 
       {confirmandoReset && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-xs rounded-2xl bg-white p-5 shadow-lg">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-card p-5 shadow-lg">
             <p className="text-lg font-bold text-ink">¿Resetear historial?</p>
             <p className="mt-1 text-sm text-ink-muted">
               Se borrarán todas las sesiones y respuestas guardadas. Esta acción no se
@@ -281,8 +286,8 @@ export default function Perfil() {
       )}
 
       {confirmandoEliminar && (
-        <div className="fixed inset-0 z-30 flex items-center justify-center bg-ink/40 px-6">
-          <div className="w-full max-w-xs rounded-2xl bg-white p-5 shadow-lg">
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-xs rounded-2xl bg-card p-5 shadow-lg">
             <p className="text-lg font-bold text-ink">¿Eliminar tu cuenta?</p>
             <p className="mt-1 text-sm text-ink-muted">
               Se borrará tu cuenta, tu historial de tests y tus respuestas de forma permanente.

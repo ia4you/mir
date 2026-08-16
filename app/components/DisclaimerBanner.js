@@ -45,7 +45,7 @@ export default function DisclaimerBanner() {
   return (
     <div
       ref={ref}
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-track bg-white px-4 pb-safe pt-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-track bg-card px-4 pb-safe pt-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]"
     >
       <div className="mx-auto flex max-w-4xl items-center gap-3">
         <p className="flex-1 text-xs leading-snug text-ink-muted">

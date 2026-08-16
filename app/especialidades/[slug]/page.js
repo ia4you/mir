@@ -77,7 +77,7 @@ export default async function EspecialidadPage({ params }) {
 
         <div className="mt-4 flex flex-col gap-5">
           {preguntas.map((p) => (
-            <div key={p.id} className="rounded-2xl bg-white p-5 shadow-sm">
+            <div key={p.id} className="rounded-2xl bg-card p-5 shadow-sm">
               <h3 className="text-base font-bold leading-snug text-ink">{p.pregunta}</h3>
               <ul className="mt-4 flex flex-col gap-2 text-sm text-ink-muted">
                 {LETRAS.map((letra) => {

@@ -109,7 +109,7 @@ export default function Resultados({ params }) {
       </header>
 
       <section className="-mt-6 px-5">
-        <div className="grid grid-cols-3 divide-x divide-track rounded-2xl bg-white py-4 shadow-sm">
+        <div className="grid grid-cols-3 divide-x divide-track rounded-2xl bg-card py-4 shadow-sm">
           <div className="text-center">
             <p className="text-2xl font-extrabold text-success">{datos.aciertos}</p>
             <p className="text-sm text-ink-muted">Aciertos</p>
@@ -129,7 +129,7 @@ export default function Resultados({ params }) {
 
       {datos.modo === "simulacro" && datos.simulacro && (
         <section className="mt-6 px-5">
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
             <p className="text-sm font-bold uppercase tracking-wide text-ink-muted">
               Resultado del Simulacro MIR {datos.simulacro.anio}
             </p>
@@ -200,7 +200,7 @@ export default function Resultados({ params }) {
 
       {resumenCargando && (
         <section className="mt-6 px-5">
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
             <p className="text-sm text-ink-muted">Analizando tu rendimiento…</p>
           </div>
         </section>
@@ -208,7 +208,7 @@ export default function Resultados({ params }) {
 
       {!resumenCargando && tieneContenidoResumen && (
         <section className="mt-6 px-5">
-          <div className="rounded-2xl bg-white p-4 shadow-sm">
+          <div className="rounded-2xl bg-card p-4 shadow-sm">
             {resumen.iaDisponible && resumen.analisisNarrativo && (
               <p className="whitespace-pre-line text-sm leading-relaxed text-ink">
                 {resumen.analisisNarrativo}

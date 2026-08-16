@@ -7,7 +7,7 @@ export default function ResumenDiario({ racha, metaDiariaPct }) {
         <p className="text-3xl font-extrabold text-brand">{racha ?? "—"}</p>
         <p className="mt-2 text-sm font-semibold text-brand">días seguidos</p>
       </div>
-      <div className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm">
+      <div className="flex items-center gap-3 rounded-2xl bg-card p-4 shadow-sm">
         <DonutProgress porcentaje={metaDiariaPct ?? 0} />
         <div>
           <p className="text-2xl font-extrabold text-ink">{metaDiariaPct ?? 0}%</p>

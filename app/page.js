@@ -103,7 +103,7 @@ export default async function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORGANIZACION) }}
       />
-      <header className="flex items-center justify-between gap-3 border-b border-track bg-white px-5 py-3 pt-safe">
+      <header className="flex items-center justify-between gap-3 border-b border-track bg-card px-5 py-3 pt-safe">
         <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
           <Logo className="h-11 w-auto sm:h-12 md:h-14 lg:h-16" />
         </Link>
@@ -131,11 +131,10 @@ export default async function LandingPage() {
 
       <section id="hero" className="px-5 pt-10 pb-12 text-center sm:pt-14 sm:pb-16">
         <h1 className="mx-auto max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
-          Prepara el MIR con preguntas oficiales
+          Te hacemos mejor respondiendo preguntas MIR
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-ink-muted sm:text-lg">
-          1.004 preguntas reales de las convocatorias 2021–2025, verificadas de los cuadernillos
-          oficiales del Ministerio de Sanidad
+          Preguntas MIR oficiales. Respuestas verificadas. Controversias documentadas.
         </p>
 
         <div className="mx-auto mt-7 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
@@ -153,22 +152,8 @@ export default async function LandingPage() {
           </a>
         </div>
 
-        <a
-          href="https://play.google.com/store/apps/details?id=es.turel.mir"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mx-auto mt-5 block w-fit"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="https://play.google.com/intl/es/badges/static/images/badges/es_badge_web_generic.png"
-            alt="Disponible en Google Play"
-            style={{ height: "60px", width: "auto" }}
-          />
-        </a>
-
         <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
-          1.004 preguntas oficiales · 23 especialidades · Convocatorias 2021–2025
+          1.004 preguntas reales · 23 especialidades · Verificadas con cuadernillos oficiales
         </p>
       </section>
 
@@ -176,7 +161,7 @@ export default async function LandingPage() {
         <h2 className="text-center text-2xl font-extrabold text-ink">Cómo funciona</h2>
         <div className="mx-auto mt-8 grid max-w-4xl gap-5 sm:grid-cols-3">
           {PASOS.map((paso, i) => (
-            <div key={paso.titulo} className="rounded-2xl bg-white p-5 text-center shadow-sm">
+            <div key={paso.titulo} className="rounded-2xl bg-card p-5 text-center shadow-sm">
               <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-light text-brand">
                 <paso.icono className="h-6 w-6" />
               </div>
@@ -197,7 +182,7 @@ export default async function LandingPage() {
             <Link
               key={e.slug}
               href={`/especialidades/${e.slug}`}
-              className="flex flex-col justify-between rounded-2xl bg-white p-4 shadow-sm active:bg-brand-light"
+              className="flex flex-col justify-between rounded-2xl bg-card p-4 shadow-sm active:bg-brand-light"
             >
               <span className="font-bold text-ink">{e.nombre}</span>
               <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>
@@ -212,7 +197,7 @@ export default async function LandingPage() {
         </h2>
         <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
           {TESTIMONIOS.map((t) => (
-            <div key={t.nombre} className="rounded-2xl bg-white p-5 shadow-sm">
+            <div key={t.nombre} className="rounded-2xl bg-card p-5 shadow-sm">
               <p className="text-sm text-ink">&ldquo;{t.texto}&rdquo;</p>
               <div className="mt-3 flex items-center gap-3">
                 <Image

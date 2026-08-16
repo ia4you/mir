@@ -13,7 +13,7 @@ export default function OptionCard({
         type="button"
         onClick={onClick}
         className={`flex w-full items-start gap-3 rounded-2xl border-2 p-4 text-left transition-colors ${
-          seleccionada ? "border-brand bg-brand-light" : "border-track bg-white"
+          seleccionada ? "border-brand bg-brand-light" : "border-track bg-card"
         }`}
       >
         <span
@@ -29,7 +29,7 @@ export default function OptionCard({
   }
 
   // modo === "corregido"
-  let estilo = "border-track bg-white";
+  let estilo = "border-track bg-card";
   let circulo = "border border-track text-ink-muted";
   let badge = null;
 
