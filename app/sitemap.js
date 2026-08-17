@@ -17,6 +17,7 @@ export default async function sitemap() {
     { url: `${BASE_URL}/demo`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/controversias`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" },
+    { url: `${BASE_URL}/privacidad`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE_URL}/login`, priority: 0.3, changeFrequency: "monthly" },
     { url: `${BASE_URL}/registro`, priority: 0.3, changeFrequency: "monthly" },
   ];

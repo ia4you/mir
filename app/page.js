@@ -235,6 +235,7 @@ export default async function LandingPage() {
           <Link href="/login">Login</Link>
           <Link href="/registro">Registro</Link>
           <Link href="/aviso-legal">Aviso legal</Link>
+          <Link href="/privacidad">Privacidad</Link>
           <Link href="/contacto">Contacto</Link>
           <a href="/sitemap.xml">Sitemap</a>
         </nav>
