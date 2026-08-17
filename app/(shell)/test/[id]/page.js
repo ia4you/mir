@@ -504,8 +504,8 @@ export default function TestPregunta({ params }) {
                   </div>
 
                   <div>
-                    <p className="text-xs font-bold uppercase tracking-wide text-success-text">
-                      🟢 Respuesta clínicamente recomendada
+                    <p className="text-xs font-bold uppercase tracking-wide text-warning-text">
+                      🟡 Respuesta alternativa defendible
                     </p>
                     <p className="mt-1 text-sm text-ink">
                       {resultado.controversia.respuesta_recomendada
