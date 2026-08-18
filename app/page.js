@@ -237,6 +237,7 @@ export default async function LandingPage() {
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
           <Link href="/contacto">Contacto</Link>
+            <Link href="/blog">Blog</Link>
           <a href="/sitemap.xml">Sitemap</a>
         </nav>
         <div className="mx-auto mt-6 max-w-4xl text-center">

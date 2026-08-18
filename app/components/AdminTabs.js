@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 
 const PESTANAS = [
   { href: "/admin", label: "Usuarios" },
+  { href: "/admin/blog", label: "Blog" },
   { href: "/admin/contacto", label: "Mensajes" },
   { href: "/admin/lista-espera", label: "Lista de espera" },
   { href: "/admin/eliminacion-cuenta", label: "Eliminación de cuenta" },
