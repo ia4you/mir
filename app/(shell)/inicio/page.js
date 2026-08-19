@@ -9,7 +9,7 @@ import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
 import PushBanner from "../../components/PushBanner";
-import AndroidPushRegister from "../../components/AndroidPushRegister";
+// import AndroidPushRegister from "../../components/AndroidPushRegister"; // deshabilitado temporalmente: falta google-services.json, causaba crash en Android tras login
 import { getMetaDiaria } from "../../lib/preferencias";
 
 const MENSAJES_ERROR = {
@@ -87,7 +87,7 @@ export default function Inicio() {
         )}
 
       <PushBanner />
-      <AndroidPushRegister />
+      {/* <AndroidPushRegister /> deshabilitado temporalmente: falta google-services.json */}
 
       <div className="mt-5">
         <ResumenDiario
