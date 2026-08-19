@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 function formatearFecha(iso) {
   return new Date(iso).toLocaleDateString("es-ES", {
@@ -16,6 +16,10 @@ export default function AdminBlog() {
   const [editando, setEditando] = useState(null);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
+  const [subiendoImagen, setSubiendoImagen] = useState(false);
+  const [errorImagen, setErrorImagen] = useState("");
+  const contenidoRef = useRef(null);
+  const inputImagenRef = useRef(null);
 
   useEffect(() => {
     cargar();
@@ -66,6 +70,48 @@ export default function AdminBlog() {
     }
   }
 
+  async function subirImagen(e) {
+    const archivo = e.target.files?.[0];
+    e.target.value = "";
+    if (!archivo) return;
+
+    setErrorImagen("");
+    setSubiendoImagen(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", archivo);
+      const res = await fetch("/api/admin/blog/upload", { method: "POST", body: formData });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErrorImagen(data.error || "No se ha podido subir la imagen.");
+        return;
+      }
+
+      const markdown = `![](${data.url})`;
+      const textarea = contenidoRef.current;
+      if (textarea) {
+        const inicio = textarea.selectionStart ?? textarea.value.length;
+        const fin = textarea.selectionEnd ?? textarea.value.length;
+        const nuevoContenido =
+          editando.contenido.slice(0, inicio) + markdown + editando.contenido.slice(fin);
+        setEditando({ ...editando, contenido: nuevoContenido });
+        // Restauramos el foco y colocamos el cursor justo tras el markdown
+        // insertado, en el siguiente tick (tras el re-render con el nuevo valor).
+        requestAnimationFrame(() => {
+          textarea.focus();
+          const posicion = inicio + markdown.length;
+          textarea.setSelectionRange(posicion, posicion);
+        });
+      } else {
+        setEditando({ ...editando, contenido: editando.contenido + markdown });
+      }
+    } catch {
+      setErrorImagen("No se ha podido subir la imagen. Comprueba tu conexión.");
+    } finally {
+      setSubiendoImagen(false);
+    }
+  }
+
   if (editando) {
     return (
       <div className="p-4 max-w-3xl mx-auto">
@@ -93,8 +139,32 @@ export default function AdminBlog() {
             />
           </div>
           <div>
-            <label className="block text-sm font-bold mb-1">Contenido (Markdown)</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-sm font-bold">Contenido (Markdown)</label>
+              <div className="flex items-center gap-2">
+                {subiendoImagen && (
+                  <span className="text-xs text-ink-muted">Subiendo...</span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => inputImagenRef.current?.click()}
+                  disabled={subiendoImagen}
+                  className="text-xs border px-2 py-1 rounded"
+                >
+                  Subir imagen
+                </button>
+                <input
+                  ref={inputImagenRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  onChange={subirImagen}
+                  className="hidden"
+                />
+              </div>
+            </div>
+            {errorImagen && <p className="text-red-600 text-xs mb-1">{errorImagen}</p>}
             <textarea
+              ref={contenidoRef}
               className="w-full border rounded px-3 py-2 font-mono text-sm"
               rows={18}
               value={editando.contenido}
