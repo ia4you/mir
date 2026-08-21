@@ -9,7 +9,14 @@ function formatearFecha(iso) {
   });
 }
 
-const POST_VACIO = { id: null, titulo: "", resumen: "", contenido: "", publicado: false };
+const POST_VACIO = {
+  id: null,
+  titulo: "",
+  resumen: "",
+  contenido: "",
+  publicado: false,
+  imagen_portada: null,
+};
 
 export default function AdminBlog() {
   const [posts, setPosts] = useState(null);
@@ -18,8 +25,11 @@ export default function AdminBlog() {
   const [error, setError] = useState("");
   const [subiendoImagen, setSubiendoImagen] = useState(false);
   const [errorImagen, setErrorImagen] = useState("");
+  const [subiendoPortada, setSubiendoPortada] = useState(false);
+  const [errorPortada, setErrorPortada] = useState("");
   const contenidoRef = useRef(null);
   const inputImagenRef = useRef(null);
+  const inputPortadaRef = useRef(null);
 
   useEffect(() => {
     cargar();
@@ -112,6 +122,30 @@ export default function AdminBlog() {
     }
   }
 
+  async function subirPortada(e) {
+    const archivo = e.target.files?.[0];
+    e.target.value = "";
+    if (!archivo) return;
+
+    setErrorPortada("");
+    setSubiendoPortada(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", archivo);
+      const res = await fetch("/api/admin/blog/upload", { method: "POST", body: formData });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setErrorPortada(data.error || "No se ha podido subir la imagen.");
+        return;
+      }
+      setEditando({ ...editando, imagen_portada: data.url });
+    } catch {
+      setErrorPortada("No se ha podido subir la imagen. Comprueba tu conexión.");
+    } finally {
+      setSubiendoPortada(false);
+    }
+  }
+
   if (editando) {
     return (
       <div className="p-4 max-w-3xl mx-auto">
@@ -137,6 +171,52 @@ export default function AdminBlog() {
               onChange={(e) => setEditando({ ...editando, resumen: e.target.value })}
               placeholder="Resumen corto para el listado del blog"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-bold mb-1">Imagen de portada (opcional)</label>
+            <p className="text-xs text-ink-muted mb-2">
+              Si no se sube ninguna, se usará automáticamente la primera imagen del contenido.
+            </p>
+            {errorPortada && <p className="text-red-600 text-xs mb-1">{errorPortada}</p>}
+            <div className="flex items-center gap-3">
+              {editando.imagen_portada && (
+                <div className="relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={editando.imagen_portada}
+                    alt="Portada"
+                    className="h-20 w-32 rounded-lg object-cover border"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setEditando({ ...editando, imagen_portada: null })}
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-white border text-xs font-bold text-red-600 shadow-sm"
+                    title="Quitar portada"
+                  >
+                    ×
+                  </button>
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => inputPortadaRef.current?.click()}
+                disabled={subiendoPortada}
+                className="text-xs border px-2 py-1 rounded"
+              >
+                {subiendoPortada
+                  ? "Subiendo..."
+                  : editando.imagen_portada
+                    ? "Cambiar portada"
+                    : "Subir portada"}
+              </button>
+              <input
+                ref={inputPortadaRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onChange={subirPortada}
+                className="hidden"
+              />
+            </div>
           </div>
           <div>
             <div className="flex items-center justify-between mb-1">

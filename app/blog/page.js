@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { query } from "@/lib/db";
+import { imagenDePost } from "@/lib/blog";
+import BlogHeader from "../components/BlogHeader";
+import BlogImagen from "../components/BlogImagen";
 
 export const dynamic = "force-dynamic";
 
@@ -14,36 +17,59 @@ function formatearFecha(iso) {
 export const metadata = {
   title: "Blog | MIR Turel",
   description: "Artículos sobre preparación del examen MIR, preguntas oficiales y controversias documentadas.",
+  alternates: { canonical: "https://mir.turel.es/blog" },
 };
 
 export default async function BlogIndex() {
   const { rows: posts } = await query(
-    `SELECT id, titulo, slug, resumen, created_at
+    `SELECT id, titulo, slug, resumen, contenido, imagen_portada, created_at
      FROM blog_posts
      WHERE publicado = true
      ORDER BY created_at DESC`
   );
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Blog de MIR Turel</h1>
-      {posts.length === 0 ? (
-        <p className="text-ink-muted">Todavía no hay artículos publicados.</p>
-      ) : (
-        <div className="space-y-6">
-          {posts.map((p) => (
-            <Link
-              key={p.id}
-              href={`/blog/${p.slug}`}
-              className="block border rounded-lg p-4 hover:border-brand transition"
-            >
-              <h2 className="text-lg font-bold">{p.titulo}</h2>
-              <p className="text-xs text-ink-muted mt-1">{formatearFecha(p.created_at)}</p>
-              {p.resumen && <p className="text-sm mt-2">{p.resumen}</p>}
-            </Link>
-          ))}
-        </div>
-      )}
+    <div className="min-h-screen bg-surface">
+      <BlogHeader />
+      <div className="mx-auto max-w-3xl px-5 py-10 sm:py-14">
+        <h1 className="text-3xl font-extrabold text-ink">Blog de MIR Turel</h1>
+        <p className="mt-2 text-ink-muted">
+          Novedades de la plataforma, preparación del examen y preguntas oficiales.
+        </p>
+
+        {posts.length === 0 ? (
+          <p className="mt-10 text-ink-muted">Todavía no hay artículos publicados.</p>
+        ) : (
+          <div className="mt-8 space-y-4">
+            {posts.map((p) => (
+              <Link
+                key={p.id}
+                href={`/blog/${p.slug}`}
+                className="flex gap-4 rounded-2xl bg-card p-4 shadow-sm transition hover:shadow-md sm:gap-5 sm:p-5"
+              >
+                <BlogImagen
+                  src={imagenDePost(p)}
+                  alt=""
+                  className="h-24 w-24 flex-shrink-0 rounded-xl sm:h-32 sm:w-32"
+                />
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-base font-bold leading-snug text-ink sm:text-lg">
+                    {p.titulo}
+                  </h2>
+                  <p className="mt-1 text-xs font-semibold text-ink-muted">
+                    {formatearFecha(p.created_at)}
+                  </p>
+                  {p.resumen && (
+                    <p className="mt-2 line-clamp-2 text-sm text-ink-muted sm:line-clamp-3">
+                      {p.resumen}
+                    </p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

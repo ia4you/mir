@@ -27,7 +27,7 @@ export async function GET() {
 export async function POST(req) {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
-  const { titulo, resumen, contenido, publicado } = await req.json();
+  const { titulo, resumen, contenido, publicado, imagen_portada } = await req.json();
   if (!titulo || !contenido) {
     return NextResponse.json({ error: "Título y contenido son obligatorios" }, { status: 400 });
   }
@@ -37,10 +37,10 @@ export async function POST(req) {
     slug = `${slug}-${Date.now().toString().slice(-5)}`;
   }
   const { rows } = await query(
-    `INSERT INTO blog_posts (titulo, slug, resumen, contenido, publicado)
-     VALUES ($1, $2, $3, $4, $5)
-     RETURNING id, titulo, slug, resumen, publicado, created_at, updated_at`,
-    [titulo, slug, resumen || null, contenido, !!publicado]
+    `INSERT INTO blog_posts (titulo, slug, resumen, contenido, publicado, imagen_portada)
+     VALUES ($1, $2, $3, $4, $5, $6)
+     RETURNING id, titulo, slug, resumen, publicado, created_at, updated_at, imagen_portada`,
+    [titulo, slug, resumen || null, contenido, !!publicado, imagen_portada || null]
   );
   return NextResponse.json(rows[0], { status: 201 });
 }

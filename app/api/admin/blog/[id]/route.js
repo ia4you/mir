@@ -15,13 +15,13 @@ export async function GET(req, { params }) {
 export async function PATCH(req, { params }) {
   const session = await getAdminSession();
   if (!session) return NextResponse.json({ error: "No autorizado" }, { status: 403 });
-  const { titulo, resumen, contenido, publicado } = await req.json();
+  const { titulo, resumen, contenido, publicado, imagen_portada } = await req.json();
   const { rows } = await query(
     `UPDATE blog_posts
-     SET titulo = $1, resumen = $2, contenido = $3, publicado = $4, updated_at = now()
-     WHERE id = $5
-     RETURNING id, titulo, slug, resumen, publicado, created_at, updated_at`,
-    [titulo, resumen || null, contenido, !!publicado, params.id]
+     SET titulo = $1, resumen = $2, contenido = $3, publicado = $4, imagen_portada = $5, updated_at = now()
+     WHERE id = $6
+     RETURNING id, titulo, slug, resumen, publicado, created_at, updated_at, imagen_portada`,
+    [titulo, resumen || null, contenido, !!publicado, imagen_portada || null, params.id]
   );
   if (rows.length === 0) return NextResponse.json({ error: "No encontrado" }, { status: 404 });
   return NextResponse.json(rows[0]);

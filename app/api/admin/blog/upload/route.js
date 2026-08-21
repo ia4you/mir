@@ -53,5 +53,8 @@ export async function POST(request) {
   const nombreArchivo = `${Date.now()}-${crypto.randomBytes(6).toString("hex")}.${extension}`;
   await writeFile(path.join(DIRECTORIO_UPLOADS, nombreArchivo), buffer);
 
-  return NextResponse.json({ url: `/blog/uploads/${nombreArchivo}` });
+  // Servida vía ruta dinámica, no como estático de /public (ver comentario en
+  // app/api/blog/uploads/[archivo]/route.js: los estáticos escritos en caliente
+  // no se sirven en producción hasta el próximo reinicio del contenedor).
+  return NextResponse.json({ url: `/api/blog/uploads/${nombreArchivo}` });
 }
