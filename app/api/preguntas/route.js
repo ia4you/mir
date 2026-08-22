@@ -16,6 +16,8 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const especialidad = searchParams.get("especialidad");
   const especialidadesParam = searchParams.get("especialidades");
+  const tema = searchParams.get("tema");
+  const temasParam = searchParams.get("temas");
   const anioParam = searchParams.get("anio");
   const cantidadParam = searchParams.get("cantidad");
   const idsParam = searchParams.get("ids");
@@ -79,6 +81,19 @@ export async function GET(request) {
   } else if (especialidad) {
     valores.push(especialidad);
     condiciones.push(`especialidad = $${valores.length}`);
+  }
+  // `temas` (plural, coma-separada) tiene la misma prioridad sobre `tema`
+  // (singular) que `especialidades` sobre `especialidad`. Es un filtro
+  // adicional, combinable con el de especialidad/especialidades (AND).
+  const listaTemas = temasParam
+    ? temasParam.split(",").map((v) => v.trim()).filter(Boolean)
+    : [];
+  if (listaTemas.length > 0) {
+    valores.push(listaTemas);
+    condiciones.push(`tema = ANY($${valores.length}::text[])`);
+  } else if (tema) {
+    valores.push(tema);
+    condiciones.push(`tema = $${valores.length}`);
   }
   if (anio !== null) {
     valores.push(anio);

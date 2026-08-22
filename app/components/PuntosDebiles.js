@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { entrenarConCriterios } from "../lib/entrenarPuntosDebiles";
 
-const MIN_RESPUESTAS_PARA_CONTAR = 3;
+// Umbral unificado con el `fiable` de /api/estadisticas/temas (antes 3).
+const MIN_RESPUESTAS_PARA_CONTAR = 5;
 const TOTAL_PREGUNTAS_ENTRENAMIENTO = 20;
 
 export default function PuntosDebiles({ especialidades }) {
@@ -21,38 +23,17 @@ export default function PuntosDebiles({ especialidades }) {
     setError("");
     setCargando(true);
     try {
-      const listaEspecialidades = debiles.map((e) => e.especialidad).join(",");
-      const resPreguntas = await fetch(
-        `/api/preguntas?especialidades=${encodeURIComponent(listaEspecialidades)}&cantidad=${TOTAL_PREGUNTAS_ENTRENAMIENTO}`
-      );
-      if (!resPreguntas.ok) throw new Error("preguntas");
-      const preguntas = await resPreguntas.json();
-      if (preguntas.length === 0) throw new Error("sin_preguntas");
-
-      const resSesion = await fetch("/api/sesiones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          modo: "puntos_debiles",
-          especialidad: null,
-          total_preguntas: preguntas.length,
-        }),
+      const resultado = await entrenarConCriterios({
+        especialidades: debiles.map((e) => e.especialidad),
+        cantidad: TOTAL_PREGUNTAS_ENTRENAMIENTO,
+        router,
       });
-
-      if (resSesion.status === 403) {
-        const data = await resSesion.json().catch(() => null);
-        setError(data?.message || "Has alcanzado tu límite diario de preguntas.");
+      if (resultado.limiteAlcanzado) {
+        setError(resultado.message);
         setCargando(false);
-        return;
       }
-      if (!resSesion.ok) throw new Error("sesion");
-      const { id } = await resSesion.json();
-
-      sessionStorage.setItem(
-        `mir_test_${id}`,
-        JSON.stringify({ preguntas, segundosPorPregunta: null })
-      );
-      router.push(`/test/${id}`);
+      // Éxito: no se hace setCargando(false) a propósito, igual que antes
+      // del refactor — el componente se desmonta al navegar a /test/[id].
     } catch (e) {
       setError("No se ha podido preparar el test. Inténtalo de nuevo.");
       setCargando(false);
