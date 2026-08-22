@@ -5,6 +5,7 @@ import Link from "next/link";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import EspecialidadesStatsTable from "../../components/EspecialidadesStatsTable";
+import TemasPorEspecialidad from "../../components/TemasPorEspecialidad";
 import PuntosDebiles from "../../components/PuntosDebiles";
 import EvolucionAciertosChart from "../../components/EvolucionAciertosChart";
 import { getMetaDiaria } from "../../lib/preferencias";
@@ -26,6 +27,7 @@ function formatearFecha(iso) {
 
 export default function Estadisticas() {
   const [datos, setDatos] = useState(null);
+  const [temas, setTemas] = useState(null);
   const [sesiones, setSesiones] = useState(null);
   const [error, setError] = useState(false);
 
@@ -34,6 +36,11 @@ export default function Estadisticas() {
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then(setDatos)
       .catch(() => setError(true));
+
+    fetch("/api/estadisticas/temas")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then((d) => setTemas(d.temas))
+      .catch(() => setTemas([]));
 
     fetch("/api/sesiones")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
@@ -93,6 +100,8 @@ export default function Estadisticas() {
       {!error && datos && datos.especialidades.length > 0 && (
         <PuntosDebiles especialidades={datos.especialidades} />
       )}
+
+      {temas && temas.length > 0 && <TemasPorEspecialidad temas={temas} />}
 
       <section className="mt-7 px-5">
         <Link
