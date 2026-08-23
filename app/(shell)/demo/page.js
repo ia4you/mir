@@ -308,11 +308,6 @@ export default function Demo() {
               </p>
               {resultado.explicacion ? (
                 <div className="flex flex-col items-start gap-2">
-                  {resultado.explicacion_calidad === "orientativa" && (
-                    <span className="rounded-full bg-warning-bg px-3 py-1 text-xs font-bold text-warning-text">
-                      💡 Explicación orientativa — contrasta con tu manual
-                    </span>
-                  )}
                   {resultado.explicacion_calidad === "controversia" && (
                     <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
                       ⚠️ Respuesta oficial cuestionada

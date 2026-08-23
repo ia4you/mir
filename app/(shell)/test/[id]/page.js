@@ -539,11 +539,6 @@ export default function TestPregunta({ params }) {
                 </div>
               ) : resultado.explicacion ? (
                 <div className="flex flex-col items-start gap-2">
-                  {resultado.explicacion_calidad === "orientativa" && (
-                    <span className="rounded-full bg-warning-bg px-3 py-1 text-xs font-bold text-warning-text">
-                      💡 Explicación orientativa — contrasta con tu manual
-                    </span>
-                  )}
                   <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
                 </div>
               ) : resultado.explicacion_calidad === "sin_imagen" ? (
