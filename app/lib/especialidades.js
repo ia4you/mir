@@ -102,6 +102,40 @@ export async function getPreguntasMuestra(nombreEspecialidad, limite = 3) {
   return rows;
 }
 
+export const PREGUNTAS_POR_PAGINA = 12;
+
+// Listado paginado con TODAS las preguntas de la especialidad (a diferencia
+// de getPreguntasMuestra, sin excluir las que referencian una imagen): es la
+// fuente del enlazado interno real hacia /preguntas/[especialidad]/[id], para
+// que Google pueda rastrear cada pregunta individual desde un <a> real y no
+// solo descubrirla vía sitemap.xml.
+export async function getPreguntasPaginadas(nombreEspecialidad, pagina = 1) {
+  const offset = (pagina - 1) * PREGUNTAS_POR_PAGINA;
+  const { rows } = await query(
+    `SELECT id, pregunta
+     FROM preguntas
+     WHERE especialidad = $1
+     ORDER BY id
+     LIMIT $2 OFFSET $3`,
+    [nombreEspecialidad, PREGUNTAS_POR_PAGINA, offset]
+  );
+  return rows;
+}
+
+// Para el enlace "siguiente pregunta" en la página individual: la pregunta
+// con id inmediatamente superior dentro de la misma especialidad (o null si
+// es la última).
+export async function getSiguientePregunta(nombreEspecialidad, idActual) {
+  const { rows } = await query(
+    `SELECT id FROM preguntas
+     WHERE especialidad = $1 AND id > $2
+     ORDER BY id
+     LIMIT 1`,
+    [nombreEspecialidad, idActual]
+  );
+  return rows[0] || null;
+}
+
 // Página pública /preguntas/[especialidad]/[id]: solo devuelve la pregunta
 // si su especialidad real corresponde al slug de la URL (evita que
 // /preguntas/cardiologia/42 sirva una pregunta de otra especialidad si

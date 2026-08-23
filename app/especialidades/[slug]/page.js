@@ -1,6 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getEspecialidadPorSlug, getPreguntasMuestra } from "../../lib/especialidades";
+import {
+  getEspecialidadPorSlug,
+  getPreguntasPaginadas,
+  PREGUNTAS_POR_PAGINA,
+} from "../../lib/especialidades";
+import ListaPreguntasEspecialidad from "../../components/ListaPreguntasEspecialidad";
+import PaginacionEspecialidad from "../../components/PaginacionEspecialidad";
 
 // El build de Dokploy no tiene acceso a mir-db, así que generateStaticParams
 // no puede enumerar slugs en build time (devuelve []). Next necesita esta
@@ -28,13 +34,12 @@ export async function generateMetadata({ params }) {
   };
 }
 
-const LETRAS = ["a", "b", "c", "d"];
-
 export default async function EspecialidadPage({ params }) {
   const especialidad = await getEspecialidadPorSlug(params.slug);
   if (!especialidad) notFound();
 
-  const preguntas = await getPreguntasMuestra(especialidad.nombre, 5);
+  const totalPaginas = Math.max(1, Math.ceil(especialidad.total / PREGUNTAS_POR_PAGINA));
+  const preguntas = await getPreguntasPaginadas(especialidad.nombre, 1);
 
   const schemaCurso = {
     "@context": "https://schema.org",
@@ -57,6 +62,12 @@ export default async function EspecialidadPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaCurso) }}
       />
+      {/* Next.js hoista cualquier <link> renderizado en la página al <head>
+          real del documento — no hace falta pasar por generateMetadata para
+          esto (que no tiene un campo dedicado a rel=next/prev). */}
+      {totalPaginas > 1 && (
+        <link rel="next" href={`https://mir.turel.es/especialidades/${especialidad.slug}/pagina/2`} />
+      )}
       <div className="mx-auto max-w-2xl">
         <Link href="/" className="text-sm font-semibold text-brand">
           ← Volver a inicio
@@ -73,38 +84,23 @@ export default async function EspecialidadPage({ params }) {
           {especialidad.anioMax}
         </p>
 
-        <h2 className="mt-10 text-xl font-extrabold text-ink">Preguntas de ejemplo</h2>
+        <h2 className="mt-10 text-xl font-extrabold text-ink">
+          Todas las preguntas de {especialidad.nombre}
+        </h2>
 
-        <div className="mt-4 flex flex-col gap-5">
-          {preguntas.map((p) => (
-            <div key={p.id} className="rounded-2xl bg-card p-5 shadow-sm">
-              <h3 className="text-base font-bold leading-snug text-ink">{p.pregunta}</h3>
-              <ul className="mt-4 flex flex-col gap-2 text-sm text-ink-muted">
-                {LETRAS.map((letra) => {
-                  const opcion = p[`opcion_${letra}`];
-                  if (!opcion || !opcion.trim()) return null;
-                  return (
-                    <li key={letra}>
-                      <span className="font-bold text-ink">{letra.toUpperCase()})</span> {opcion}
-                    </li>
-                  );
-                })}
-              </ul>
-              <Link
-                href={`/preguntas/${especialidad.slug}/${p.id}`}
-                className="mt-4 inline-block text-sm font-bold text-brand"
-              >
-                Ver pregunta completa →
-              </Link>
-            </div>
-          ))}
-        </div>
+        <ListaPreguntasEspecialidad preguntas={preguntas} especialidadSlug={especialidad.slug} />
+
+        <PaginacionEspecialidad
+          especialidadSlug={especialidad.slug}
+          paginaActual={1}
+          totalPaginas={totalPaginas}
+        />
 
         <Link
           href="/registro"
           className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
         >
-          Ver todas las preguntas de {especialidad.nombre}
+          Practica con todas las preguntas → Crear cuenta gratis
         </Link>
 
         <Link

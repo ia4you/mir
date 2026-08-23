@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getPreguntaPublica } from "../../../lib/especialidades";
+import { getPreguntaPublica, getSiguientePregunta } from "../../../lib/especialidades";
 
 // Igual que /especialidades/[slug]: el build de Dokploy no tiene acceso a
 // mir-db, así que generateStaticParams no puede enumerar preguntas en build
@@ -46,6 +46,11 @@ export async function generateMetadata({ params }) {
 export default async function PreguntaPublicaPage({ params }) {
   const pregunta = await getPreguntaPublica(params.especialidad, params.id);
   if (!pregunta) notFound();
+
+  // Encadena las preguntas de una misma especialidad con un enlace real
+  // (id ascendente), para repartir enlazado interno más allá de las que ya
+  // aparecen en el listado de /especialidades/[slug].
+  const siguiente = await getSiguientePregunta(pregunta.especialidad, pregunta.id);
 
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
@@ -125,6 +130,15 @@ export default async function PreguntaPublicaPage({ params }) {
         >
           Ver más preguntas de {pregunta.especialidad} →
         </Link>
+
+        {siguiente && (
+          <Link
+            href={`/preguntas/${pregunta.especialidadSlug}/${siguiente.id}`}
+            className="mt-3 block text-center text-sm font-semibold text-ink-muted hover:text-brand"
+          >
+            Siguiente pregunta de {pregunta.especialidad} →
+          </Link>
+        )}
       </div>
     </div>
   );
