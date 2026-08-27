@@ -78,7 +78,7 @@ export default function Inicio() {
         datos.especialidades.every((e) => e.total === 0) && (
           <div className="mx-5 mt-4 rounded-2xl bg-brand-light p-4">
             <p className="text-sm font-semibold text-ink">
-              Estás en el plan gratuito — puedes responder hasta 10 preguntas al día.
+              Estás en el plan gratuito — puedes responder hasta 15 preguntas al día.
             </p>
             <Link href="/premium" className="mt-1 inline-block text-sm font-bold text-brand">
               ¿Quieres acceso ilimitado? Hazte premium →

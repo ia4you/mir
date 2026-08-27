@@ -5,7 +5,7 @@ import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-const LIMITE_DIARIO_FREE = 10;
+const LIMITE_DIARIO_FREE = 15;
 
 // Solo sesiones ya finalizadas (duracion_segundos se rellena al terminar el
 // test en /test/[id]); las abandonadas a medias no aparecen en el historial.
@@ -86,7 +86,7 @@ export async function POST(request) {
           {
             error: "limite_diario",
             message:
-              "Has alcanzado el límite diario de 10 preguntas. Hazte premium para acceso ilimitado.",
+              "Has alcanzado el límite diario de 15 preguntas. Hazte premium para acceso ilimitado.",
           },
           { status: 403 }
         );

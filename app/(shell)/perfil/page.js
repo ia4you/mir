@@ -131,7 +131,7 @@ export default function Perfil() {
               {session?.user?.plan === "premium" ? "PREMIUM" : "GRATUITO"}
             </span>
             <span className="text-sm text-ink-muted">
-              {session?.user?.plan === "premium" ? "Preguntas ilimitadas" : "10 preguntas/día"}
+              {session?.user?.plan === "premium" ? "Preguntas ilimitadas" : "15 preguntas/día"}
             </span>
           </div>
 

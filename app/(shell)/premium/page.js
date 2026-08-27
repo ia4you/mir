@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const FILAS_COMPARATIVA = [
-  { caracteristica: "Preguntas por día", free: "10", premium: "∞" },
+  { caracteristica: "Preguntas por día", free: "15", premium: "∞" },
   { caracteristica: "Acceso a especialidades", free: "Todas", premium: "Todas" },
   { caracteristica: "Historial y estadísticas", free: true, premium: true },
   { caracteristica: "Repaso de fallos", free: true, premium: true },

@@ -193,7 +193,7 @@ export default function Registro() {
 
             <ul className="mt-4 flex flex-col gap-2 text-left text-sm text-ink">
               <li className="flex items-start gap-2">
-                <span className="text-brand">•</span> Hasta 10 preguntas por día
+                <span className="text-brand">•</span> Hasta 15 preguntas por día
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-brand">•</span> Acceso a las 23 especialidades

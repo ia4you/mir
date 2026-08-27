@@ -11,7 +11,7 @@ import Chip from "../../components/Chip";
 import { getTemporizadorDefecto } from "../../lib/preferencias";
 
 const ANIOS = ["2021", "2022", "2023", "2024", "2025"];
-const LIMITE_DIARIO_FREE = 10;
+const LIMITE_DIARIO_FREE = 15;
 // Examen real: 4 horas para todo el simulacro (no por pregunta).
 const SEGUNDOS_SIMULACRO = 4 * 60 * 60;
 const OPCIONES_CANTIDAD = [
@@ -419,7 +419,7 @@ export default function Configuracion() {
             </div>
             <p className="mt-3 text-lg font-extrabold text-ink">Has alcanzado tu límite diario</p>
             <p className="mt-2 text-sm text-ink-muted">
-              Hoy ya has respondido 10 preguntas. Vuelve mañana para seguir practicando, o
+              Hoy ya has respondido 15 preguntas. Vuelve mañana para seguir practicando, o
               hazte premium para practicar sin límites.
             </p>
             <div className="mt-5 flex flex-col gap-2">
