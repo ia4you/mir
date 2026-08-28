@@ -241,6 +241,29 @@ export default async function LandingPage() {
         </Link>
       </section>
 
+      <section className="px-5 py-10 text-center">
+        <div className="mx-auto max-w-md rounded-2xl bg-panel p-5">
+          <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+            También te puede interesar
+          </p>
+          <p className="mt-2 text-sm font-bold text-ink">
+            ¿Preparas el EIR de Enfermería, no el MIR de Medicina?
+          </p>
+          <p className="mt-1 text-sm text-ink-muted">
+            Tenemos un proyecto hermano con el mismo enfoque: preguntas oficiales
+            verificadas para el examen EIR.
+          </p>
+          <a
+            href="https://eir.turel.es"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block text-sm font-bold text-brand"
+          >
+            Visitar eir.turel.es →
+          </a>
+        </div>
+      </section>
+
       <footer className="border-t border-track px-5 py-10 text-sm text-ink-muted">
         <nav className="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-6 gap-y-2 text-center font-semibold text-brand">
           <a href="#hero">Inicio</a>

@@ -104,6 +104,19 @@ export default async function BlogPost({ params }) {
               prose-li:text-ink"
             dangerouslySetInnerHTML={{ __html: html }}
           />
+
+          <p className="mt-8 border-t border-track pt-6 text-sm text-ink-muted">
+            ¿Preparas el EIR en vez del MIR? Visita{" "}
+            <a
+              href="https://eir.turel.es"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-brand"
+            >
+              eir.turel.es
+            </a>
+            , el mismo banco de preguntas oficiales para Enfermería.
+          </p>
         </article>
 
         <aside className="mt-10 space-y-6 lg:mt-0">
