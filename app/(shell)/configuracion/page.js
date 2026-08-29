@@ -57,7 +57,6 @@ export default function Configuracion() {
   const [especialidades, setEspecialidades] = useState([]);
   const [especialidad, setEspecialidad] = useState("");
   const [anio, setAnio] = useState("");
-  const [anioSimulacro, setAnioSimulacro] = useState("");
   const [cantidad, setCantidad] = useState("20");
   const [temporizadorActivo, setTemporizadorActivo] = useState(
     () => getTemporizadorDefecto().activo
@@ -109,24 +108,16 @@ export default function Configuracion() {
       setError("El simulacro MIR completo es una función premium.");
       return;
     }
-    if (!anioSimulacro) {
-      setError("Elige el año del simulacro.");
-      return;
-    }
     setError("");
     setEnviando(true);
     try {
-      const params = new URLSearchParams({
-        anio: anioSimulacro,
-        cantidad: "210",
-        orden: "original",
-      });
+      const params = new URLSearchParams({ modo: "simulacro" });
       const resPreguntas = await fetch(`/api/preguntas?${params.toString()}`);
       if (!resPreguntas.ok) throw new Error("No se pudieron cargar las preguntas");
       const preguntas = await resPreguntas.json();
 
       if (preguntas.length === 0) {
-        setError("No hay preguntas disponibles para ese año.");
+        setError("No hay preguntas disponibles para el simulacro.");
         setEnviando(false);
         return;
       }
@@ -181,7 +172,8 @@ export default function Configuracion() {
       const params = new URLSearchParams();
       if (especialidad) params.set("especialidad", especialidad);
       if (anio) params.set("anio", anio);
-      params.set("cantidad", cantidad === "simulacro" ? "210" : cantidad);
+      const opcionCantidad = OPCIONES_CANTIDAD.find((o) => o.valor === cantidad);
+      params.set("cantidad", opcionCantidad ? String(opcionCantidad.numero) : cantidad);
 
       const resPreguntas = await fetch(`/api/preguntas?${params.toString()}`);
       if (!resPreguntas.ok) throw new Error("No se pudieron cargar las preguntas");
@@ -364,27 +356,18 @@ export default function Configuracion() {
         )}
 
         {modoTest === "simulacro" && (
-          <>
-            <FieldCard label="Año del simulacro">
-              <SelectNativo value={anioSimulacro} onChange={(e) => setAnioSimulacro(e.target.value)}>
-                <option value="">Elige un año</option>
-                {ANIOS.map((a) => (
-                  <option key={a} value={a}>
-                    Simulacro MIR {a}
-                  </option>
-                ))}
-              </SelectNativo>
-            </FieldCard>
-
-            <FieldCard label="Cómo funciona el simulacro">
-              <ul className="flex flex-col gap-2 text-sm text-ink">
-                <li>📝 Examen completo del año elegido, en su orden original.</li>
-                <li>⏱️ Temporizador real de 4 horas (240 minutos) para todo el examen.</li>
-                <li>🚫 Sin corrección ni interrupciones durante el test — solo al terminar.</li>
-                <li>🎯 Puntuación final con la fórmula oficial: aciertos − 1/3 de fallos.</li>
-              </ul>
-            </FieldCard>
-          </>
+          <FieldCard label="Cómo funciona el simulacro">
+            <ul className="flex flex-col gap-2 text-sm text-ink">
+              <li>
+                📝 Examen de 210 preguntas, combinando los 5 años disponibles (2021-2025) y
+                repartidas por especialidad según su peso histórico real en las convocatorias
+                oficiales.
+              </li>
+              <li>⏱️ Temporizador real de 4 horas (240 minutos) para todo el examen.</li>
+              <li>🚫 Sin corrección ni interrupciones durante el test — solo al terminar.</li>
+              <li>🎯 Puntuación final con la fórmula oficial: aciertos − 1/3 de fallos.</li>
+            </ul>
+          </FieldCard>
         )}
 
         {error && (
@@ -399,7 +382,7 @@ export default function Configuracion() {
           disabled={
             enviando ||
             (modoTest === "practica" && restanteHoy === 0) ||
-            (modoTest === "simulacro" && (!esPremium || !anioSimulacro))
+            (modoTest === "simulacro" && !esPremium)
           }
           className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
         >
