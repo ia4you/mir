@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   CartesianGrid,
   Line,
@@ -38,6 +39,9 @@ function TooltipPersonalizado({ active, payload }) {
 }
 
 export default function EvolucionAciertosChart({ sesiones }) {
+  // null = mostrar todas las especialidades (comportamiento por defecto).
+  const [especialidadActiva, setEspecialidadActiva] = useState(null);
+
   if (!sesiones || sesiones.length === 0) return null;
 
   // sesiones llega ordenado por fecha DESC (más reciente primero); para el
@@ -45,6 +49,16 @@ export default function EvolucionAciertosChart({ sesiones }) {
   const ultimas10 = [...sesiones].slice(0, 10).reverse();
 
   const especialidades = [...new Set(ultimas10.map((s) => s.especialidad || TODAS))];
+
+  const alternarEspecialidad = (esp) => {
+    setEspecialidadActiva((actual) =>
+      esp === TODAS || actual === esp ? null : esp
+    );
+  };
+
+  const lineasVisibles = especialidadActiva
+    ? especialidades.filter((esp) => esp === especialidadActiva)
+    : especialidades;
 
   const datos = ultimas10.map((s) => {
     const especialidad = s.especialidad || TODAS;
@@ -62,15 +76,26 @@ export default function EvolucionAciertosChart({ sesiones }) {
       </h2>
       <div className="rounded-2xl bg-card p-4 shadow-sm">
         <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1">
-          {especialidades.map((esp, i) => (
-            <span key={esp} className="flex items-center gap-1.5 text-xs font-semibold text-ink-muted">
-              <span
-                className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: COLORES[i % COLORES.length] }}
-              />
-              {esp}
-            </span>
-          ))}
+          {especialidades.map((esp, i) => {
+            const activa = especialidadActiva === esp || (!especialidadActiva && esp === TODAS);
+            const atenuada = especialidadActiva !== null && !activa;
+            return (
+              <button
+                key={esp}
+                type="button"
+                onClick={() => alternarEspecialidad(esp)}
+                className={`flex cursor-pointer items-center gap-1.5 rounded-full px-1.5 py-0.5 text-xs font-semibold text-ink-muted transition-opacity ${
+                  atenuada ? "opacity-40" : "opacity-100"
+                } ${activa ? "ring-1 ring-inset ring-[var(--track)]" : ""}`}
+              >
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: COLORES[i % COLORES.length] }}
+                />
+                {esp}
+              </button>
+            );
+          })}
         </div>
         <ResponsiveContainer width="100%" height={220}>
           <LineChart data={datos} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
@@ -91,18 +116,21 @@ export default function EvolucionAciertosChart({ sesiones }) {
               width={40}
             />
             <Tooltip content={<TooltipPersonalizado />} />
-            {especialidades.map((esp, i) => (
-              <Line
-                key={esp}
-                type="monotone"
-                dataKey={esp}
-                stroke={COLORES[i % COLORES.length]}
-                strokeWidth={2}
-                dot={{ r: 4, fill: COLORES[i % COLORES.length] }}
-                activeDot={{ r: 6 }}
-                connectNulls
-              />
-            ))}
+            {lineasVisibles.map((esp) => {
+              const i = especialidades.indexOf(esp);
+              return (
+                <Line
+                  key={esp}
+                  type="monotone"
+                  dataKey={esp}
+                  stroke={COLORES[i % COLORES.length]}
+                  strokeWidth={2}
+                  dot={{ r: 4, fill: COLORES[i % COLORES.length] }}
+                  activeDot={{ r: 6 }}
+                  connectNulls
+                />
+              );
+            })}
           </LineChart>
         </ResponsiveContainer>
       </div>
