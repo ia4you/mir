@@ -29,6 +29,7 @@ export default function Estadisticas() {
   const [datos, setDatos] = useState(null);
   const [temas, setTemas] = useState(null);
   const [sesiones, setSesiones] = useState(null);
+  const [sesionesEvolucion, setSesionesEvolucion] = useState(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -46,6 +47,14 @@ export default function Estadisticas() {
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then(setSesiones)
       .catch(() => setSesiones([]));
+
+    // Una sola carga al montar: la agrupación por especialidad ya viene
+    // resuelta del backend, así que el clic en la leyenda del gráfico solo
+    // cambia qué grupo ya cargado se pinta, sin volver a pedir datos.
+    fetch("/api/sesiones/evolucion")
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then(setSesionesEvolucion)
+      .catch(() => setSesionesEvolucion([]));
   }, []);
 
   return (
@@ -61,9 +70,9 @@ export default function Estadisticas() {
         />
       </div>
 
-      {sesiones && sesiones.length > 0 && (
+      {sesionesEvolucion && sesionesEvolucion.length > 0 && (
         <div className="mt-7">
-          <EvolucionAciertosChart sesiones={sesiones} />
+          <EvolucionAciertosChart sesionesEvolucion={sesionesEvolucion} />
         </div>
       )}
 

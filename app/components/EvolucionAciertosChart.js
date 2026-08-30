@@ -23,32 +23,35 @@ function formatearFechaCorta(iso) {
 
 function TooltipPersonalizado({ active, payload }) {
   if (!active || !payload || payload.length === 0) return null;
-  // En cada sesión solo hay una especialidad con valor real; el resto de
-  // series quedan sin dato en ese punto y no deben aparecer en el tooltip.
-  const punto = payload.find((p) => typeof p.value === "number");
-  if (!punto) return null;
+  const punto = payload[0];
 
   return (
     <div className="rounded-xl bg-[#0E171E] px-3 py-2 text-xs font-semibold text-white shadow-lg">
       <p>{punto.payload.fechaCompleta}</p>
       <p className="mt-0.5" style={{ color: punto.color }}>
-        {punto.dataKey}: {punto.value}%
+        {punto.value}%
       </p>
     </div>
   );
 }
 
-export default function EvolucionAciertosChart({ sesiones }) {
-  // null = mostrar todas las especialidades (comportamiento por defecto).
+export default function EvolucionAciertosChart({ sesionesEvolucion }) {
+  // null = "Todas las especialidades" (comportamiento por defecto).
   const [especialidadActiva, setEspecialidadActiva] = useState(null);
 
-  if (!sesiones || sesiones.length === 0) return null;
+  if (!sesionesEvolucion || sesionesEvolucion.length === 0) return null;
 
-  // sesiones llega ordenado por fecha DESC (más reciente primero); para el
-  // eje X se quiere orden cronológico ascendente con las últimas 10.
-  const ultimas10 = [...sesiones].slice(0, 10).reverse();
+  // El backend ya entrega, por especialidad, sus propias últimas 10 sesiones
+  // (ROW_NUMBER PARTITION BY especialidad en /api/sesiones/evolucion),
+  // ordenadas ASC por fecha. Aquí solo se agrupan por especialidad.
+  const porEspecialidad = new Map();
+  for (const s of sesionesEvolucion) {
+    const esp = s.especialidad || TODAS;
+    if (!porEspecialidad.has(esp)) porEspecialidad.set(esp, []);
+    porEspecialidad.get(esp).push(s);
+  }
 
-  const especialidades = [...new Set(ultimas10.map((s) => s.especialidad || TODAS))];
+  const especialidades = [...porEspecialidad.keys()];
 
   const alternarEspecialidad = (esp) => {
     setEspecialidadActiva((actual) =>
@@ -56,18 +59,21 @@ export default function EvolucionAciertosChart({ sesiones }) {
     );
   };
 
-  const lineasVisibles = especialidadActiva
-    ? especialidades.filter((esp) => esp === especialidadActiva)
-    : especialidades;
+  const especialidadVisible = especialidadActiva ?? TODAS;
+  const serieActiva = porEspecialidad.get(especialidadVisible) ?? [];
 
-  const datos = ultimas10.map((s) => {
-    const especialidad = s.especialidad || TODAS;
-    return {
-      fecha: formatearFechaCorta(s.fecha),
-      fechaCompleta: `${formatearFechaCorta(s.fecha)} · ${especialidad}`,
-      [especialidad]: s.porcentaje,
-    };
-  });
+  // Eje X por posición relativa (sesión 1, 2, 3...), no por fecha real: cada
+  // especialidad tiene su propia ventana temporal y mezclarlas en un eje de
+  // fechas compartido dejaría el gráfico disperso. La fecha real se conserva
+  // en el tooltip vía fechaCompleta.
+  const datos = serieActiva.map((s, i) => ({
+    posicion: i + 1,
+    fechaCompleta: `${formatearFechaCorta(s.fecha)} · ${especialidadVisible}`,
+    valor: s.porcentaje,
+  }));
+
+  const datosInsuficientes = datos.length < 2;
+  const colorActivo = COLORES[especialidades.indexOf(especialidadVisible) % COLORES.length];
 
   return (
     <section className="px-5">
@@ -77,8 +83,8 @@ export default function EvolucionAciertosChart({ sesiones }) {
       <div className="rounded-2xl bg-card p-4 shadow-sm">
         <div className="mb-2 flex flex-wrap gap-x-4 gap-y-1">
           {especialidades.map((esp, i) => {
-            const activa = especialidadActiva === esp || (!especialidadActiva && esp === TODAS);
-            const atenuada = especialidadActiva !== null && !activa;
+            const activa = esp === especialidadVisible;
+            const atenuada = !activa;
             return (
               <button
                 key={esp}
@@ -97,42 +103,45 @@ export default function EvolucionAciertosChart({ sesiones }) {
             );
           })}
         </div>
-        <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={datos} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
-            <CartesianGrid stroke="var(--track)" vertical={false} />
-            <XAxis
-              dataKey="fecha"
-              tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
-              tickLine={false}
-              axisLine={{ stroke: "var(--track)" }}
-            />
-            <YAxis
-              domain={[0, 100]}
-              ticks={[0, 25, 50, 75, 100]}
-              tickFormatter={(v) => `${v}%`}
-              tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
-              tickLine={false}
-              axisLine={false}
-              width={40}
-            />
-            <Tooltip content={<TooltipPersonalizado />} />
-            {lineasVisibles.map((esp) => {
-              const i = especialidades.indexOf(esp);
-              return (
-                <Line
-                  key={esp}
-                  type="monotone"
-                  dataKey={esp}
-                  stroke={COLORES[i % COLORES.length]}
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: COLORES[i % COLORES.length] }}
-                  activeDot={{ r: 6 }}
-                  connectNulls
-                />
-              );
-            })}
-          </LineChart>
-        </ResponsiveContainer>
+        {datosInsuficientes ? (
+          <div className="flex h-[220px] items-center justify-center px-6 text-center text-sm font-semibold text-ink-muted">
+            {especialidadActiva
+              ? `Necesitas al menos 2 sesiones de ${especialidadActiva} para ver su evolución. Llevas ${datos.length}.`
+              : `Necesitas al menos 2 sesiones para ver tu evolución. Llevas ${datos.length}.`}
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={datos} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+              <CartesianGrid stroke="var(--track)" vertical={false} />
+              <XAxis
+                dataKey="posicion"
+                tickFormatter={(v) => `Sesión ${v}`}
+                tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
+                tickLine={false}
+                axisLine={{ stroke: "var(--track)" }}
+                allowDecimals={false}
+              />
+              <YAxis
+                domain={[0, 100]}
+                ticks={[0, 25, 50, 75, 100]}
+                tickFormatter={(v) => `${v}%`}
+                tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
+                tickLine={false}
+                axisLine={false}
+                width={40}
+              />
+              <Tooltip content={<TooltipPersonalizado />} />
+              <Line
+                type="monotone"
+                dataKey="valor"
+                stroke={colorActivo}
+                strokeWidth={2}
+                dot={{ r: 4, fill: colorActivo }}
+                activeDot={{ r: 6 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </section>
   );
