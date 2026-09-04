@@ -1,0 +1,29 @@
+# MIR Turel
+
+> Plataforma de preparación para el examen MIR (Médico Interno Residente) en España
+> mediante análisis de preguntas oficiales.
+
+## Información del Proyecto
+- URL: https://mir.turel.es
+- Propósito: Ayudar a candidatos al MIR a preparar la oposición con 1004+
+  preguntas de examen MIR oficiales (2021-2025) verificadas de los cuadernillos
+  del Ministerio de Sanidad, clasificadas en 23 especialidades.
+- Idioma: Español
+
+## Secciones Principales
+- [/]: Landing principal de acceso a la plataforma.
+- [/registro]: Alta gratuita para opositores.
+- [/login]: Inicio de sesión para usuarios registrados.
+- [/demo]: Prueba de demostración sin necesidad de registrarse.
+- [/especialidades/{slug}]: Preguntas MIR organizadas por especialidad médica.
+- [/temas]: Índice de temas del temario MIR, agrupados por especialidad.
+- [/temas/{slug}]: Preguntas MIR organizadas por tema específico del temario.
+- [/preguntas/{especialidad}/{id}]: Pregunta MIR individual con respuesta y explicación.
+- [/controversias]: Preguntas MIR con respuestas oficiales documentadas como controvertidas.
+- [/blog]: Artículos sobre la preparación del examen MIR.
+- [/premium]: Información sobre el plan de pago de la plataforma.
+- [/contacto]: Formulario de contacto.
+- [/aviso-legal], [/privacidad]: Información legal y de privacidad.
+
+## Especialidades
+Bioestadística, Cardiología, Cirugía, Dermatología, Digestivo, Endocrinología, Ética médica, Ginecología, Hematología, Infecciosas, Medicina Familiar y Comunitaria, Miscelánea, Nefrología, Neurología, Oftalmología, Oncología, Otorrinolaringología, Pediatría, Psiquiatría, Respiratorio, Reumatología, Traumatología, Urgencias.
