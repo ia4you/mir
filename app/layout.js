@@ -34,9 +34,8 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#00878E",
+  themeColor: "#00838A",
 };
 
 // Se ejecuta antes de hidratar React para fijar la clase "dark" sin parpadeo
@@ -59,7 +58,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className={`${inter.variable} font-sans antialiased bg-surface text-ink`}>
         <Providers>
-          {children}
+          <main>{children}</main>
           <ServiceWorkerRegister />
           <DisclaimerBanner />
           <VisitaTracker />

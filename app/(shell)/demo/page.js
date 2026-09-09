@@ -142,7 +142,7 @@ export default function Demo() {
         </div>
       </header>
 
-      <main
+      <div
         className={`mt-5 px-5 ${
           estado === "corregido" && !mostrarExplicacion ? "pb-32" : ""
         }`}
@@ -203,7 +203,7 @@ export default function Demo() {
             </button>
           </div>
         )}
-      </main>
+      </div>
 
       {estado === "corregido" && !mostrarExplicacion && (
         <div className="fixed inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 border-t border-track bg-surface px-5 py-4 pb-safe">

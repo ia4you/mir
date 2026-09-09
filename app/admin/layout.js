@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }) {
         <AdminTabs />
       </div>
 
-      <main className="px-5 py-6">{children}</main>
+      <div className="px-5 py-6">{children}</div>
     </div>
   );
 }

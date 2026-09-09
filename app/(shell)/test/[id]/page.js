@@ -295,7 +295,7 @@ export default function TestPregunta({ params }) {
           </span>
         </div>
         {estado === "respondiendo" && segundosPorPregunta && tiempoRestante !== null && (
-          <span className="flex flex-shrink-0 items-center gap-1 rounded-full bg-brand-light px-3 py-1.5 text-sm font-bold text-brand">
+          <span className="flex flex-shrink-0 items-center gap-1 rounded-full bg-brand-light px-3 py-1.5 text-sm font-bold text-ink">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-3.5 w-3.5">
               <circle cx="12" cy="12" r="9" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 7v5l3 3" />
@@ -306,7 +306,7 @@ export default function TestPregunta({ params }) {
         {modoExamen === "simulacro" && tiempoTotalRestante !== null && (
           <span
             className={`flex flex-shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-sm font-bold ${
-              tiempoTotalRestante <= 300 ? "bg-danger-bg text-danger-text" : "bg-brand-light text-brand"
+              tiempoTotalRestante <= 300 ? "bg-danger-bg text-danger-text" : "bg-brand-light text-ink"
             }`}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-3.5 w-3.5">
@@ -318,7 +318,7 @@ export default function TestPregunta({ params }) {
         )}
       </header>
 
-      <main
+      <div
         className={`mt-5 px-5 ${
           estado === "corregido" && !mostrarExplicacion ? "pb-32" : ""
         }`}
@@ -389,7 +389,7 @@ export default function TestPregunta({ params }) {
             )}
           </div>
         )}
-      </main>
+      </div>
 
       {estado === "corregido" && !mostrarExplicacion && (
         <div className="fixed inset-x-0 bottom-0 z-10 flex flex-col items-center gap-3 border-t border-track bg-surface px-5 py-4 pb-safe">

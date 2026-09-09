@@ -2,15 +2,19 @@
 
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AvatarUploader from "../../components/AvatarUploader";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
-import PushBanner from "../../components/PushBanner";
-// import AndroidPushRegister from "../../components/AndroidPushRegister"; // deshabilitado temporalmente: falta google-services.json, causaba crash en Android tras login
 import { getMetaDiaria } from "../../lib/preferencias";
+
+// Carga diferida: evita enviar @capacitor/core en el JS inicial de /inicio
+// para los visitantes web (el banner es solo para PWA/navegador, ver PushBanner.js).
+const PushBanner = dynamic(() => import("../../components/PushBanner"), { ssr: false });
+// import AndroidPushRegister from "../../components/AndroidPushRegister"; // deshabilitado temporalmente: falta google-services.json, causaba crash en Android tras login
 
 const MENSAJES_ERROR = {
   sesion_no_encontrada: "No se ha encontrado esa sesión de test. Puede que ya no exista.",

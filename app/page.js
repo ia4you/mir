@@ -162,6 +162,8 @@ export default async function LandingPage() {
           <img
             src="https://play.google.com/intl/es/badges/static/images/badges/es_badge_web_generic.png"
             alt="Disponible en Google Play"
+            width={155}
+            height={60}
             style={{ height: "60px", width: "auto" }}
           />
         </a>

@@ -17,7 +17,7 @@ module.exports = {
         // (ver globals.css) para poder tener modo oscuro; brand.DEFAULT y
         // brand.dark quedan fijos a propósito, el teal es igual en ambos modos.
         brand: {
-          DEFAULT: "#00878E", // botones primarios, acentos, nav activo
+          DEFAULT: "#00838A", // botones primarios, acentos, nav activo (oscurecido desde #00878E para contraste AA 4.5:1 sobre blanco/tarjetas)
           light: "var(--brand-light)", // tarjeta "días seguidos", opción seleccionada
           dark: "#006166", // hover/estados pulsados
         },

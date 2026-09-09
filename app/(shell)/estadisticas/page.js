@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import EspecialidadesStatsTable from "../../components/EspecialidadesStatsTable";
 import TemasPorEspecialidad from "../../components/TemasPorEspecialidad";
 import PuntosDebiles from "../../components/PuntosDebiles";
-import EvolucionAciertosChart from "../../components/EvolucionAciertosChart";
 import { getMetaDiaria } from "../../lib/preferencias";
+
+// Carga diferida: recharts es pesado y solo hace falta cuando esta pestaña
+// de evolución está visible, no en el JS inicial de /estadisticas.
+const EvolucionAciertosChart = dynamic(() => import("../../components/EvolucionAciertosChart"), {
+  ssr: false,
+});
 
 const ETIQUETA_MODO = {
   practica: "Práctica",

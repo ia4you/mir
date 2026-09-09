@@ -135,6 +135,8 @@ export default async function BlogPost({ params }) {
               <img
                 src="https://play.google.com/intl/es/badges/static/images/badges/es_badge_web_generic.png"
                 alt="Disponible en Google Play"
+                width={129}
+                height={50}
                 style={{ height: "50px", width: "auto" }}
               />
             </a>
