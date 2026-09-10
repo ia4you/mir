@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
 import Logo from "./components/Logo";
 
@@ -55,27 +54,6 @@ const PASOS = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 20V10M12 20V4M19 20v-7" />
       </svg>
     ),
-  },
-];
-
-const TESTIMONIOS = [
-  {
-    nombre: "Marta G.",
-    ciudad: "Sevilla",
-    texto: "Repasar por especialidad me ha ayudado a detectar mis puntos débiles antes del examen.",
-    avatar: "/testimonios/avatar1.jpg",
-  },
-  {
-    nombre: "Javier R.",
-    ciudad: "Madrid",
-    texto: "Las preguntas son iguales que las del examen real, se nota que están bien verificadas.",
-    avatar: "/testimonios/avatar2.jpg",
-  },
-  {
-    nombre: "Lucía M.",
-    ciudad: "Valencia",
-    texto: "Poder practicar unos minutos cada día desde el móvil me ha hecho mucho más constante.",
-    avatar: "/testimonios/avatar3.jpg",
   },
 ];
 
@@ -160,9 +138,9 @@ export default async function LandingPage() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://play.google.com/intl/es/badges/static/images/badges/es_badge_web_generic.png"
+            src="/imagenes-mir/google-play-badge-es.png"
             alt="Disponible en Google Play"
-            width={155}
+            width={172}
             height={60}
             style={{ height: "60px", width: "auto" }}
           />
@@ -203,31 +181,6 @@ export default async function LandingPage() {
               <span className="font-bold text-ink">{e.nombre}</span>
               <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>
             </Link>
-          ))}
-        </div>
-      </section>
-
-      <section id="testimonios" className="px-5 py-12 sm:py-16">
-        <h2 className="text-center text-2xl font-extrabold text-ink">
-          Lo que dicen nuestros usuarios
-        </h2>
-        <div className="mx-auto mt-8 grid max-w-4xl gap-4 sm:grid-cols-3">
-          {TESTIMONIOS.map((t) => (
-            <div key={t.nombre} className="rounded-2xl bg-card p-5 shadow-sm">
-              <p className="text-sm text-ink">&ldquo;{t.texto}&rdquo;</p>
-              <div className="mt-3 flex items-center gap-3">
-                <Image
-                  src={t.avatar}
-                  alt={t.nombre}
-                  width={56}
-                  height={56}
-                  className="h-14 w-14 flex-shrink-0 rounded-full object-cover ring-2 ring-brand/20"
-                />
-                <p className="text-sm font-bold text-ink">
-                  {t.nombre} <span className="font-normal text-ink-muted">— {t.ciudad}</span>
-                </p>
-              </div>
-            </div>
           ))}
         </div>
       </section>
