@@ -1,15 +1,25 @@
 import Link from "next/link";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
+import { getControversias } from "./lib/controversias";
 import Logo from "./components/Logo";
 
+// No usar toLocaleString("es-ES"): depende de que el runtime de Node tenga
+// datos ICU completos, y el build small-icu por defecto (el mismo que
+// probablemente corre en producción) lo ignora en silencio y devuelve el
+// número sin separador — verificado con un screenshot real antes de esto.
+function formatearMiles(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
 export const metadata = {
-  title: "Prepara el MIR con preguntas oficiales | MIR Turel",
+  title: "Preguntas MIR 100% oficiales, sin pagar mil euros | MIR Turel",
   description:
-    "Prepara el MIR con 1.004 preguntas oficiales (2021–2025) verificadas de Sanidad. Practica por especialidades, simulacros y repasa tus fallos gratis.",
+    "1.004 preguntas oficiales del Ministerio de Sanidad (2021–2025), verificadas contra los cuadernillos oficiales. Sin contenido generado por IA mezclado en el banco. Controversias documentadas. Empieza gratis.",
   alternates: { canonical: "https://mir.turel.es" },
   openGraph: {
-    title: "MIR Turel — Banco de preguntas oficiales MIR",
-    description: "1.004 preguntas reales verificadas. Gratis.",
+    title: "MIR Turel — Banco de preguntas 100% oficial, sin pagar mil euros",
+    description:
+      "1.004 preguntas oficiales verificadas del Ministerio de Sanidad. Sin IA mezclada en el banco. Controversias documentadas. Gratis para empezar.",
     url: "https://mir.turel.es",
     siteName: "MIR Turel",
   },
@@ -30,50 +40,68 @@ const PASOS = [
   {
     titulo: "Elige especialidad o año",
     texto: "Practica por bloque temático o repasa una convocatoria completa.",
-    icono: (props) => (
-      <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M4 5.5c2-1 5-1 8 0v14c-3-1-6-1-8 0v-14Z" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M20 5.5c-2-1-5-1-8 0v14c3-1 6-1 8 0v-14Z" />
-      </svg>
-    ),
   },
   {
     titulo: "Responde las preguntas",
     texto: "Corrige tus respuestas al instante y consulta la explicación clínica cuando esté disponible.",
-    icono: (props) => (
-      <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
-      </svg>
-    ),
   },
   {
     titulo: "Ve tu progreso por especialidad",
     texto: "Detecta tus puntos débiles y enfoca el repaso donde más falta hace.",
-    icono: (props) => (
-      <svg viewBox="0 0 24 24" fill="none" strokeWidth={2} stroke="currentColor" {...props}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 20V10M12 20V4M19 20v-7" />
-      </svg>
-    ),
   },
 ];
 
-const SCHEMA_ORGANIZACION = {
-  "@context": "https://schema.org",
-  "@type": "EducationalOrganization",
-  name: "MIR Turel",
-  url: "https://mir.turel.es",
-  description:
-    "Plataforma de preparación del examen MIR con 1.004 preguntas oficiales de las convocatorias 2021-2025 del Ministerio de Sanidad.",
-  educationalCredentialAwarded: "Médico Interno Residente (MIR)",
-  provider: {
-    "@type": "Organization",
-    name: "MIR Turel",
-    url: "https://mir.turel.es",
+const DIFERENCIALES = [
+  {
+    etiqueta: "Precio",
+    titulo: "Gratis para empezar",
+    texto:
+      "El plan Premium cuesta una fracción de lo habitual en el sector — sin pagar mil euros por un banco de preguntas.",
   },
-};
+  {
+    etiqueta: "Origen del banco",
+    titulo: "100% preguntas oficiales",
+    texto:
+      "Convocatorias 2021–2025 verificadas contra los cuadernillos del Ministerio de Sanidad. Sin preguntas generadas por IA mezcladas en el banco.",
+  },
+  {
+    etiqueta: "Contenido único",
+    titulo: "Controversias documentadas",
+    texto:
+      "Cuando una respuesta oficial contradice la práctica clínica estándar, lo señalamos y explicamos por qué — con la respuesta oficial siempre clara para el examen.",
+  },
+];
 
 export default async function LandingPage() {
   const especialidades = await getEspecialidadesConConteo();
+  const totalPreguntas = especialidades.reduce((acc, e) => acc + e.total, 0);
+  const totalEspecialidades = especialidades.length;
+
+  const todasControversias = await getControversias();
+  // Igual que getPreguntasMuestra/getPreguntasMuestraTema: fuera las que
+  // referencian una imagen que aquí no se muestra (dejarían el enunciado
+  // incomprensible en el preview).
+  const SIN_IMAGEN = /\b(imagen|imágen|figura|radiografía)\b/i;
+  const controversiasElegibles = todasControversias.filter((c) => !SIN_IMAGEN.test(c.pregunta));
+  const controversiasDestacadas = (
+    controversiasElegibles.filter((c) => c.recomendada).length >= 2
+      ? controversiasElegibles.filter((c) => c.recomendada)
+      : controversiasElegibles
+  ).slice(0, 2);
+
+  const SCHEMA_ORGANIZACION = {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: "MIR Turel",
+    url: "https://mir.turel.es",
+    description: `Plataforma de preparación del examen MIR con ${formatearMiles(totalPreguntas)} preguntas oficiales de las convocatorias 2021-2025 del Ministerio de Sanidad, sin contenido generado por IA mezclado en el banco.`,
+    educationalCredentialAwarded: "Médico Interno Residente (MIR)",
+    provider: {
+      "@type": "Organization",
+      name: "MIR Turel",
+      url: "https://mir.turel.es",
+    },
+  };
 
   return (
     <div className="min-h-screen bg-surface">
@@ -81,102 +109,181 @@ export default async function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORGANIZACION) }}
       />
+
       <header className="flex items-center justify-between gap-3 border-b border-track bg-card px-5 py-3 pt-safe">
         <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
           <Logo className="h-11 w-auto sm:h-12 md:h-14 lg:h-16" />
         </Link>
-        <nav className="flex items-center gap-3">
-          <Link
-            href="/login"
-            className="whitespace-nowrap rounded-lg px-2 py-1 text-xs font-bold text-brand sm:hidden"
-          >
-            Login
-          </Link>
-          <Link
-            href="/login"
-            className="hidden whitespace-nowrap text-sm font-bold text-ink sm:inline"
-          >
+        <nav className="flex items-center gap-4 sm:gap-6">
+          <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
             Login
           </Link>
           <Link
             href="/registro"
-            className="hidden whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white shadow-sm active:bg-brand-dark sm:inline-block"
+            className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-white active:bg-brand-dark"
           >
             Registro
           </Link>
         </nav>
       </header>
 
-      <section id="hero" className="px-5 pt-10 pb-12 text-center sm:pt-14 sm:pb-16">
-        <h1 className="mx-auto max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
-          Te hacemos mejor respondiendo preguntas MIR
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-ink-muted sm:text-lg">
-          Preguntas MIR oficiales. Respuestas verificadas. Controversias documentadas.
-        </p>
+      <section id="hero" className="px-5 pt-12 pb-14 sm:pt-16 sm:pb-20">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-bold uppercase tracking-widest text-brand">
+            Banco 100% oficial · Ministerio de Sanidad
+          </p>
 
-        <div className="mx-auto mt-7 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
-          <Link
-            href="/demo"
-            className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
-          >
-            Empezar gratis
-          </Link>
+          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
+            Preparación MIR sin pagar mil euros
+          </h1>
+
+          <p className="mx-auto mt-5 max-w-xl text-ink-muted sm:text-lg">
+            {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
+            2021–2025, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
+            IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
+            bancos no señalan.
+          </p>
+
+          <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
+            <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
+              Gratis para empezar. Premium a bajo coste.
+            </p>
+            <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
+              100% oficiales. Nunca mezcladas con IA.
+            </p>
+            <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
+              Controversias documentadas y explicadas.
+            </p>
+          </div>
+
+          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+            <Link
+              href="/demo"
+              className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+            >
+              Empezar gratis
+            </Link>
+            <a
+              href="#controversias"
+              className="flex h-14 items-center justify-center rounded-2xl border-2 border-brand px-8 text-lg font-bold text-brand"
+            >
+              Ver controversias
+            </a>
+          </div>
+
           <a
-            href="#como-funciona"
-            className="flex h-14 items-center justify-center rounded-2xl border-2 border-brand px-8 text-lg font-bold text-brand"
+            href="https://play.google.com/store/apps/details?id=es.turel.mir"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mx-auto mt-6 block w-fit"
           >
-            Ver cómo funciona
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/imagenes-mir/google-play-badge-es.png"
+              alt="Disponible en Google Play"
+              width={172}
+              height={60}
+              style={{ height: "60px", width: "auto" }}
+            />
           </a>
+
+          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
+            {formatearMiles(totalPreguntas)} preguntas oficiales · {totalEspecialidades}{" "}
+            especialidades · Verificadas con cuadernillos oficiales
+          </p>
         </div>
-
-        <a
-          href="https://play.google.com/store/apps/details?id=es.turel.mir"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mx-auto mt-5 block w-fit"
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/imagenes-mir/google-play-badge-es.png"
-            alt="Disponible en Google Play"
-            width={172}
-            height={60}
-            style={{ height: "60px", width: "auto" }}
-          />
-        </a>
-
-        <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
-          1.004 preguntas reales · 23 especialidades · Verificadas con cuadernillos oficiales
-        </p>
       </section>
 
-      <section id="como-funciona" className="px-5 py-12 sm:py-16">
+      <section id="diferencias" className="border-t border-track px-5 py-14 sm:py-16">
+        <h2 className="text-center text-2xl font-extrabold text-ink">Por qué es distinto</h2>
+        <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3">
+          {DIFERENCIALES.map((d) => (
+            <div key={d.titulo} className="border-t-2 border-brand pt-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-brand">{d.etiqueta}</p>
+              <h3 className="mt-1 text-lg font-bold text-ink">{d.titulo}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">{d.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {controversiasDestacadas.length > 0 && (
+        <section id="controversias" className="border-t border-track px-5 py-14 sm:py-16">
+          <div className="mx-auto max-w-3xl">
+            <h2 className="text-center text-2xl font-extrabold text-ink">
+              Cuando la respuesta oficial no cuadra, lo decimos
+            </h2>
+            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-ink-muted">
+              Algunas preguntas oficiales del MIR tienen una respuesta que contradice la práctica
+              clínica estándar. La marcamos, explicamos por qué y dejamos siempre clara cuál es la
+              respuesta que hay que dar en el examen.
+            </p>
+
+            <div className="mt-8 flex flex-col gap-4">
+              {controversiasDestacadas.map((c) => (
+                <article key={c.id} className="rounded-2xl border border-track bg-card p-5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-xs font-bold text-badge-text">
+                      {c.especialidad}
+                    </span>
+                    <span className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+                      MIR {c.año} — Pregunta {c.numero}
+                    </span>
+                  </div>
+
+                  <p className="mt-3 line-clamp-2 text-sm font-semibold text-ink">{c.pregunta}</p>
+
+                  <div className="mt-4 flex flex-col gap-2 border-t border-track pt-3 text-sm">
+                    <p>
+                      <span className="font-bold text-danger-text">Respuesta oficial: </span>
+                      <span className="text-ink">
+                        {c.correcta?.trim().toUpperCase()} —{" "}
+                        {c[`opcion_${c.correcta?.trim().toLowerCase()}`]}
+                      </span>
+                    </p>
+                    <p>
+                      <span className="font-bold text-warning-text">Alternativa defendible: </span>
+                      <span className="text-ink">
+                        {c.recomendada
+                          ? `${c.recomendada.letra} — ${c.recomendada.texto}`
+                          : "Sin una única alternativa clara — ver detalle completo."}
+                      </span>
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="mt-6 text-center">
+              <Link href="/controversias" className="text-sm font-bold text-brand">
+                Ver todas las controversias documentadas →
+              </Link>
+            </div>
+          </div>
+        </section>
+      )}
+
+      <section id="como-funciona" className="border-t border-track px-5 py-14 sm:py-16">
         <h2 className="text-center text-2xl font-extrabold text-ink">Cómo funciona</h2>
-        <div className="mx-auto mt-8 grid max-w-4xl gap-5 sm:grid-cols-3">
+        <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3">
           {PASOS.map((paso, i) => (
-            <div key={paso.titulo} className="rounded-2xl bg-card p-5 text-center shadow-sm">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-light text-brand">
-                <paso.icono className="h-6 w-6" />
-              </div>
-              <p className="mt-3 text-xs font-bold uppercase tracking-wide text-brand">
-                Paso {i + 1}
-              </p>
-              <h3 className="mt-1 text-lg font-bold text-ink">{paso.titulo}</h3>
+            <div key={paso.titulo} className="rounded-2xl border border-track bg-card p-5">
+              <p className="text-2xl font-extrabold text-brand">{String(i + 1).padStart(2, "0")}</p>
+              <h3 className="mt-2 text-lg font-bold text-ink">{paso.titulo}</h3>
               <p className="mt-1 text-sm text-ink-muted">{paso.texto}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="especialidades" className="px-5 py-12 sm:py-16">
+      <section id="especialidades" className="border-t border-track px-5 py-14 sm:py-16">
         <h2 className="text-center text-2xl font-extrabold text-ink">Especialidades</h2>
-        <div className="mx-auto mt-8 grid max-w-5xl gap-3 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {especialidades.map((e) => (
             <Link
               key={e.slug}
               href={`/especialidades/${e.slug}`}
-              className="flex flex-col justify-between rounded-2xl bg-card p-4 shadow-sm active:bg-brand-light"
+              className="flex flex-col justify-between rounded-xl border border-track bg-card p-4 active:bg-brand-light"
             >
               <span className="font-bold text-ink">{e.nombre}</span>
               <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>
@@ -185,9 +292,9 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section className="px-5 py-14 text-center sm:py-16">
-        <h2 className="text-2xl font-extrabold text-ink">Empieza hoy</h2>
-        <p className="mt-2 text-ink-muted">Empieza gratis — sin tarjeta de crédito</p>
+      <section className="border-t border-track px-5 py-16 text-center sm:py-20">
+        <h2 className="text-2xl font-extrabold text-ink">Crea tu cuenta gratis</h2>
+        <p className="mt-2 text-ink-muted">Sin tarjeta de crédito.</p>
         <Link
           href="/registro"
           className="mx-auto mt-6 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
@@ -196,7 +303,7 @@ export default async function LandingPage() {
         </Link>
       </section>
 
-      <section className="px-5 py-10 text-center">
+      <section className="border-t border-track px-5 py-10 text-center">
         <div className="mx-auto max-w-md rounded-2xl bg-panel p-5">
           <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
             También te puede interesar
@@ -205,8 +312,8 @@ export default async function LandingPage() {
             ¿Preparas el EIR de Enfermería, no el MIR de Medicina?
           </p>
           <p className="mt-1 text-sm text-ink-muted">
-            Tenemos un proyecto hermano con el mismo enfoque: preguntas oficiales
-            verificadas para el examen EIR.
+            Tenemos un proyecto hermano con el mismo enfoque: preguntas oficiales verificadas para
+            el examen EIR.
           </p>
           <a
             href="https://eir.turel.es"
@@ -222,14 +329,15 @@ export default async function LandingPage() {
       <footer className="border-t border-track px-5 py-10 text-sm text-ink-muted">
         <nav className="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-6 gap-y-2 text-center font-semibold text-brand">
           <a href="#hero">Inicio</a>
+          <a href="#diferencias">Por qué es distinto</a>
+          <a href="#controversias">Controversias</a>
           <a href="#especialidades">Especialidades</a>
-          <Link href="/controversias">Controversias</Link>
           <Link href="/login">Login</Link>
           <Link href="/registro">Registro</Link>
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
           <Link href="/contacto">Contacto</Link>
-            <Link href="/blog">Blog</Link>
+          <Link href="/blog">Blog</Link>
           <a href="/sitemap.xml">Sitemap</a>
         </nav>
         <div className="mx-auto mt-6 max-w-4xl text-center">
