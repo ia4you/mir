@@ -323,9 +323,16 @@ export default function TestPregunta({ params }) {
           estado === "corregido" && !mostrarExplicacion ? "pb-32" : ""
         }`}
       >
-        <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-sm font-bold text-badge-text">
-          {preguntaActual.especialidad}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-sm font-bold text-badge-text">
+            {preguntaActual.especialidad}
+          </span>
+          {preguntaActual.origen === "ia_generada" && (
+            <span className="inline-flex items-center gap-1 rounded-full border border-warning-border bg-warning-bg px-3 py-1 text-sm font-bold text-warning-text">
+              ✨ Generada con IA
+            </span>
+          )}
+        </div>
 
         <p className="mt-3 text-lg font-medium text-ink">{preguntaActual.pregunta}</p>
 

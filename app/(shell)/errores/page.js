@@ -157,6 +157,11 @@ export default function MisErrores() {
                       >
                         <p className="line-clamp-2 flex-1 text-sm text-ink">{p.pregunta}</p>
                         <div className="flex flex-shrink-0 flex-col items-end gap-1">
+                          {p.origen === "ia_generada" && (
+                            <span className="whitespace-nowrap rounded-full border border-warning-border bg-warning-bg px-2.5 py-0.5 text-xs font-bold text-warning-text">
+                              ✨ Generada con IA
+                            </span>
+                          )}
                           <span className="whitespace-nowrap rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-bold text-danger-text">
                             Fallada {p.veces_fallada}×
                           </span>

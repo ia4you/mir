@@ -15,7 +15,7 @@ export async function GET() {
     const { rows } = await query(
       `SELECT especialidad, COUNT(*)::int AS total
        FROM preguntas
-       WHERE especialidad IS NOT NULL
+       WHERE especialidad IS NOT NULL AND origen = 'oficial'
        GROUP BY especialidad
        ORDER BY especialidad`
     );

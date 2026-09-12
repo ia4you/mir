@@ -41,7 +41,7 @@ export async function getTemaPorSlug(slug) {
   const { rows: anioRows } = await query(
     `SELECT MIN(año)::int AS anio_min, MAX(año)::int AS anio_max
      FROM preguntas
-     WHERE tema = $1`,
+     WHERE tema = $1 AND origen = 'oficial'`,
     [r.tema]
   );
   const { anio_min: anioMin, anio_max: anioMax } = anioRows[0];
@@ -72,6 +72,7 @@ export async function getPreguntasMuestraTema(nombreTema, limite) {
     `SELECT id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
      FROM preguntas
      WHERE tema = $1
+       AND origen = 'oficial'
        AND pregunta !~* '\\y(imagen|imágen|figura|radiografía)\\y'
      ORDER BY id
      LIMIT $2`,

@@ -141,7 +141,8 @@ export async function getControversias() {
   const numeros = entradasMd.map((e) => e.numero);
   const { rows: rowsMd } = await query(
     `SELECT ${CAMPOS} FROM preguntas
-     WHERE (año, numero) IN (SELECT * FROM UNNEST($1::int[], $2::int[]))`,
+     WHERE origen = 'oficial'
+       AND (año, numero) IN (SELECT * FROM UNNEST($1::int[], $2::int[]))`,
     [anios, numeros]
   );
   const datosPorClave = new Map(rowsMd.map((r) => [`${r.año}-${r.numero}`, r]));
@@ -163,7 +164,7 @@ export async function getControversias() {
   }
 
   const { rows: rowsBd } = await query(
-    `SELECT ${CAMPOS} FROM preguntas WHERE explicacion_calidad = 'controversia'`
+    `SELECT ${CAMPOS} FROM preguntas WHERE explicacion_calidad = 'controversia' AND origen = 'oficial'`
   );
   const soloBd = rowsBd
     .filter((r) => !vistos.has(`${r.año}-${r.numero}`))

@@ -22,12 +22,12 @@ export async function GET() {
     // Una fila por pregunta fallada al menos una vez, con el número total de
     // veces que se ha fallado (puede haberse respondido en varias sesiones).
     const { rows } = await query(
-      `SELECT p.id, p.especialidad, p.pregunta, p.año, p.numero,
+      `SELECT p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen,
               COUNT(*)::int AS veces_fallada
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
        WHERE rs.user_id = $1 AND rs.correcta = false
-       GROUP BY p.id, p.especialidad, p.pregunta, p.año, p.numero
+       GROUP BY p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen
        ORDER BY p.especialidad ASC NULLS LAST, veces_fallada DESC, p.id ASC`,
       [userId]
     );
@@ -43,6 +43,7 @@ export async function GET() {
         pregunta: r.pregunta,
         anio: r.año,
         numero: r.numero,
+        origen: r.origen,
         veces_fallada: r.veces_fallada,
         recurrente: r.veces_fallada >= 2,
       });

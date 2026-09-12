@@ -45,10 +45,15 @@ function barajar(array) {
 // Simulacro: combina los años disponibles en un único examen de
 // TOTAL_SIMULACRO preguntas, repartidas por especialidad según su peso
 // histórico real (no una selección aleatoria simple sobre todo el banco).
+// El Simulacro completo es una reconstrucción del examen MIR real: se
+// restringe siempre al banco oficial (origen='oficial'), tanto al calcular
+// el peso histórico por especialidad como al seleccionar las preguntas. El
+// banco generado por IA nunca participa aquí, porque no tiene un año de
+// examen real con el que calcular ese peso ni comparar resultados.
 async function generarSimulacro() {
   const { rows: pesos } = await query(`
-    WITH anios AS (SELECT DISTINCT año FROM preguntas),
-         especialidades AS (SELECT DISTINCT especialidad FROM preguntas),
+    WITH anios AS (SELECT DISTINCT año FROM preguntas WHERE origen = 'oficial'),
+         especialidades AS (SELECT DISTINCT especialidad FROM preguntas WHERE origen = 'oficial'),
          combinaciones AS (
            SELECT a.año, e.especialidad FROM anios a CROSS JOIN especialidades e
          ),
@@ -56,7 +61,9 @@ async function generarSimulacro() {
            SELECT c.año, c.especialidad, COALESCE(p.cnt, 0) AS num_preguntas
            FROM combinaciones c
            LEFT JOIN (
-             SELECT año, especialidad, COUNT(*) AS cnt FROM preguntas GROUP BY año, especialidad
+             SELECT año, especialidad, COUNT(*) AS cnt FROM preguntas
+             WHERE origen = 'oficial'
+             GROUP BY año, especialidad
            ) p ON p.año = c.año AND p.especialidad = c.especialidad
          ),
          totales_año AS (SELECT año, SUM(num_preguntas) AS total FROM conteos GROUP BY año),
@@ -79,7 +86,7 @@ async function generarSimulacro() {
           `SELECT id, año, numero, especialidad, pregunta,
                   opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
            FROM preguntas
-           WHERE especialidad = $1
+           WHERE especialidad = $1 AND origen = 'oficial'
            ORDER BY RANDOM()
            LIMIT $2`,
           [r.especialidad, r.cantidad]
@@ -136,7 +143,7 @@ export async function GET(request) {
     try {
       const { rows } = await query(
         `SELECT id, año, numero, especialidad, pregunta,
-                opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
+                opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path, origen
          FROM preguntas
          WHERE id = ANY($1::int[])`,
         [ids]
@@ -164,7 +171,13 @@ export async function GET(request) {
     }
   }
 
-  const condiciones = [];
+  // PAUSADO 2026-09-12: revisión manual encontró problemas de fondo en ~la
+  // mitad del banco IA aprobado por la Pasada 2 (el revisor automático no es
+  // fiable todavía). Hasta que se entienda por qué, la práctica normal vuelve
+  // a ser siempre origen='oficial' — igual que el Simulacro — y el banco IA
+  // no se sirve por ningún punto de la app. No revertir esto sin decisión
+  // explícita del producto.
+  const condiciones = ["origen = 'oficial'"];
   const valores = [];
   // `especialidades` (plural, coma-separada) permite mezclar varias en un
   // mismo test (p.ej. "entrenar puntos débiles"); si viene, tiene prioridad
@@ -203,7 +216,7 @@ export async function GET(request) {
   try {
     const { rows } = await query(
       `SELECT id, año, numero, especialidad, pregunta,
-              opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
+              opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path, origen
        FROM preguntas
        ${where}
        ORDER BY ${orderBy}

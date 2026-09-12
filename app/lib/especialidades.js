@@ -66,11 +66,16 @@ export const DESCRIPCIONES = {
     "Miscelánea agrupa preguntas transversales del MIR que no encajan en una especialidad clínica clásica, como genética básica, inmunología general o valoración geriátrica. Es el bloque más heterogéneo del examen y exige una preparación específica más allá de las especialidades clínicas clásicas.",
 };
 
+// Solo banco oficial: estas páginas (listado de especialidades, muestras,
+// páginas públicas /preguntas/[especialidad]/[id] y el sitemap) son
+// contenido indexable por Google, y de momento el banco generado por IA no
+// entra en nada público ni indexable (ver auditoría Fase 1).
 export async function getEspecialidadesConConteo() {
   const { rows } = await query(
     `SELECT especialidad, COUNT(*)::int AS total,
             MIN(año)::int AS anio_min, MAX(año)::int AS anio_max
      FROM preguntas
+     WHERE origen = 'oficial'
      GROUP BY especialidad
      ORDER BY total DESC`
   );
@@ -94,6 +99,7 @@ export async function getPreguntasMuestra(nombreEspecialidad, limite = 3) {
     `SELECT id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
      FROM preguntas
      WHERE especialidad = $1
+       AND origen = 'oficial'
        AND pregunta !~* '\\y(imagen|imágen|figura|radiografía)\\y'
      ORDER BY id
      LIMIT $2`,
@@ -114,7 +120,7 @@ export async function getPreguntasPaginadas(nombreEspecialidad, pagina = 1) {
   const { rows } = await query(
     `SELECT id, pregunta
      FROM preguntas
-     WHERE especialidad = $1
+     WHERE especialidad = $1 AND origen = 'oficial'
      ORDER BY id
      LIMIT $2 OFFSET $3`,
     [nombreEspecialidad, PREGUNTAS_POR_PAGINA, offset]
@@ -128,7 +134,7 @@ export async function getPreguntasPaginadas(nombreEspecialidad, pagina = 1) {
 export async function getSiguientePregunta(nombreEspecialidad, idActual) {
   const { rows } = await query(
     `SELECT id FROM preguntas
-     WHERE especialidad = $1 AND id > $2
+     WHERE especialidad = $1 AND id > $2 AND origen = 'oficial'
      ORDER BY id
      LIMIT 1`,
     [nombreEspecialidad, idActual]
@@ -151,7 +157,7 @@ export async function getPreguntaPublica(especialidadSlug, id) {
     `SELECT id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e,
             especialidad, explicacion, imagen_path, año
      FROM preguntas
-     WHERE id = $1 AND especialidad = $2`,
+     WHERE id = $1 AND especialidad = $2 AND origen = 'oficial'`,
     [idNumerico, especialidad.nombre]
   );
   if (rows.length === 0) return null;
@@ -161,6 +167,8 @@ export async function getPreguntaPublica(especialidadSlug, id) {
 
 // Para el sitemap: id + slug de especialidad de todas las preguntas reales.
 export async function getTodasLasPreguntasParaSitemap() {
-  const { rows } = await query(`SELECT id, especialidad FROM preguntas ORDER BY id`);
+  const { rows } = await query(
+    `SELECT id, especialidad FROM preguntas WHERE origen = 'oficial' ORDER BY id`
+  );
   return rows.map((r) => ({ id: r.id, especialidadSlug: slugify(r.especialidad) }));
 }
