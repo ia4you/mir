@@ -1,7 +1,53 @@
 import Link from "next/link";
+import { getImageProps } from "next/image";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
 import { getControversias } from "./lib/controversias";
-import Logo from "./components/Logo";
+import LandingHeader from "./components/LandingHeader";
+
+// Imagen del hero con "art direction" real (móvil vs escritorio) vía
+// getImageProps + <picture>, en vez de dos <Image priority> alternados con
+// CSS: con dos <Image priority> Next inyecta un <link rel="preload"> por
+// cada una en el <head> (no sabe cuál esconde el CSS), duplicando la
+// petición de máxima prioridad justo en la imagen que no debe retrasar el
+// LCP. Con <picture>, el navegador decide una sola fuente — un único
+// fetch — y seguimos pasando por el optimizador de next/image (hay sharp
+// instalado, ya se usa en el resto de la app sin `unoptimized`).
+function imagenHero() {
+  const alt =
+    "Estudiante de medicina con bata revisando la app MIR Turel en una tablet, con libros de texto de fondo";
+  const {
+    props: { srcSet: movilSrcSet },
+  } = getImageProps({
+    src: "/images/hero-640w.webp",
+    alt,
+    width: 640,
+    height: 447,
+    priority: true,
+    sizes: "100vw",
+  });
+  const {
+    props: { srcSet: escritorioSrcSet },
+  } = getImageProps({
+    src: "/images/hero-1024w.webp",
+    alt,
+    width: 1024,
+    height: 716,
+    priority: true,
+    sizes: "(min-width: 1024px) 45vw, 100vw",
+  });
+  // El <img> base (fallback universal si el navegador no entiende
+  // <picture>/<source>, prácticamente inexistente hoy) usa directamente el
+  // .jpg de compatibilidad que se nos dio para ese propósito.
+  const { props: imgProps } = getImageProps({
+    src: "/images/hero-1024w.jpg",
+    alt,
+    width: 1024,
+    height: 716,
+    priority: true,
+    sizes: "(min-width: 1024px) 45vw, 100vw",
+  });
+  return { movilSrcSet, escritorioSrcSet, imgProps, alt };
+}
 
 // No usar toLocaleString("es-ES"): depende de que el runtime de Node tenga
 // datos ICU completos, y el build small-icu por defecto (el mismo que
@@ -73,6 +119,8 @@ const DIFERENCIALES = [
 ];
 
 export default async function LandingPage() {
+  const { movilSrcSet, escritorioSrcSet, imgProps: heroImgProps, alt: heroAlt } = imagenHero();
+
   const especialidades = await getEspecialidadesConConteo();
   const totalPreguntas = especialidades.reduce((acc, e) => acc + e.total, 0);
   const totalEspecialidades = especialidades.length;
@@ -110,41 +158,27 @@ export default async function LandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORGANIZACION) }}
       />
 
-      <header className="flex items-center justify-between gap-3 border-b border-track bg-card px-5 py-3 pt-safe">
-        <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
-          <Logo className="h-11 w-auto sm:h-12 md:h-14 lg:h-16" />
-        </Link>
-        <nav className="flex items-center gap-4 sm:gap-6">
-          <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
-            Login
-          </Link>
-          <Link
-            href="/registro"
-            className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-white active:bg-brand-dark"
-          >
-            Registro
-          </Link>
-        </nav>
-      </header>
+      <LandingHeader />
 
       <section id="hero" className="px-5 pt-12 pb-14 sm:pt-16 sm:pb-20">
-        <div className="mx-auto max-w-3xl text-center">
+        <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 xl:gap-16">
+        <div className="text-center lg:text-left">
           <p className="text-xs font-bold uppercase tracking-widest text-brand">
             Banco 100% oficial · Ministerio de Sanidad
           </p>
 
-          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
+          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl lg:mx-0">
             Preparación MIR sin pagar mil euros
           </h1>
 
-          <p className="mx-auto mt-5 max-w-xl text-ink-muted sm:text-lg">
+          <p className="mx-auto mt-5 max-w-xl text-ink-muted sm:text-lg lg:mx-0">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
             2021–2025, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
 
-          <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
+          <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3 lg:mx-0 lg:max-w-none">
             <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
               Gratis para empezar. Premium a bajo coste.
             </p>
@@ -156,7 +190,7 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center lg:mx-0 lg:justify-start">
             <Link
               href="/demo"
               className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
@@ -175,7 +209,7 @@ export default async function LandingPage() {
             href="https://play.google.com/store/apps/details?id=es.turel.mir"
             target="_blank"
             rel="noopener noreferrer"
-            className="mx-auto mt-6 block w-fit"
+            className="mx-auto mt-6 block w-fit lg:mx-0"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -187,10 +221,26 @@ export default async function LandingPage() {
             />
           </a>
 
-          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
+          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted lg:mx-0">
             {formatearMiles(totalPreguntas)} preguntas oficiales · {totalEspecialidades}{" "}
             especialidades · Verificadas con cuadernillos oficiales
           </p>
+        </div>
+
+        <div className="mt-10 lg:order-2 lg:mt-0">
+          <picture>
+            <source media="(max-width: 640px)" srcSet={movilSrcSet} />
+            <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
+            {/* eslint-disable-next-line @next/next/no-img-element -- <picture> con
+                art direction no lo soporta next/image como componente; los
+                srcSet ya pasan por su optimizador vía getImageProps. */}
+            <img
+              {...heroImgProps}
+              alt={heroAlt}
+              className="w-full rounded-2xl border border-track object-cover"
+            />
+          </picture>
+        </div>
         </div>
       </section>
 
@@ -326,38 +376,28 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-track px-5 py-10 text-sm text-ink-muted">
-        <nav className="mx-auto flex max-w-4xl flex-wrap justify-center gap-x-6 gap-y-2 text-center font-semibold text-brand">
-          <a href="#hero">Inicio</a>
-          <a href="#diferencias">Por qué es distinto</a>
-          <a href="#controversias">Controversias</a>
-          <a href="#especialidades">Especialidades</a>
-          <Link href="/login">Login</Link>
-          <Link href="/registro">Registro</Link>
+      {/* Compacto a propósito: la navegación principal (Inicio, Por qué es
+          distinto, Controversias, Especialidades) y Login/Registro ya viven
+          en LandingHeader, así que aquí solo quedan los enlaces legalmente
+          obligatorios y el disclaimer de fuente/no afiliación. */}
+      <footer className="border-t border-track px-5 py-6 text-center text-xs text-ink-muted">
+        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-brand">
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
-          <Link href="/contacto">Contacto</Link>
-          <Link href="/blog">Blog</Link>
-          <a href="/sitemap.xml">Sitemap</a>
         </nav>
-        <div className="mx-auto mt-6 max-w-4xl text-center">
-          <p>
-            Fuentes: cuadernillos oficiales MIR 2021–2025,{" "}
-            <a
-              href="https://www.sanidad.gob.es"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="font-semibold text-brand"
-            >
-              Ministerio de Sanidad
-            </a>
-            .
-          </p>
-          <p className="mt-2">
-            MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
-            preparación MIR.
-          </p>
-        </div>
+        <p className="mx-auto mt-3 max-w-2xl">
+          Fuentes: cuadernillos oficiales MIR 2021–2025,{" "}
+          <a
+            href="https://www.sanidad.gob.es"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="font-semibold text-brand"
+          >
+            Ministerio de Sanidad
+          </a>
+          . MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
+          preparación MIR.
+        </p>
       </footer>
     </div>
   );
