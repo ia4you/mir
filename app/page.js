@@ -160,36 +160,56 @@ export default async function LandingPage() {
 
       <LandingHeader />
 
-      <section id="hero" className="px-5 pt-12 pb-14 sm:pt-16 sm:pb-20">
+      <section id="hero" className="px-5 pt-4 pb-14 sm:pt-16 sm:pb-20">
         <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-brand">
             Banco 100% oficial · Ministerio de Sanidad
           </p>
 
-          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
+          <h1 className="mx-auto mt-1 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:mt-3 sm:text-5xl">
             Preparación MIR sin pagar mil euros
           </h1>
 
-          <p className="mx-auto mt-5 max-w-xl text-ink-muted sm:text-lg">
+          {/* Altura limitada en móvil (object-cover recorta, no deforma) para
+              que el bloque de texto + CTA siga llegando sin scroll excesivo;
+              a partir de sm se muestra a su alto natural. Márgenes también
+              recortados solo en móvil (sm: recupera los originales) para
+              ganar el hueco que aún falta frente al banner de aviso legal. */}
+          <div className="mx-auto mt-2 max-h-40 max-w-2xl overflow-hidden rounded-2xl border border-track sm:mt-6 sm:max-h-none">
+            <picture>
+              <source media="(max-width: 640px)" srcSet={movilSrcSet} />
+              <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
+              {/* eslint-disable-next-line @next/next/no-img-element -- <picture> con
+                  art direction no lo soporta next/image como componente; los
+                  srcSet ya pasan por su optimizador vía getImageProps. */}
+              <img
+                {...heroImgProps}
+                alt={heroAlt}
+                className="h-full w-full object-cover"
+              />
+            </picture>
+          </div>
+
+          <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-6 sm:text-lg">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
             2021–2025, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
 
-          <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
-            <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
+          <div className="mx-auto mt-3 grid max-w-2xl gap-1.5 text-left sm:mt-8 sm:gap-3 sm:grid-cols-3">
+            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink sm:p-3">
               Gratis para empezar. Premium a bajo coste.
             </p>
-            <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
+            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink sm:p-3">
               100% oficiales. Nunca mezcladas con IA.
             </p>
-            <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
+            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink sm:p-3">
               Controversias documentadas y explicadas.
             </p>
           </div>
 
-          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
+          <div className="mx-auto mt-3 flex max-w-xs flex-col gap-3 sm:mt-8 sm:max-w-none sm:flex-row sm:justify-center">
             <Link
               href="/demo"
               className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
@@ -204,41 +224,10 @@ export default async function LandingPage() {
             </a>
           </div>
 
-          <a
-            href="https://play.google.com/store/apps/details?id=es.turel.mir"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mx-auto mt-6 block w-fit"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/imagenes-mir/google-play-badge-es.png"
-              alt="Disponible en Google Play"
-              width={172}
-              height={60}
-              style={{ height: "60px", width: "auto" }}
-            />
-          </a>
-
           <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
             {formatearMiles(totalPreguntas)} preguntas oficiales · {totalEspecialidades}{" "}
             especialidades · Verificadas con cuadernillos oficiales
           </p>
-
-          <div className="mx-auto mt-10 max-w-2xl">
-            <picture>
-              <source media="(max-width: 640px)" srcSet={movilSrcSet} />
-              <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
-              {/* eslint-disable-next-line @next/next/no-img-element -- <picture> con
-                  art direction no lo soporta next/image como componente; los
-                  srcSet ya pasan por su optimizador vía getImageProps. */}
-              <img
-                {...heroImgProps}
-                alt={heroAlt}
-                className="w-full rounded-2xl border border-track object-cover"
-              />
-            </picture>
-          </div>
         </div>
       </section>
 

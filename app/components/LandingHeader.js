@@ -15,6 +15,17 @@ const ENLACES = [
   { href: "#especialidades", label: "Especialidades" },
 ];
 
+// Reemplaza la badge oficial de Google Play (pensada para el hero, no para
+// caber en una fila de menú de ~40px) por un icono de reproducción + texto,
+// al mismo tamaño que el resto de los enlaces del header.
+function IconoPlay({ className }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
+      <path d="M4 3.6c0-.5.3-.9.7-1.1.4-.2.9-.2 1.3.1l12 8.4c.3.2.5.6.5 1s-.2.8-.5 1l-12 8.4c-.4.3-.9.3-1.3.1-.4-.2-.7-.6-.7-1.1V3.6Z" />
+    </svg>
+  );
+}
+
 export default function LandingHeader() {
   const [abierto, setAbierto] = useState(false);
 
@@ -43,6 +54,15 @@ export default function LandingHeader() {
               {enlace.label}
             </a>
           ))}
+          <a
+            href="https://play.google.com/store/apps/details?id=es.turel.mir"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-ink hover:text-brand"
+          >
+            <IconoPlay className="h-4 w-4" />
+            Google Play
+          </a>
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
@@ -89,6 +109,16 @@ export default function LandingHeader() {
               {enlace.label}
             </a>
           ))}
+          <a
+            href="https://play.google.com/store/apps/details?id=es.turel.mir"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setAbierto(false)}
+            className="flex items-center gap-2 rounded-lg px-2 py-2.5 text-sm font-semibold text-ink active:bg-panel"
+          >
+            <IconoPlay className="h-4 w-4" />
+            Google Play
+          </a>
           <div className="mt-2 flex flex-col gap-2 border-t border-track pt-3">
             <Link
               href="/login"
