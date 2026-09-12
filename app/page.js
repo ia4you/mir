@@ -161,24 +161,23 @@ export default async function LandingPage() {
       <LandingHeader />
 
       <section id="hero" className="px-5 pt-12 pb-14 sm:pt-16 sm:pb-20">
-        <div className="mx-auto max-w-6xl lg:grid lg:grid-cols-2 lg:items-center lg:gap-12 xl:gap-16">
-        <div className="text-center lg:text-left">
+        <div className="mx-auto max-w-3xl text-center">
           <p className="text-xs font-bold uppercase tracking-widest text-brand">
             Banco 100% oficial · Ministerio de Sanidad
           </p>
 
-          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl lg:mx-0">
+          <h1 className="mx-auto mt-3 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:text-5xl">
             Preparación MIR sin pagar mil euros
           </h1>
 
-          <p className="mx-auto mt-5 max-w-xl text-ink-muted sm:text-lg lg:mx-0">
+          <p className="mx-auto mt-5 max-w-xl text-ink-muted sm:text-lg">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
             2021–2025, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
 
-          <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3 lg:mx-0 lg:max-w-none">
+          <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
             <p className="rounded-xl border border-track bg-card p-3 text-sm font-semibold text-ink">
               Gratis para empezar. Premium a bajo coste.
             </p>
@@ -190,7 +189,7 @@ export default async function LandingPage() {
             </p>
           </div>
 
-          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center lg:mx-0 lg:justify-start">
+          <div className="mx-auto mt-8 flex max-w-xs flex-col gap-3 sm:max-w-none sm:flex-row sm:justify-center">
             <Link
               href="/demo"
               className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
@@ -209,7 +208,7 @@ export default async function LandingPage() {
             href="https://play.google.com/store/apps/details?id=es.turel.mir"
             target="_blank"
             rel="noopener noreferrer"
-            className="mx-auto mt-6 block w-fit lg:mx-0"
+            className="mx-auto mt-6 block w-fit"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -221,26 +220,25 @@ export default async function LandingPage() {
             />
           </a>
 
-          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted lg:mx-0">
+          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
             {formatearMiles(totalPreguntas)} preguntas oficiales · {totalEspecialidades}{" "}
             especialidades · Verificadas con cuadernillos oficiales
           </p>
-        </div>
 
-        <div className="mt-10 lg:order-2 lg:mt-0">
-          <picture>
-            <source media="(max-width: 640px)" srcSet={movilSrcSet} />
-            <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
-            {/* eslint-disable-next-line @next/next/no-img-element -- <picture> con
-                art direction no lo soporta next/image como componente; los
-                srcSet ya pasan por su optimizador vía getImageProps. */}
-            <img
-              {...heroImgProps}
-              alt={heroAlt}
-              className="w-full rounded-2xl border border-track object-cover"
-            />
-          </picture>
-        </div>
+          <div className="mx-auto mt-10 max-w-2xl">
+            <picture>
+              <source media="(max-width: 640px)" srcSet={movilSrcSet} />
+              <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
+              {/* eslint-disable-next-line @next/next/no-img-element -- <picture> con
+                  art direction no lo soporta next/image como componente; los
+                  srcSet ya pasan por su optimizador vía getImageProps. */}
+              <img
+                {...heroImgProps}
+                alt={heroAlt}
+                className="w-full rounded-2xl border border-track object-cover"
+              />
+            </picture>
+          </div>
         </div>
       </section>
 
