@@ -22,11 +22,24 @@ export default function DisclaimerBanner() {
   // (registro, login, la pregunta de un test...). Reservamos su altura real
   // como padding del body mientras esté visible, para que nunca cubra
   // contenido interactivo sin que haga falta ajustar cada página a mano.
+  //
+  // ResizeObserver en vez de leer ref.current.offsetHeight directamente en
+  // el useEffect: esa lectura síncrona justo tras un cambio de DOM/estilo es
+  // un "forced reflow" de libro (Lighthouse lo marcaba, ~380ms de reflow sin
+  // atribuir en el diagnóstico previo) — obliga al navegador a recalcular el
+  // layout antes de lo que le tocaría. El callback de ResizeObserver corre
+  // ya en una tarea aparte, después de que el layout esté asentado, así que
+  // la misma lectura no fuerza nada. Efecto secundario bueno: ahora también
+  // se reajusta solo si el alto del banner cambia (p. ej. al rotar el móvil).
   useEffect(() => {
     if (!visible || !ref.current) return;
-    const alto = ref.current.offsetHeight;
-    document.body.style.paddingBottom = `${alto}px`;
+    const el = ref.current;
+    const observer = new ResizeObserver(() => {
+      document.body.style.paddingBottom = `${el.offsetHeight}px`;
+    });
+    observer.observe(el);
     return () => {
+      observer.disconnect();
       document.body.style.paddingBottom = "";
     };
   }, [visible]);

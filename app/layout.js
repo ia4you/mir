@@ -1,5 +1,5 @@
 import { Inter } from "next/font/google";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import Script from "next/script";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import DisclaimerBanner from "./components/DisclaimerBanner";
@@ -63,7 +63,27 @@ export default function RootLayout({ children }) {
           <DisclaimerBanner />
           <VisitaTracker />
         </Providers>
-        <GoogleAnalytics gaId="G-CSHZ2YHZ02" />
+        {/* Mismo gtag.js/GA4 que antes (equivalente manual del componente
+            <GoogleAnalytics> de @next/third-parties/google), pero con
+            strategy="lazyOnload" en vez de su "afterInteractive" por
+            defecto: se carga en tiempo muerto del navegador (requestIdleCallback)
+            en vez de justo tras la hidratación, donde competía por el hilo
+            principal con todo lo demás. No cambia qué se mide (mismo
+            pageview automático + Enhanced Measurement de GA4), solo cuándo
+            se ejecuta — verificado con Lighthouse antes/después (ver
+            commit). */}
+        <Script id="ga-init" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-CSHZ2YHZ02');
+          `}
+        </Script>
+        <Script
+          strategy="lazyOnload"
+          src="https://www.googletagmanager.com/gtag/js?id=G-CSHZ2YHZ02"
+        />
       </body>
     </html>
   );

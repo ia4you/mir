@@ -12,6 +12,18 @@ import LandingHeader from "./components/LandingHeader";
 // LCP. Con <picture>, el navegador decide una sola fuente — un único
 // fetch — y seguimos pasando por el optimizador de next/image (hay sharp
 // instalado, ya se usa en el resto de la app sin `unoptimized`).
+// El ancho real en pantalla de la imagen es SIEMPRE min(100vw - 40px, 672px)
+// — lo marca el contenedor `max-w-2xl` (672px) dentro de la sección con
+// `px-5` (20px de margen a cada lado) — igual en móvil que en escritorio;
+// lo único que cambia entre breakpoints es el alto del recorte (h-60/sm:h-80
+// en el propio JSX), no el ancho. Antes usábamos "100vw" (móvil) y "45vw"
+// (escritorio), que sobreestimaban el ancho real y hacían que el navegador
+// pidiera una variante más grande de la necesaria (confirmado con
+// Lighthouse: pedía w=828 para una caja de 348px de ancho renderizado).
+// 712px = 672px + 40px de margen: el punto exacto en el que el tope de
+// 672px pasa a ser la restricción en vez del ancho del viewport.
+const SIZES_HERO = "(min-width: 712px) 672px, calc(100vw - 40px)";
+
 function imagenHero() {
   const alt =
     "Estudiante de medicina con bata revisando la app MIR Turel en una tablet, con libros de texto de fondo";
@@ -23,7 +35,7 @@ function imagenHero() {
     width: 640,
     height: 447,
     priority: true,
-    sizes: "100vw",
+    sizes: SIZES_HERO,
   });
   const {
     props: { srcSet: escritorioSrcSet },
@@ -33,7 +45,7 @@ function imagenHero() {
     width: 1024,
     height: 716,
     priority: true,
-    sizes: "(min-width: 1024px) 45vw, 100vw",
+    sizes: SIZES_HERO,
   });
   // El <img> base (fallback universal si el navegador no entiende
   // <picture>/<source>, prácticamente inexistente hoy) usa directamente el
@@ -44,7 +56,7 @@ function imagenHero() {
     width: 1024,
     height: 716,
     priority: true,
-    sizes: "(min-width: 1024px) 45vw, 100vw",
+    sizes: SIZES_HERO,
   });
   return { movilSrcSet, escritorioSrcSet, imgProps, alt };
 }
@@ -203,8 +215,8 @@ export default async function LandingPage() {
               con su propio ajuste. */}
           <div className="mx-auto mt-2 h-60 max-w-2xl overflow-hidden rounded-2xl border border-track sm:mt-3 sm:h-80">
             <picture>
-              <source media="(max-width: 640px)" srcSet={movilSrcSet} />
-              <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
+              <source media="(max-width: 640px)" srcSet={movilSrcSet} sizes={SIZES_HERO} />
+              <source media="(min-width: 641px)" srcSet={escritorioSrcSet} sizes={SIZES_HERO} />
               {/* eslint-disable-next-line @next/next/no-img-element -- <picture> con
                   art direction no lo soporta next/image como componente; los
                   srcSet ya pasan por su optimizador vía getImageProps. */}
