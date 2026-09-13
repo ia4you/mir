@@ -11,19 +11,20 @@
 - Idioma: Español
 
 ## Secciones Principales
-- [/]: Landing principal de acceso a la plataforma.
-- [/registro]: Alta gratuita para opositores.
-- [/login]: Inicio de sesión para usuarios registrados.
-- [/demo]: Prueba de demostración sin necesidad de registrarse.
-- [/especialidades/{slug}]: Preguntas MIR organizadas por especialidad médica.
-- [/temas]: Índice de temas del temario MIR, agrupados por especialidad.
-- [/temas/{slug}]: Preguntas MIR organizadas por tema específico del temario.
-- [/preguntas/{especialidad}/{id}]: Pregunta MIR individual con respuesta y explicación.
-- [/controversias]: Preguntas MIR con respuestas oficiales documentadas como controvertidas.
-- [/blog]: Artículos sobre la preparación del examen MIR.
-- [/premium]: Información sobre el plan de pago de la plataforma.
-- [/contacto]: Formulario de contacto.
-- [/aviso-legal], [/privacidad]: Información legal y de privacidad.
+- [Inicio](https://mir.turel.es/): Landing principal de acceso a la plataforma.
+- [Registro](https://mir.turel.es/registro): Alta gratuita para opositores.
+- [Login](https://mir.turel.es/login): Inicio de sesión para usuarios registrados.
+- [Demo](https://mir.turel.es/demo): Prueba de demostración sin necesidad de registrarse.
+- [Especialidades](https://mir.turel.es/especialidades/cardiologia): Preguntas MIR organizadas por especialidad médica (ejemplo: Cardiología).
+- [Temas](https://mir.turel.es/temas): Índice de temas del temario MIR, agrupados por especialidad.
+- [Tema](https://mir.turel.es/temas/patologia-obstetrica-y-complicaciones-del-embarazo): Preguntas MIR organizadas por tema específico del temario (ejemplo).
+- [Pregunta](https://mir.turel.es/preguntas/cardiologia/2): Pregunta MIR individual con respuesta y explicación (ejemplo).
+- [Controversias](https://mir.turel.es/controversias): Preguntas MIR con respuestas oficiales documentadas como controvertidas.
+- [Blog](https://mir.turel.es/blog): Artículos sobre la preparación del examen MIR.
+- [Premium](https://mir.turel.es/premium): Información sobre el plan de pago de la plataforma.
+- [Contacto](https://mir.turel.es/contacto): Formulario de contacto.
+- [Aviso legal](https://mir.turel.es/aviso-legal): Información legal.
+- [Privacidad](https://mir.turel.es/privacidad): Política de privacidad.
 
 ## Especialidades
 Bioestadística, Cardiología, Cirugía, Dermatología, Digestivo, Endocrinología, Ética médica, Ginecología, Hematología, Infecciosas, Medicina Familiar y Comunitaria, Miscelánea, Nefrología, Neurología, Oftalmología, Oncología, Otorrinolaringología, Pediatría, Psiquiatría, Respiratorio, Reumatología, Traumatología, Urgencias.
