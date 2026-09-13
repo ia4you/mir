@@ -176,7 +176,7 @@ export default async function LandingPage() {
               visita (también tapa parte de la pantalla en escritorio, no
               solo en móvil). Márgenes recortados en ambos casos, cada uno
               con su propio ajuste. */}
-          <div className="mx-auto mt-2 h-40 max-w-2xl overflow-hidden rounded-2xl border border-track sm:mt-3 sm:h-44">
+          <div className="mx-auto mt-2 h-60 max-w-2xl overflow-hidden rounded-2xl border border-track sm:mt-3 sm:h-80">
             <picture>
               <source media="(max-width: 640px)" srcSet={movilSrcSet} />
               <source media="(min-width: 641px)" srcSet={escritorioSrcSet} />
@@ -186,7 +186,7 @@ export default async function LandingPage() {
               <img
                 {...heroImgProps}
                 alt={heroAlt}
-                className="h-full w-full object-cover object-center sm:object-[center_68%]"
+                className="h-full w-full object-cover object-center"
               />
             </picture>
           </div>
