@@ -57,17 +57,42 @@ function formatearMiles(n) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+// Un único título/descripción reutilizado en <title>, og:title/og:description
+// y twitter:title/twitter:description: lo que se ve al buscar en Google y lo
+// que se ve al compartir en redes debe decir lo mismo, no dos mensajes
+// distintos que puedan desincronizarse en una edición futura.
+const META_TITLE = "Preparación MIR sin pagar mil euros | MIR Turel";
+const META_DESCRIPTION =
+  "1.004 preguntas 100% oficiales del Ministerio de Sanidad, sin IA mezclada. Controversias documentadas. Empieza gratis, sin pagar mil euros.";
+
 export const metadata = {
-  title: "Preguntas MIR 100% oficiales, sin pagar mil euros | MIR Turel",
-  description:
-    "1.004 preguntas oficiales del Ministerio de Sanidad (2021–2025), verificadas contra los cuadernillos oficiales. Sin contenido generado por IA mezclado en el banco. Controversias documentadas. Empieza gratis.",
+  title: META_TITLE,
+  description: META_DESCRIPTION,
   alternates: { canonical: "https://mir.turel.es" },
   openGraph: {
-    title: "MIR Turel — Banco de preguntas 100% oficial, sin pagar mil euros",
-    description:
-      "1.004 preguntas oficiales verificadas del Ministerio de Sanidad. Sin IA mezclada en el banco. Controversias documentadas. Gratis para empezar.",
+    title: META_TITLE,
+    description: META_DESCRIPTION,
     url: "https://mir.turel.es",
     siteName: "MIR Turel",
+    type: "website",
+    locale: "es_ES",
+    // 1200x630 (estándar OG/Twitter): recorte propio de hero-1024w.jpg, no
+    // el archivo tal cual — su proporción (1024x716, ~1.43:1) no coincide
+    // con la de una tarjeta de red social (1200x630, ~1.9:1).
+    images: [
+      {
+        url: "https://mir.turel.es/images/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "MIR Turel — preparación MIR con preguntas 100% oficiales",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: META_TITLE,
+    description: META_DESCRIPTION,
+    images: ["https://mir.turel.es/images/og-image.jpg"],
   },
 };
 
