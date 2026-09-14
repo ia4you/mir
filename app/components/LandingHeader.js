@@ -57,6 +57,9 @@ export default function LandingHeader() {
           <Link href="/blog" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-brand">
             Blog
           </Link>
+          <Link href="/contacto" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-brand">
+            Contacto
+          </Link>
           <a
             href="https://play.google.com/store/apps/details?id=es.turel.mir"
             target="_blank"
@@ -118,6 +121,13 @@ export default function LandingHeader() {
             className="rounded-lg px-2 py-2.5 text-sm font-semibold text-ink active:bg-panel"
           >
             Blog
+          </Link>
+          <Link
+            href="/contacto"
+            onClick={() => setAbierto(false)}
+            className="rounded-lg px-2 py-2.5 text-sm font-semibold text-ink active:bg-panel"
+          >
+            Contacto
           </Link>
           <a
             href="https://play.google.com/store/apps/details?id=es.turel.mir"
