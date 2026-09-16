@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
@@ -27,6 +28,8 @@ function formatearTiempoLargo(segundos) {
 export default function TestPregunta({ params }) {
   const router = useRouter();
   const sesionId = params.id;
+  const { data: session } = useSession();
+  const esPremium = session?.user?.plan === "premium";
 
   const [preguntas, setPreguntas] = useState(null);
   const [segundosPorPregunta, setSegundosPorPregunta] = useState(null);
@@ -187,6 +190,18 @@ export default function TestPregunta({ params }) {
       return;
     }
     await finalizarSesion();
+  }
+
+  // Solo Premium: manda la pregunta actual al final de la cola de pendientes
+  // sin tocar indice ni aciertosRef — como esa posición pasa a apuntar a la
+  // que antes era la siguiente pregunta, el efecto es "avanzar" sin más.
+  function saltarPregunta() {
+    if (!esPremium) return;
+    setPreguntas((actuales) => {
+      const [actual, ...resto] = actuales.slice(indice);
+      return [...actuales.slice(0, indice), ...resto, actual];
+    });
+    setSeleccionada(null);
   }
 
   async function pedirTutorFallo() {
@@ -392,6 +407,16 @@ export default function TestPregunta({ params }) {
                 className="h-12 w-full rounded-2xl border-2 border-track text-sm font-bold text-ink-muted active:bg-track disabled:opacity-60"
               >
                 Dejar en blanco →
+              </button>
+            )}
+            {esPremium && (
+              <button
+                type="button"
+                disabled={enviando}
+                onClick={saltarPregunta}
+                className="h-12 w-full rounded-2xl border-2 border-track text-sm font-bold text-ink-muted active:bg-track disabled:opacity-60"
+              >
+                Saltar pregunta
               </button>
             )}
           </div>
