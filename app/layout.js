@@ -50,6 +50,12 @@ const SCRIPT_TEMA = `
 })();
 `;
 
+// Solo se carga en producción: evita contaminar la propiedad GA4 real con
+// tráfico de desarrollo/preview. GA_MEASUREMENT_ID vacío en local si no se
+// define NEXT_PUBLIC_GA_MEASUREMENT_ID en .env.local.
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const GA_ENABLED = process.env.NODE_ENV === "production" && !!GA_MEASUREMENT_ID;
+
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className="scroll-smooth" suppressHydrationWarning>
@@ -72,18 +78,22 @@ export default function RootLayout({ children }) {
             pageview automático + Enhanced Measurement de GA4), solo cuándo
             se ejecuta — verificado con Lighthouse antes/después (ver
             commit). */}
-        <Script id="ga-init" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-CSHZ2YHZ02');
-          `}
-        </Script>
-        <Script
-          strategy="lazyOnload"
-          src="https://www.googletagmanager.com/gtag/js?id=G-CSHZ2YHZ02"
-        />
+        {GA_ENABLED && (
+          <>
+            <Script id="ga-init" strategy="lazyOnload">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_MEASUREMENT_ID}');
+              `}
+            </Script>
+            <Script
+              strategy="lazyOnload"
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+            />
+          </>
+        )}
       </body>
     </html>
   );

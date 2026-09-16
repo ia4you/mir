@@ -66,6 +66,11 @@ export default function Registro() {
         router.push("/login");
         return;
       }
+
+      if (typeof window.gtag === "function") {
+        window.gtag("event", "sign_up", { method: "email" });
+      }
+
       router.refresh();
       setEnviando(false);
       setMostrarBienvenida(true);
