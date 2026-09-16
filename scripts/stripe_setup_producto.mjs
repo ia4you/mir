@@ -8,13 +8,35 @@
 // Uso:
 //   node --env-file=.env.local scripts/stripe_setup_producto.mjs
 
+import readline from "node:readline/promises";
+import { stdin, stdout } from "node:process";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const NOMBRE_PRODUCTO = "MIR Turel Premium";
 
+// Este script crea productos/precios reales. Si la clave es de producción
+// (sk_live_), exige confirmación explícita en terminal para evitar
+// ejecutarlo sin querer contra la cuenta real de Stripe.
+async function confirmarSiClaveLive() {
+  const clave = process.env.STRIPE_SECRET_KEY || "";
+  if (!clave.startsWith("sk_live_")) return;
+
+  const rl = readline.createInterface({ input: stdin, output: stdout });
+  const respuesta = await rl.question(
+    "Esto va a tocar Stripe EN PRODUCCIÓN (live). Escribe CONFIRMAR para continuar: "
+  );
+  rl.close();
+
+  if (respuesta !== "CONFIRMAR") {
+    console.error("Cancelado: no se ha confirmado la ejecución contra Stripe live.");
+    process.exit(1);
+  }
+}
+
 async function main() {
+  await confirmarSiClaveLive();
   const existentes = await stripe.products.search({
     query: `name:"${NOMBRE_PRODUCTO}" AND active:"true"`,
   });
