@@ -30,6 +30,12 @@ export async function POST() {
     return NextResponse.json({ url: checkoutSession.url });
   } catch (err) {
     console.error(err);
+    if (err.type === "StripeInvalidRequestError" && err.code === "email_invalid") {
+      return NextResponse.json(
+        { error: "El email de tu cuenta no es válido, contacta con soporte" },
+        { status: 400 }
+      );
+    }
     return NextResponse.json({ error: "No se ha podido iniciar el pago" }, { status: 500 });
   }
 }
