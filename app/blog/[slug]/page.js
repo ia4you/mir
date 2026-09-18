@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { marked } from "marked";
@@ -16,7 +17,10 @@ function formatearFecha(iso) {
   });
 }
 
-async function getPost(slug) {
+// cache(): generateMetadata y el componente de página la llaman por separado
+// dentro de la misma request — sin esto es una consulta a blog_posts
+// duplicada en cada carga (mismo patrón que app/lib/especialidades.js).
+const getPost = cache(async function getPost(slug) {
   const { rows } = await query(
     `SELECT titulo, resumen, contenido, imagen_portada, created_at
      FROM blog_posts
@@ -24,7 +28,7 @@ async function getPost(slug) {
     [slug]
   );
   return rows[0] || null;
-}
+});
 
 async function getUltimosPosts(slugActual) {
   const { rows } = await query(
@@ -64,9 +68,31 @@ export default async function BlogPost({ params }) {
     getUltimosPosts(params.slug),
   ]);
   const imagenHero = post.imagen_portada;
+  const imagen = imagenDePost(post);
+
+  const schemaArticulo = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.titulo,
+    description: post.resumen || undefined,
+    image: imagen ? [imagen] : undefined,
+    datePublished: post.created_at,
+    dateModified: post.created_at,
+    inLanguage: "es",
+    url: `https://mir.turel.es/blog/${params.slug}`,
+    publisher: {
+      "@type": "Organization",
+      name: "MIR Turel",
+      url: "https://mir.turel.es",
+    },
+  };
 
   return (
     <div className="min-h-screen bg-surface">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaArticulo) }}
+      />
       <BlogHeader />
       <div className="mx-auto max-w-5xl px-5 py-8 sm:py-12 lg:grid lg:grid-cols-[1fr_300px] lg:items-start lg:gap-12">
         <article className="mx-auto w-full max-w-[700px] lg:mx-0">

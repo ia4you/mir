@@ -34,6 +34,9 @@ function FormularioLogin() {
       setError("Email o contraseña incorrectos.");
       return;
     }
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "login", { method: "email" });
+    }
     router.push(callbackUrl);
     router.refresh();
   }

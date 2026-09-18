@@ -2,12 +2,21 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { stripe } from "@/lib/stripe";
+import { comprobarLimite } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
 const BASE_URL = "https://mir.turel.es";
 
-export async function POST() {
+export async function POST(request) {
+  const limite = comprobarLimite(request, { clave: "checkout", limite: 10, ventanaMs: 60 * 60 * 1000 });
+  if (!limite.permitido) {
+    return NextResponse.json(
+      { error: "Demasiados intentos. Inténtalo de nuevo más tarde." },
+      { status: 429, headers: { "Retry-After": String(limite.reintentarEnSegundos) } }
+    );
+  }
+
   const session = await getServerSession(authOptions);
   if (!session?.user) {
     return NextResponse.json({ error: "No autenticado" }, { status: 401 });

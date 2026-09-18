@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { mailer } from "@/lib/mailer";
+import { comprobarLimite } from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,14 @@ const TIPOS_VALIDOS = [
 ];
 
 export async function POST(request) {
+  const limite = comprobarLimite(request, { clave: "contacto", limite: 5, ventanaMs: 60 * 60 * 1000 });
+  if (!limite.permitido) {
+    return NextResponse.json(
+      { error: "Demasiados intentos. Inténtalo de nuevo más tarde." },
+      { status: 429, headers: { "Retry-After": String(limite.reintentarEnSegundos) } }
+    );
+  }
+
   const body = await request.json().catch(() => null);
   const nombre = body?.nombre?.trim();
   const email = body?.email?.trim();

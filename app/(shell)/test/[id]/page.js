@@ -85,6 +85,12 @@ export default function TestPregunta({ params }) {
     setModoExamen(datos.modoExamen || "practica");
     setSegundosTotales(datos.segundosTotales || null);
     horaInicioRef.current = Date.now();
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "test_start", {
+        modo: datos.modoExamen || "practica",
+        num_preguntas: datos.preguntas.length,
+      });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sesionId]);
 
@@ -167,6 +173,14 @@ export default function TestPregunta({ params }) {
 
   async function finalizarSesion() {
     const duracionSegundos = Math.round((Date.now() - horaInicioRef.current) / 1000);
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "test_complete", {
+        modo: modoExamen,
+        aciertos: aciertosRef.current,
+        total: preguntas.length,
+        duracion_segundos: duracionSegundos,
+      });
+    }
     await fetch(`/api/sesiones/${sesionId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

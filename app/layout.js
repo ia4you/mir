@@ -55,6 +55,11 @@ const SCRIPT_TEMA = `
 // define NEXT_PUBLIC_GA_MEASUREMENT_ID en .env.local.
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 const GA_ENABLED = process.env.NODE_ENV === "production" && !!GA_MEASUREMENT_ID;
+// NEXT_PUBLIC_GA_DEBUG=true manda debug_mode a GA4: los eventos aparecen al
+// instante en GA4 > Admin > DebugView en vez de esperar horas al informe
+// estándar. Pensado para activarlo puntualmente (local apuntando al build de
+// producción, o como variable temporal en Dokploy), no para dejarlo siempre.
+const GA_DEBUG = process.env.NEXT_PUBLIC_GA_DEBUG === "true";
 
 export default function RootLayout({ children }) {
   return (
@@ -85,7 +90,7 @@ export default function RootLayout({ children }) {
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
                 gtag('js', new Date());
-                gtag('config', '${GA_MEASUREMENT_ID}');
+                gtag('config', '${GA_MEASUREMENT_ID}'${GA_DEBUG ? ", { debug_mode: true }" : ""});
               `}
             </Script>
             <Script

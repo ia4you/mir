@@ -1,5 +1,6 @@
 import { getEspecialidadesConConteo, getTodasLasPreguntasParaSitemap } from "./lib/especialidades";
 import { getTemasConConteo } from "./lib/temas";
+import { query } from "@/lib/db";
 
 const BASE_URL = "https://mir.turel.es";
 
@@ -7,11 +8,19 @@ const BASE_URL = "https://mir.turel.es";
 // en vez de prerenderizarse en build time.
 export const dynamic = "force-dynamic";
 
+async function getPostsBlogParaSitemap() {
+  const { rows } = await query(
+    `SELECT slug, created_at FROM blog_posts WHERE publicado = true ORDER BY created_at DESC`
+  );
+  return rows;
+}
+
 export default async function sitemap() {
-  const [especialidades, preguntas, temas] = await Promise.all([
+  const [especialidades, preguntas, temas, postsBlog] = await Promise.all([
     getEspecialidadesConConteo(),
     getTodasLasPreguntasParaSitemap(),
     getTemasConConteo(),
+    getPostsBlogParaSitemap(),
   ]);
 
   const estaticas = [
@@ -19,11 +28,17 @@ export default async function sitemap() {
     { url: `${BASE_URL}/demo`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/controversias`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/temas`, priority: 0.7, changeFrequency: "monthly" },
+    { url: `${BASE_URL}/blog`, priority: 0.7, changeFrequency: "weekly" },
     { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE_URL}/privacidad`, priority: 0.2, changeFrequency: "yearly" },
-    { url: `${BASE_URL}/login`, priority: 0.3, changeFrequency: "monthly" },
-    { url: `${BASE_URL}/registro`, priority: 0.3, changeFrequency: "monthly" },
   ];
+
+  const blogUrls = postsBlog.map((p) => ({
+    url: `${BASE_URL}/blog/${p.slug}`,
+    priority: 0.6,
+    changeFrequency: "monthly",
+    lastModified: p.created_at,
+  }));
 
   const especialidadesUrls = especialidades.map((e) => ({
     url: `${BASE_URL}/especialidades/${e.slug}`,
@@ -43,8 +58,10 @@ export default async function sitemap() {
     changeFrequency: "yearly",
   }));
 
-  return [...estaticas, ...especialidadesUrls, ...temasUrls, ...preguntasUrls].map((entry) => ({
-    ...entry,
-    lastModified: new Date(),
-  }));
+  return [...estaticas, ...blogUrls, ...especialidadesUrls, ...temasUrls, ...preguntasUrls].map(
+    (entry) => ({
+      ...entry,
+      lastModified: entry.lastModified || new Date(),
+    })
+  );
 }

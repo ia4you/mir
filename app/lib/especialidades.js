@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { query } from "../../lib/db";
 
 // Casos donde la transliteración automática del nombre no da una URL clara
@@ -70,7 +71,15 @@ export const DESCRIPCIONES = {
 // páginas públicas /preguntas/[especialidad]/[id] y el sitemap) son
 // contenido indexable por Google, y de momento el banco generado por IA no
 // entra en nada público ni indexable (ver auditoría Fase 1).
-export async function getEspecialidadesConConteo() {
+//
+// cache() de React: generateMetadata y el componente de página llaman a esta
+// función (directa o indirectamente vía getEspecialidadPorSlug/
+// getPreguntaPublica) por separado dentro de la misma request — sin cache()
+// eso eran dos GROUP BY completos sobre `preguntas` por cada carga de página
+// (confirmado en el log de `next dev`, aparecía duplicado). cache() memoiza
+// por request de render, no globalmente, así que sigue reflejando datos
+// frescos en cada petición nueva.
+export const getEspecialidadesConConteo = cache(async function getEspecialidadesConConteo() {
   const { rows } = await query(
     `SELECT especialidad, COUNT(*)::int AS total,
             MIN(año)::int AS anio_min, MAX(año)::int AS anio_max
@@ -87,7 +96,7 @@ export async function getEspecialidadesConConteo() {
     anioMax: r.anio_max,
     descripcion: DESCRIPCIONES[r.especialidad] || "",
   }));
-}
+});
 
 export async function getEspecialidadPorSlug(slug) {
   const especialidades = await getEspecialidadesConConteo();
@@ -146,7 +155,9 @@ export async function getSiguientePregunta(nombreEspecialidad, idActual) {
 // si su especialidad real corresponde al slug de la URL (evita que
 // /preguntas/cardiologia/42 sirva una pregunta de otra especialidad si
 // alguien cambia el id a mano).
-export async function getPreguntaPublica(especialidadSlug, id) {
+// cache() por el mismo motivo que getEspecialidadesConConteo: generateMetadata
+// y el componente de página la llaman por separado en la misma request.
+export const getPreguntaPublica = cache(async function getPreguntaPublica(especialidadSlug, id) {
   const idNumerico = parseInt(id, 10);
   if (!Number.isInteger(idNumerico)) return null;
 
@@ -163,7 +174,7 @@ export async function getPreguntaPublica(especialidadSlug, id) {
   if (rows.length === 0) return null;
 
   return { ...rows[0], especialidadSlug: especialidad.slug };
-}
+});
 
 // Para el sitemap: id + slug de especialidad de todas las preguntas reales.
 export async function getTodasLasPreguntasParaSitemap() {

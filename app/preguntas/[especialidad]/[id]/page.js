@@ -52,8 +52,51 @@ export default async function PreguntaPublicaPage({ params }) {
   // aparecen en el listado de /especialidades/[slug].
   const siguiente = await getSiguientePregunta(pregunta.especialidad, pregunta.id);
 
+  const url = `https://mir.turel.es/preguntas/${pregunta.especialidadSlug}/${pregunta.id}`;
+
+  // Sin acceptedAnswer a propósito: esta página no revela la respuesta
+  // correcta (es el gancho de registro), así que marcarla igualmente
+  // infringiría las guías de datos estructurados de Google para QAPage. Se
+  // listan las opciones como suggestedAnswer sin más — sigue siendo JSON-LD
+  // válido y le da a un LLM contexto claro de qué es la página.
+  const schemaPregunta = {
+    "@context": "https://schema.org",
+    "@type": "Question",
+    name: pregunta.pregunta,
+    text: pregunta.pregunta,
+    about: pregunta.especialidad,
+    inLanguage: "es",
+    url,
+    suggestedAnswer: LETRAS.map((letra) => pregunta[`opcion_${letra}`])
+      .filter((opcion) => opcion && opcion.trim())
+      .map((opcion) => ({ "@type": "Answer", text: opcion })),
+  };
+
+  const schemaBreadcrumb = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Inicio", item: "https://mir.turel.es/" },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: pregunta.especialidad,
+        item: `https://mir.turel.es/especialidades/${pregunta.especialidadSlug}`,
+      },
+      { "@type": "ListItem", position: 3, name: primerasPalabras(pregunta.pregunta, 8), item: url },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaPregunta) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumb) }}
+      />
       <div className="mx-auto max-w-2xl">
         <Link href="/" className="text-sm font-semibold text-brand">
           ← Volver a inicio
