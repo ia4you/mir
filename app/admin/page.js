@@ -17,9 +17,20 @@ export default function AdminUsuarios() {
   const [actualizando, setActualizando] = useState(false);
   const [error, setError] = useState("");
 
+  // { id, nombre, email, conteos, cargandoConteos, error } | null
+  const [confirmandoBorrado, setConfirmandoBorrado] = useState(null);
+  const [borrando, setBorrando] = useState(false);
+  const [notificacion, setNotificacion] = useState("");
+
   useEffect(() => {
     cargar();
   }, []);
+
+  useEffect(() => {
+    if (!notificacion) return;
+    const t = setTimeout(() => setNotificacion(""), 6000);
+    return () => clearTimeout(t);
+  }, [notificacion]);
 
   async function cargar() {
     try {
@@ -67,6 +78,63 @@ export default function AdminUsuarios() {
     }
   }
 
+  // Abre el modal ya mismo (con estado "cargando") y trae los conteos de
+  // datos relacionados en paralelo — evita un primer clic mudo mientras se
+  // espera la respuesta.
+  async function abrirConfirmarBorrado(u) {
+    setConfirmandoBorrado({
+      id: u.id,
+      nombre: u.nombre,
+      email: u.email,
+      conteos: null,
+      cargandoConteos: true,
+      error: "",
+    });
+    try {
+      const res = await fetch(`/api/admin/usuarios/${u.id}`);
+      if (!res.ok) throw new Error();
+      const data = await res.json();
+      setConfirmandoBorrado((prev) =>
+        prev && prev.id === u.id
+          ? { ...prev, conteos: data.relacionados, cargandoConteos: false }
+          : prev
+      );
+    } catch {
+      setConfirmandoBorrado((prev) =>
+        prev && prev.id === u.id
+          ? { ...prev, cargandoConteos: false, error: "No se han podido cargar los datos relacionados." }
+          : prev
+      );
+    }
+  }
+
+  async function confirmarBorrado() {
+    if (!confirmandoBorrado) return;
+    setBorrando(true);
+    try {
+      const res = await fetch(`/api/admin/usuarios/${confirmandoBorrado.id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || "No se ha podido eliminar el usuario.");
+
+      setUsuarios((prev) => prev.filter((u) => u.id !== confirmandoBorrado.id));
+      const resumen = Object.entries(data.borrados || {})
+        .filter(([tabla, n]) => tabla !== "usuarios" && n > 0)
+        .map(([tabla, n]) => `${n} ${tabla.replace(/_/g, " ")}`)
+        .join(", ");
+      setNotificacion(
+        `${confirmandoBorrado.nombre} eliminado correctamente` +
+          (resumen ? ` (también: ${resumen})` : " (sin datos relacionados).")
+      );
+      setConfirmandoBorrado(null);
+    } catch (e) {
+      setConfirmandoBorrado((prev) => (prev ? { ...prev, error: e.message } : prev));
+    } finally {
+      setBorrando(false);
+    }
+  }
+
   if (error) {
     return <p className="rounded-2xl bg-danger-bg p-4 text-sm font-semibold text-danger-text">{error}</p>;
   }
@@ -77,6 +145,12 @@ export default function AdminUsuarios() {
 
   return (
     <div className="flex flex-col gap-4">
+      {notificacion && (
+        <div className="rounded-2xl bg-success-bg p-4 text-sm font-semibold text-success-text">
+          {notificacion}
+        </div>
+      )}
+
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm font-semibold text-ink-muted">
           {resumen.total} usuarios totales · {resumen.premium} premium · {resumen.free} free
@@ -131,23 +205,32 @@ export default function AdminUsuarios() {
                   {u.stripe_customer_id || "—"}
                 </td>
                 <td className="px-4 py-3">
-                  {u.plan === "premium" ? (
+                  <div className="flex items-center gap-2">
+                    {u.plan === "premium" ? (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmando({ id: u.id, nombre: u.nombre, nuevoPlan: "free" })}
+                        className="rounded-lg border border-track px-3 py-1.5 text-xs font-bold text-ink"
+                      >
+                        → Free
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmando({ id: u.id, nombre: u.nombre, nuevoPlan: "premium" })}
+                        className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-white"
+                      >
+                        → Premium
+                      </button>
+                    )}
                     <button
                       type="button"
-                      onClick={() => setConfirmando({ id: u.id, nombre: u.nombre, nuevoPlan: "free" })}
-                      className="rounded-lg border border-track px-3 py-1.5 text-xs font-bold text-ink"
+                      onClick={() => abrirConfirmarBorrado(u)}
+                      className="rounded-lg bg-danger px-3 py-1.5 text-xs font-bold text-white"
                     >
-                      → Free
+                      Borrar
                     </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setConfirmando({ id: u.id, nombre: u.nombre, nuevoPlan: "premium" })}
-                      className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-white"
-                    >
-                      → Premium
-                    </button>
-                  )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -188,6 +271,59 @@ export default function AdminUsuarios() {
                 className="h-11 flex-1 rounded-xl bg-brand font-bold text-white disabled:opacity-60"
               >
                 {actualizando ? "Guardando…" : "Confirmar"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmandoBorrado && (
+        <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+          <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-lg">
+            <p className="text-lg font-bold text-ink">¿Eliminar usuario?</p>
+            <p className="mt-1 text-sm text-ink-muted">
+              <span className="font-bold text-ink">{confirmandoBorrado.nombre}</span> (
+              {confirmandoBorrado.email}) se borrará junto con todos sus datos relacionados. Esta
+              acción no se puede deshacer.
+            </p>
+
+            {confirmandoBorrado.cargandoConteos && (
+              <p className="mt-4 text-sm text-ink-muted">Comprobando datos relacionados…</p>
+            )}
+
+            {confirmandoBorrado.conteos && (
+              <ul className="mt-4 flex flex-col gap-1 rounded-xl bg-panel p-3 text-sm">
+                {Object.entries(confirmandoBorrado.conteos).map(([tabla, n]) => (
+                  <li key={tabla} className="flex justify-between">
+                    <span className="text-ink-muted">{tabla.replace(/_/g, " ")}</span>
+                    <span className="font-bold text-ink">{n}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {confirmandoBorrado.error && (
+              <p className="mt-3 rounded-xl bg-danger-bg p-3 text-xs font-semibold text-danger-text">
+                {confirmandoBorrado.error}
+              </p>
+            )}
+
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmandoBorrado(null)}
+                disabled={borrando}
+                className="h-11 flex-1 rounded-xl border border-track font-bold text-ink disabled:opacity-60"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={confirmarBorrado}
+                disabled={borrando || confirmandoBorrado.cargandoConteos}
+                className="h-11 flex-1 rounded-xl bg-danger font-bold text-white disabled:opacity-60"
+              >
+                {borrando ? "Eliminando…" : "Eliminar definitivamente"}
               </button>
             </div>
           </div>
