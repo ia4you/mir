@@ -3,6 +3,7 @@ import { getImageProps } from "next/image";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
 import { getControversias } from "./lib/controversias";
 import LandingHeader from "./components/LandingHeader";
+import SocialLinks from "./components/SocialLinks";
 
 // Imagen del hero con "art direction" real (móvil vs escritorio) vía
 // getImageProps + <picture>, en vez de dos <Image priority> alternados con
@@ -406,7 +407,8 @@ export default async function LandingPage() {
           en LandingHeader, así que aquí solo quedan los enlaces legalmente
           obligatorios y el disclaimer de fuente/no afiliación. */}
       <footer className="border-t border-track px-5 py-6 text-center text-xs text-ink-muted">
-        <nav className="flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-brand">
+        <SocialLinks />
+        <nav className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-brand">
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
         </nav>
