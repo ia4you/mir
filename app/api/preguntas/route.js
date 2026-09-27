@@ -52,8 +52,8 @@ function barajar(array) {
 // examen real con el que calcular ese peso ni comparar resultados.
 async function generarSimulacro() {
   const { rows: pesos } = await query(`
-    WITH anios AS (SELECT DISTINCT año FROM preguntas WHERE origen = 'oficial'),
-         especialidades AS (SELECT DISTINCT especialidad FROM preguntas WHERE origen = 'oficial'),
+    WITH anios AS (SELECT DISTINCT año FROM preguntas WHERE origen = 'oficial' AND anulada = false),
+         especialidades AS (SELECT DISTINCT especialidad FROM preguntas WHERE origen = 'oficial' AND anulada = false),
          combinaciones AS (
            SELECT a.año, e.especialidad FROM anios a CROSS JOIN especialidades e
          ),
@@ -62,7 +62,7 @@ async function generarSimulacro() {
            FROM combinaciones c
            LEFT JOIN (
              SELECT año, especialidad, COUNT(*) AS cnt FROM preguntas
-             WHERE origen = 'oficial'
+             WHERE origen = 'oficial' AND anulada = false
              GROUP BY año, especialidad
            ) p ON p.año = c.año AND p.especialidad = c.especialidad
          ),
@@ -86,7 +86,7 @@ async function generarSimulacro() {
           `SELECT id, año, numero, especialidad, pregunta,
                   opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
            FROM preguntas
-           WHERE especialidad = $1 AND origen = 'oficial'
+           WHERE especialidad = $1 AND origen = 'oficial' AND anulada = false
            ORDER BY RANDOM()
            LIMIT $2`,
           [r.especialidad, r.cantidad]
@@ -145,7 +145,7 @@ export async function GET(request) {
         `SELECT id, año, numero, especialidad, pregunta,
                 opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path, origen
          FROM preguntas
-         WHERE id = ANY($1::int[])`,
+         WHERE id = ANY($1::int[]) AND anulada = false`,
         [ids]
       );
       return NextResponse.json(rows);
@@ -177,7 +177,7 @@ export async function GET(request) {
   // a ser siempre origen='oficial' — igual que el Simulacro — y el banco IA
   // no se sirve por ningún punto de la app. No revertir esto sin decisión
   // explícita del producto.
-  const condiciones = ["origen = 'oficial'"];
+  const condiciones = ["origen = 'oficial'", "anulada = false"];
   const valores = [];
   // `especialidades` (plural, coma-separada) permite mezclar varias en un
   // mismo test (p.ej. "entrenar puntos débiles"); si viene, tiene prioridad

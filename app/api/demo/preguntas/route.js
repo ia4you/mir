@@ -27,7 +27,7 @@ export async function GET(request) {
        FROM (
          SELECT *, ROW_NUMBER() OVER (PARTITION BY especialidad ORDER BY RANDOM()) AS rn
          FROM preguntas
-         WHERE origen = 'oficial'
+         WHERE origen = 'oficial' AND anulada = false
        ) sub
        WHERE rn = 1
        ORDER BY RANDOM()
