@@ -3,11 +3,14 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import SpecialtyProgressRow from "../../../components/SpecialtyProgressRow";
 
 export default function Resultados({ params }) {
   const router = useRouter();
   const sesionId = params.id;
+  const { data: session } = useSession();
+  const esPremium = session?.user?.plan === "premium";
 
   const [datos, setDatos] = useState(null);
   const [notFound, setNotFound] = useState(false);
@@ -126,6 +129,28 @@ export default function Resultados({ params }) {
           </div>
         </div>
       </section>
+
+      {!esPremium && (
+        <section className="mt-6 px-5">
+          <div className="rounded-2xl border border-warning-border bg-warning-bg p-4">
+            <p className="text-sm font-bold text-warning-text">
+              ★ {datos.fallos > 0
+                ? `Repasa tus ${datos.fallos} fallos con simulacros de examen real`
+                : "Sigue mejorando con el plan Premium"}
+            </p>
+            <p className="mt-1 text-sm text-warning-text">
+              Preguntas ilimitadas cada día, simulacros de examen real cronometrados y
+              seguimiento de tu evolución por asignatura.
+            </p>
+            <Link
+              href="/premium"
+              className="mt-3 inline-block rounded-xl bg-warning px-4 py-2 text-sm font-bold text-white active:opacity-90"
+            >
+              Ver plan Premium →
+            </Link>
+          </div>
+        </section>
+      )}
 
       {datos.modo === "simulacro" && datos.simulacro && (
         <section className="mt-6 px-5">

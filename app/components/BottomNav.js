@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const ICONOS = {
   inicio: (props) => (
@@ -27,6 +28,11 @@ const ICONOS = {
       <path strokeLinecap="round" d="M4.5 20c1.5-4 4-5.5 7.5-5.5s6 1.5 7.5 5.5" />
     </svg>
   ),
+  premium: (props) => (
+    <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="m12 2.5 2.6 5.9 6.4.7-4.8 4.4 1.3 6.3L12 16.8 6.5 19.8l1.3-6.3-4.8-4.4 6.4-.7L12 2.5Z" />
+    </svg>
+  ),
 };
 
 const TABS = [
@@ -38,28 +44,43 @@ const TABS = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const esPremium = session?.user?.plan === "premium";
+
+  const tabs = esPremium
+    ? TABS
+    : [...TABS, { href: "/premium", label: "Premium", icono: "premium" }];
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-track bg-card pb-safe">
       <div className="flex items-stretch justify-around px-2 pt-2">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const activo = tab.href === "/inicio" ? pathname === "/inicio" : pathname.startsWith(tab.href);
+          const esPremiumTab = tab.icono === "premium";
           const Icono = ICONOS[tab.icono];
           return (
             <Link
               key={tab.href}
               href={tab.href}
-              className="flex min-w-[64px] flex-col items-center gap-1 py-1"
+              className="flex min-w-[56px] flex-col items-center gap-1 py-1"
             >
               <span
                 className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
-                  activo ? "bg-brand text-white" : "bg-transparent text-ink-muted"
+                  esPremiumTab
+                    ? activo
+                      ? "bg-warning text-white"
+                      : "bg-warning-bg text-warning"
+                    : activo
+                    ? "bg-brand text-white"
+                    : "bg-transparent text-ink-muted"
                 }`}
               >
                 <Icono className="h-5 w-5" />
               </span>
               <span
-                className={`text-xs font-semibold ${activo ? "text-brand" : "text-ink-muted"}`}
+                className={`text-xs font-semibold ${
+                  esPremiumTab ? "text-warning" : activo ? "text-brand" : "text-ink-muted"
+                }`}
               >
                 {tab.label}
               </span>

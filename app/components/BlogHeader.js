@@ -9,12 +9,20 @@ export default function BlogHeader() {
       <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
         <Logo className="h-11 w-auto sm:h-12" />
       </Link>
-      <Link
-        href="/demo"
-        className="whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white shadow-sm active:bg-brand-dark"
-      >
-        Empezar gratis
-      </Link>
+      <nav className="flex items-center gap-2 sm:gap-3">
+        <Link
+          href="/premium"
+          className="whitespace-nowrap rounded-lg border border-warning-border bg-warning-bg px-2 py-1 text-xs font-bold text-warning-text sm:px-3 sm:py-1.5 sm:text-sm"
+        >
+          ★ Premium
+        </Link>
+        <Link
+          href="/demo"
+          className="whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white shadow-sm active:bg-brand-dark"
+        >
+          Empezar gratis
+        </Link>
+      </nav>
     </header>
   );
 }

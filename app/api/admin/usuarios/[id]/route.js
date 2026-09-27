@@ -25,7 +25,14 @@ export async function GET(request, { params }) {
   const [sesiones, respuestas, push, listaPremium, lista, contacto, solicitudes] =
     await Promise.all([
       query(`SELECT COUNT(*)::int AS n FROM sesiones WHERE user_id = $1`, [id]),
-      query(`SELECT COUNT(*)::int AS n FROM respuestas_sesion WHERE user_id = $1`, [id]),
+      // Mismo criterio que eliminarUsuarioComoAdmin: por user_id directo O
+      // por pertenecer a una sesión del usuario, para que este conteo no
+      // muestre menos filas de las que el DELETE va a encontrar.
+      query(
+        `SELECT COUNT(*)::int AS n FROM respuestas_sesion
+         WHERE user_id = $1 OR sesion_id IN (SELECT id FROM sesiones WHERE user_id = $1)`,
+        [id]
+      ),
       query(`SELECT COUNT(*)::int AS n FROM push_subscriptions WHERE user_id = $1`, [id]),
       query(`SELECT COUNT(*)::int AS n FROM lista_espera_premium WHERE user_id = $1`, [id]),
       query(`SELECT COUNT(*)::int AS n FROM lista_espera WHERE email = $1`, [usuario.email]),

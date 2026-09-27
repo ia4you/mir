@@ -6,12 +6,11 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
 const FILAS_COMPARATIVA = [
-  { caracteristica: "Preguntas por día", free: "15", premium: "∞" },
-  { caracteristica: "Acceso a especialidades", free: "Todas", premium: "Todas" },
-  { caracteristica: "Historial y estadísticas", free: true, premium: true },
+  { caracteristica: "Banco de preguntas", free: "15/día", premium: "Ilimitado" },
+  { caracteristica: "Explicación oficial razonada", free: true, premium: true },
+  { caracteristica: "Estadísticas por asignatura y evolución", free: true, premium: true },
   { caracteristica: "Repaso de fallos", free: true, premium: true },
-  { caracteristica: "Simulacro completo", free: false, premium: true },
-  { caracteristica: "Sin límite diario", free: false, premium: true },
+  { caracteristica: "Simulacros de examen real", free: false, premium: true },
 ];
 
 function Celda({ valor }) {
@@ -39,6 +38,13 @@ export default function Premium() {
       return;
     }
     setEnviando(true);
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "begin_checkout", {
+        value: 9.99,
+        currency: "EUR",
+        items: [{ item_name: "Premium mensual" }],
+      });
+    }
     try {
       const res = await fetch("/api/checkout", { method: "POST" });
       const data = await res.json();
@@ -110,7 +116,7 @@ export default function Premium() {
       )}
 
       <Link
-        href="/inicio"
+        href={status === "authenticated" ? "/inicio" : "/"}
         className="mt-6 flex h-12 w-full max-w-xs items-center justify-center rounded-2xl border border-track font-bold text-ink"
       >
         Volver al inicio
