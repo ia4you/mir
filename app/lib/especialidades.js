@@ -84,7 +84,7 @@ export const getEspecialidadesConConteo = cache(async function getEspecialidades
     `SELECT especialidad, COUNT(*)::int AS total,
             MIN(año)::int AS anio_min, MAX(año)::int AS anio_max
      FROM preguntas
-     WHERE origen = 'oficial'
+     WHERE origen = 'oficial' AND anulada = false
      GROUP BY especialidad
      ORDER BY total DESC`
   );
@@ -109,6 +109,7 @@ export async function getPreguntasMuestra(nombreEspecialidad, limite = 3) {
      FROM preguntas
      WHERE especialidad = $1
        AND origen = 'oficial'
+       AND anulada = false
        AND pregunta !~* '\\y(imagen|imágen|figura|radiografía)\\y'
      ORDER BY id
      LIMIT $2`,
@@ -129,7 +130,7 @@ export async function getPreguntasPaginadas(nombreEspecialidad, pagina = 1) {
   const { rows } = await query(
     `SELECT id, pregunta
      FROM preguntas
-     WHERE especialidad = $1 AND origen = 'oficial'
+     WHERE especialidad = $1 AND origen = 'oficial' AND anulada = false
      ORDER BY id
      LIMIT $2 OFFSET $3`,
     [nombreEspecialidad, PREGUNTAS_POR_PAGINA, offset]
@@ -143,7 +144,7 @@ export async function getPreguntasPaginadas(nombreEspecialidad, pagina = 1) {
 export async function getSiguientePregunta(nombreEspecialidad, idActual) {
   const { rows } = await query(
     `SELECT id FROM preguntas
-     WHERE especialidad = $1 AND id > $2 AND origen = 'oficial'
+     WHERE especialidad = $1 AND id > $2 AND origen = 'oficial' AND anulada = false
      ORDER BY id
      LIMIT 1`,
     [nombreEspecialidad, idActual]
@@ -168,7 +169,7 @@ export const getPreguntaPublica = cache(async function getPreguntaPublica(especi
     `SELECT id, pregunta, opcion_a, opcion_b, opcion_c, opcion_d, opcion_e,
             especialidad, explicacion, imagen_path, año
      FROM preguntas
-     WHERE id = $1 AND especialidad = $2 AND origen = 'oficial'`,
+     WHERE id = $1 AND especialidad = $2 AND origen = 'oficial' AND anulada = false`,
     [idNumerico, especialidad.nombre]
   );
   if (rows.length === 0) return null;
@@ -179,7 +180,7 @@ export const getPreguntaPublica = cache(async function getPreguntaPublica(especi
 // Para el sitemap: id + slug de especialidad de todas las preguntas reales.
 export async function getTodasLasPreguntasParaSitemap() {
   const { rows } = await query(
-    `SELECT id, especialidad FROM preguntas WHERE origen = 'oficial' ORDER BY id`
+    `SELECT id, especialidad FROM preguntas WHERE origen = 'oficial' AND anulada = false ORDER BY id`
   );
   return rows.map((r) => ({ id: r.id, especialidadSlug: slugify(r.especialidad) }));
 }
