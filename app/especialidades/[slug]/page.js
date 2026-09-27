@@ -27,7 +27,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Preguntas MIR de ${especialidad.nombre} (${especialidad.anioMin}-${especialidad.anioMax}) – Test Online Gratis | MIR Turel`,
-    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR 2021–2025. Practica gratis con preguntas oficiales verificadas.`,
+    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR 2022–2026. Practica gratis con preguntas oficiales verificadas.`,
     alternates: {
       canonical: `https://mir.turel.es/especialidades/${especialidad.slug}`,
     },
@@ -45,7 +45,7 @@ export default async function EspecialidadPage({ params }) {
     "@context": "https://schema.org",
     "@type": "Course",
     name: `Preguntas MIR de ${especialidad.nombre}`,
-    description: `${especialidad.total} preguntas oficiales de ${especialidad.nombre} de las convocatorias MIR 2021-2025.`,
+    description: `${especialidad.total} preguntas oficiales de ${especialidad.nombre} de las convocatorias MIR 2022-2026.`,
     provider: {
       "@type": "Organization",
       name: "MIR Turel",

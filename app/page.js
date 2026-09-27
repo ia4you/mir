@@ -146,7 +146,7 @@ const DIFERENCIALES = [
     etiqueta: "Origen del banco",
     titulo: "100% preguntas oficiales",
     texto:
-      "Convocatorias 2021–2025 verificadas contra los cuadernillos del Ministerio de Sanidad. Sin preguntas generadas por IA mezcladas en el banco.",
+      "Convocatorias 2022–2026 verificadas contra los cuadernillos del Ministerio de Sanidad. Sin preguntas generadas por IA mezcladas en el banco.",
   },
   {
     etiqueta: "Contenido único",
@@ -180,7 +180,7 @@ export default async function LandingPage() {
     "@type": "EducationalOrganization",
     name: "MIR Turel",
     url: "https://mir.turel.es",
-    description: `Plataforma de preparación del examen MIR con ${formatearMiles(totalPreguntas)} preguntas oficiales de las convocatorias 2021-2025 del Ministerio de Sanidad, sin contenido generado por IA mezclado en el banco.`,
+    description: `Plataforma de preparación del examen MIR con ${formatearMiles(totalPreguntas)} preguntas oficiales de las convocatorias 2022-2026 del Ministerio de Sanidad, sin contenido generado por IA mezclado en el banco.`,
     educationalCredentialAwarded: "Médico Interno Residente (MIR)",
     provider: {
       "@type": "Organization",
@@ -231,7 +231,7 @@ export default async function LandingPage() {
 
           <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-3 sm:text-lg">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
-            2021–2025, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
+            2022–2026, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
@@ -413,7 +413,7 @@ export default async function LandingPage() {
           <Link href="/privacidad">Privacidad</Link>
         </nav>
         <p className="mx-auto mt-3 max-w-2xl">
-          Fuentes: cuadernillos oficiales MIR 2021–2025,{" "}
+          Fuentes: cuadernillos oficiales MIR 2022–2026,{" "}
           <a
             href="https://www.sanidad.gob.es"
             rel="noopener noreferrer"

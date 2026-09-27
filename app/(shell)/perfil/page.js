@@ -20,17 +20,17 @@ const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 
 const FUENTES = [
   {
-    anio: "2021",
-    preguntas: 183,
-    nota: "185 preguntas totales en el examen (edición COVID reducida: 175 base + 10 reserva); 2 anuladas oficialmente.",
+    anio: "2022",
+    preguntas: 207,
+    nota: "Examen de 210 preguntas (200 más 10 de reserva); 3 anuladas oficialmente.",
   },
-  { anio: "2022", preguntas: 207, nota: "3 preguntas anuladas oficialmente." },
   { anio: "2023", preguntas: 206, nota: "4 preguntas anuladas oficialmente." },
   { anio: "2024", preguntas: 205, nota: "5 preguntas anuladas oficialmente." },
+  { anio: "2025", preguntas: 204, nota: "6 preguntas anuladas oficialmente." },
   {
-    anio: "2025",
+    anio: "2026",
     preguntas: 203,
-    nota: "6 anuladas oficialmente + 1 excluida manualmente por una discrepancia de contenido sin resolver con certeza.",
+    nota: "7 preguntas anuladas oficialmente (una de ellas, de reserva, no llegó a sustituir a ninguna y no forma parte del banco).",
   },
 ];
 
@@ -214,7 +214,7 @@ export default function Perfil() {
         <FieldCard label="Fuentes del banco de preguntas">
           <p className="text-sm text-ink">
             1004 preguntas de los exámenes MIR oficiales de Medicina, convocatorias
-            2021-2025. Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
+            2022-2026. Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
             respuestas correctas de las plantillas definitivas del Ministerio de Sanidad
             tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
           </p>

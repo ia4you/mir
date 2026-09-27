@@ -29,7 +29,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Preguntas MIR de ${especialidad.nombre} — Página ${pagina} (${especialidad.anioMin}-${especialidad.anioMax}) | MIR Turel`,
-    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR 2021–2025. Página ${pagina}. Practica gratis con preguntas oficiales verificadas.`,
+    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR 2022–2026. Página ${pagina}. Practica gratis con preguntas oficiales verificadas.`,
     alternates: {
       // Autorreferencial a propósito: cada página de la paginación es su
       // propia canonical, no la página 1 — si no, Google nunca indexaría el

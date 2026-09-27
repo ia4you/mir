@@ -10,7 +10,7 @@ import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
 import { getTemporizadorDefecto } from "../../lib/preferencias";
 
-const ANIOS = ["2021", "2022", "2023", "2024", "2025"];
+const ANIOS = ["2022", "2023", "2024", "2025", "2026"];
 const LIMITE_DIARIO_FREE = 15;
 // Examen real: 4 horas para todo el simulacro (no por pregunta).
 const SEGUNDOS_SIMULACRO = 4 * 60 * 60;
@@ -359,7 +359,7 @@ export default function Configuracion() {
           <FieldCard label="Cómo funciona el simulacro">
             <ul className="flex flex-col gap-2 text-sm text-ink">
               <li>
-                📝 Examen de 210 preguntas, combinando los 5 años disponibles (2021-2025) y
+                📝 Examen de 210 preguntas, combinando los 5 años disponibles (2022-2026) y
                 repartidas por especialidad según su peso histórico real en las convocatorias
                 oficiales.
               </li>
