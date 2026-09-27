@@ -1,0 +1,510 @@
+-- Rollback de la corrección de palabras partidas del 2026-09-27
+-- Restaura el valor exacto anterior de cada campo tocado.
+BEGIN;
+
+DO $$
+DECLARE n int;
+BEGIN
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 5. Mujer de 32 años con diagnóstico reciente de carcinoma ductal infiltr ante G3 de mama izquierda, fenotipo triple negativo. Se muestran las imágenes de la PET-T C con 18F-FDG con proyección de intensidad máxima (MIP) y cortes axiales a nivel de mama y axila. De las siguientes afirmaciones, señale la correcta:' WHERE id = 395;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 395 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 7. Mujer de 57 años que consulta por hipoacusi a derecha neurosensorial progresiva y acúfenos. En relación con la imagen mostrada, indique de qué exploración se trata y el diagnóstico más probable:' WHERE id = 397;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 397 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 9. Hombre de 72 años con diagnóstico de carcinoma de cavidad oral intervenido hace tres meses con resección completa, en tratamiento con quimioterapia, portador de g astrostomía endoscópica percutánea profiláctica, que acude a urgencias por dolor y distensión abdominal de tres días de evolución, intolerancia oral y ausencia de deposiciones. Se realiza la TC abdominopélvica con contraste intravenoso que se muestra en la imagen. ¿Cuál de los siguientes es el diagnóstico más probable?:' WHERE id = 399;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 399 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 11. Hombre de 52 años que consulta por dolor centrotorácico desgarrador de 30 minutos de duración. A la exploración está inquieto y sudoroso. La tensión arterial es de 190/110 mmHg en ambos brazos. A la auscultación no hay soplos cardiacos ni estertor es crepitantes. El electrocardiograma está en ritmo sinusa la 90 latidos por minuto sin alteraciones de la repolarización. En la angioTC torácica se observa la imagen que se adjunta. ¿Cuál es el diagnóstico más probable?:' WHERE id = 401;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 401 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 14. Paciente de 54 años que acude a realizarse una ecografía abdominal como control de una enfermedad de Crohn. Nunca ha presentado cólicos biliares y no tiene otra co morbilidad relevante. En la imagen se muestran los hallazgos de la ecografía (izquierda modo B y derecha con contraste IV). De las siguientes, señale la afirmación correcta:' WHERE id = 404;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 404 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 16. En la mielofi brosis primaria se observan en el frotis sanguíneo (ver imagen) unos hematíes con una forma característica denominados:' WHERE id = 405;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 405 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 17. Hombre de 63 años, fumador de 15 cigarrillos al día como único antecedente de interés, que consulta por cefalea. Se detecta presión arterial de 180/110 mm Hg, iniciándose tratamiento con enalapril 10 mg. Se realiza analítica donde no hay ningún parámetro fuera de rango. A la semana se objetiva un buen control de la presión arterial y una creatinina de 3 mg/dL correspondiente a un FGe (filtrado glomerular estimado) de 22 ml/min. En la exploración física se detecta un soplo abdominal. Se realiza una an gioTC abdominal (figura). ¿Cuál de las siguientes afirmaciones es más probable?:' WHERE id = 406;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 406 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 22. Mujer de 75 años, autónoma y activa, que sufre una caída en su domicilio y acude a urgencias con dolor, impotencia funcional y deformidad alrededor de la rodilla izquierda. Había sido intervenida quirúrgicamente de esta rodilla hacía 2 años por gonartrosis mediante una a rtroplastia total de rodilla cementada postero-estabilizada. Los pulsos distales están conservados. Existe una movilidad patológica de la rodilla izquierda sin apreciarse déficit neurológico en la pierna afecta. Se realizan la radiografía y la TC que se muestran en las imágenes. ¿Cuál de las siguientes sería la actitud terapéutica en esta situación?:' WHERE id = 411;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 411 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 24. Paciente que consulta porque se ha notad o "bultos" cervicales bilaterales y molestias faríngeas de meses de evolución, incluso con leve dificultad para tragar. No refiere disnea ni disfonía, pero observamos una voz engolada. Ha perdido 3 Kg de peso recientemente. No es fumador pero sí ha sido bebedor importante. Después de explorar la cavidad oral y orofaringe sin ha llar alteraciones, se rea liza la videofibroscopia de vía aerodigestiva superior, una de cuyas imágenes se muestra. ¿Cuál de las siguientes descripciones es correcta?:' WHERE id = 413;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 413 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Pregunta asociada a la imagen 24. Paciente que consulta porque se ha notad o "bultos" cervicales bilaterales y molestias faríngeas de meses de evolución, incluso con leve dificultad para tragar. No refiere disnea ni disfonía, pero observamos una voz engolada. Ha perdido 3 Kg de peso recientemente. No es fumador pero sí ha sido bebedor importante. Después de explorar la cavidad oral y orofaringe sin ha llar alteraciones, se rea liza la videofibroscopia de vía aerodigestiva superior, una de cuyas imágenes se muestra. ¿Cuál de las siguientes descripciones es correcta?:' WHERE id = 413;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 413 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente acude a consulta recientemente diagnosticado de esofa gitis eo sinofílica y tras exponerle las opciones de tratamiento prefiere hacer tratamiento dietético con dieta de exclusión de dos alimentos. ¿Cuáles son los alimentos que tendría que retirar de la dieta?:' WHERE id = 430;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 430 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente acude a consulta recientemente diagnosticado de esofa gitis eo sinofílica y tras exponerle las opciones de tratamiento prefiere hacer tratamiento dietético con dieta de exclusión de dos alimentos. ¿Cuáles son los alimentos que tendría que retirar de la dieta?:' WHERE id = 430;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 430 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Según la clasificación del esta do físico preoperatorio del paciente establecida por la ASA (Sociedad Americana de Anestesiología), un paciente con hipertensión arterial mal controlada correspondería a un grado:' WHERE id = 442;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 442 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = '¿En cuál de las siguientes pacientes NO estaría indicada la realización d e un a his teroscopia diagnóstica como primera línea de estudio?:' WHERE id = 452;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 452 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'A una de sus pacientes, primi gesta, se le ha practicado un a ecografía de rutina a las 20 semanas de gestación que ha detectado un mioma en su útero que parece haber crecido bastante respecto a las previas. Está mu y preocupada por las posibles secuelas que este tumor pueda tener en el resultado de su embarazo. Usted le informa de que todas las siguientes complicaciones pueden ocurrir en el embarazo como consecuencia de los miomas uterinos, EXCEPTO:' WHERE id = 454;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 454 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 35 años sin antecedentes de interés , nuligesta, que acude a urgencias por sangrado entre reglas en cantidad moderada que afecta a su calidad de vida. Además refiere que últimamente tiene reglas mucho más abundantes. El hemograma y la coagulación son normales. En la ecografía ginecológica se observa útero en ante, regular, de 58x35 mm, con end ometrio en fase proliferativa, nódulo hipoecoico en cara anterior uterina con Doppler periférico de alta resistencia (sin Doppler central) de 28x29 mm compatible con un leiomioma tipo 1 (clasificación de la FIGO 2011), anejos normales, no líquido libre en Douglas. Señale la actitud más correcta:' WHERE id = 455;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 455 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 3 años que acude a urgencias de un hospital. En el triángulo de evaluación pediátrica muestra alteración de 2 lados: apariencia y circulatorio. En la exploración destaca una presión arterial de 60/ 30 mmHg y un exantema eritematoso macular generalizado. Los exámenes complementarios muestran elevación de urea y creatinina, alargamiento del tiempo de protrombina, f ibrinógeno bajo, plaquetas 50.000/mm3 y elevación de tr ansaminasas. En el hemocultivo se aísla estreptococo del grupo A. ¿Cuál de los siguientes e sel diagnóstico más probable?:' WHERE id = 462;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 462 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 3 años que acude a urgencias de un hospital. En el triángulo de evaluación pediátrica muestra alteración de 2 lados: apariencia y circulatorio. En la exploración destaca una presión arterial de 60/ 30 mmHg y un exantema eritematoso macular generalizado. Los exámenes complementarios muestran elevación de urea y creatinina, alargamiento del tiempo de protrombina, f ibrinógeno bajo, plaquetas 50.000/mm3 y elevación de tr ansaminasas. En el hemocultivo se aísla estreptococo del grupo A. ¿Cuál de los siguientes e sel diagnóstico más probable?:' WHERE id = 462;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 462 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 87 años que padece una enfermedad de Alzheimer en grado moderado e hipertensión arterial. Sufre también una incontinencia de orina que se ha ido agravando en las últimas semanas, para la que se le ha prescrito recientemente un fármaco an ticolinérgico ( oxibutinina). ¿Qué problema puede desencadenar con más frecuencia la toma de este fármaco?:' WHERE id = 474;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 474 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 33 años, soltero, vive en pareja desde hace 10 años. Operario de profesión. Muy buena relación con su familia de o rigen, cierta dependencia emocional de la madre. Desde hace un año presenta un aumento de preocupación por cualquier aspecto de su vida y está muy inquieto y en ocasiones irritable. Se siente agotado, tenso y enfermo, por lo que el último año ha acudido un par de veces a urgencias. Además, tiene sensación de falta de control, r umiaciones, ansiedad anticipatoria, tristeza y apatía. El cuadro clínico se inició cuando la empresa en la que trabaja inició un expediente de regulación de empleo. ¿Cuál de los siguientes es el diagnóstico más probable?:' WHERE id = 477;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 477 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Adolescente de 15 años que comienza con crisis mioclónicas, sobre todo en los brazos, más frecuentes al despertar, que suelen aparecer tras la privación del sueño o la ingesta de alcohol. Tras las mioclonias presenta algunas veces una crisis convulsiva generalizada. En el EEG se objetivan complejos de punta-onda y polipunta-onda con gran fotosensibilidad. De los siguientes ¿cuál sería el fármaco antiepiléptic o más indicado par a comenzar el tratamiento?:' WHERE id = 479;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 479 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 59 años que ingresa en UCI por insuficiencia respiratoria aguda hipoxémica secundaria a neumonía comunitaria grave. Por fracaso respiratorio, precisa sedación y conexión a ventilación mecánica invasiva. Tiene como antecedente laboral el trabajar en una granja de cerdos, por lo que empíricamente se decide cubrir un estafilococo aureus me ticilin resistente hasta tener los cultivos de las secreciones respiratorias. ¿Cuál d e los siguientes antibióticos iniciaría empíricamente como monoterapia antimicrobiana?:' WHERE id = 485;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 485 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 73 años activo, que presenta dolor de intensidad EVA 8-9 en el hombro derecho (miembro dominante) con pérdida de movilidad. Se realiza una radiografía y una RM que muestran una rotura completa del manguito rota dor con ascenso de la cabeza humeral y erosión (acetabulización) del borde inferior del acromion. ¿Cuál de las siguientes es la actitud terapéutica más adecuada?:' WHERE id = 492;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 492 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 48 años con antecedentes de hipercolesterolemia y tabaquismo activo. Presenta dolor ce ntrotorácico irradiado a cuello acompañado de náuseas y sudoración profusa de una hora de evolución. El dolor se había iniciado durante el ascenso a una montaña, motivo por el que es trasladado a un centro de salud, donde se le practica un electrocardiograma que muestra un infarto de miocardio agudo an teroseptal. El hospital terciario más cercano (con hemodinámica de guardia 24 h) se encuentra a tres horas de distancia. ¿En cuál de las siguientes circunstancias DESCARTARÍA la reperfusión coronaria extrahospitalaria mediante fibrinólisis intravenosa y plantearía una angioplastia primaria?:' WHERE id = 499;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 499 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 48 años con antecedentes de hipercolesterolemia y tabaquismo activo. Presenta dolor ce ntrotorácico irradiado a cuello acompañado de náuseas y sudoración profusa de una hora de evolución. El dolor se había iniciado durante el ascenso a una montaña, motivo por el que es trasladado a un centro de salud, donde se le practica un electrocardiograma que muestra un infarto de miocardio agudo an teroseptal. El hospital terciario más cercano (con hemodinámica de guardia 24 h) se encuentra a tres horas de distancia. ¿En cuál de las siguientes circunstancias DESCARTARÍA la reperfusión coronaria extrahospitalaria mediante fibrinólisis intravenosa y plantearía una angioplastia primaria?:' WHERE id = 499;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 499 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 23 años que tras un cuadro gripal acude en situación de shoc k cardiogénico refractario a aminas a un hospital de 3º nivel. En el ecocardiograma tr anstorácico se aprecia una fracción de eyección de ventrículo izquierdo del 15 %. Ante la sospecha de miocarditis vírica ¿cuál de las siguientes es la opción terapéutica de elección para mejorar su situación hemodinámica?:' WHERE id = 502;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 502 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'En un paciente con es teatosis hepática metabólica (antes enfermedad hepática por depósito de grasa) el riesgo de desarrollo de he patocarcinoma en comparación con otras etiologías frecuentes como la hepatopatía alcohólica o la hepatitis C, se caracteriza por:' WHERE id = 517;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 517 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'En un paciente con es teatosis hepática metabólica (antes enfermedad hepática por depósito de grasa) el riesgo de desarrollo de he patocarcinoma en comparación con otras etiologías frecuentes como la hepatopatía alcohólica o la hepatitis C, se caracteriza por:' WHERE id = 517;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 517 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 62 años que consulta por dolor abdominal persistente, pérdida de peso no intencionada de 10 kg en los últimos tres meses, ictericia y acolia. En las últimas horas presenta vómitos de retención gástrica. Las analíticas muestran elevación de bilirrubina y enzimas hepáticas as í como hipopotasemia. La TC abdominal revela un a masa en la cabeza del páncreas y proceso u ncinado que provoca obstrucción de la vía biliar, infiltración inextirpable vascular , distensión y retención gástrica. Tras estabilizarla se efectúa ecoendoscopia con biopsia que de muestra la existencia de un aden ocarcinoma pancreático con estenosis infranqueable del duodeno. ¿Cuál de las siguientes es la mejor actitud terapéutica?:' WHERE id = 522;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 522 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 45 años que presenta un pólipo sesil de aspecto ma croscópicamente benigno en colon sigmoide. Extraído mediante po lipectomía endoscópica, la biopsia muestra un adenocarcinoma. ¿Cuál de los siguientes hallazgos anatomopatológicos indica alto riesgo de recurrencia y es indicación de c olectomía segmentaria?:' WHERE id = 525;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 525 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 45 años que presenta un pólipo sesil de aspecto ma croscópicamente benigno en colon sigmoide. Extraído mediante po lipectomía endoscópica, la biopsia muestra un adenocarcinoma. ¿Cuál de los siguientes hallazgos anatomopatológicos indica alto riesgo de recurrencia y es indicación de c olectomía segmentaria?:' WHERE id = 525;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 525 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 52 años que consulta por un ras h eritematoso pruriginoso. Como antecedentes destacables consta un cólico nefrítico una semana antes, para el que recibió tratamiento con dexketoprofeno y omepra zol. En la analítica destaca un filtrado glomerular estimado de 45 ml/min (previamente normal), sin pr oteinuria ni otras alteraciones. ¿Cuál de los siguientes diagnósticos es más probable y qué actitud terapéutica debe adoptarse?:' WHERE id = 530;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 530 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 52 años que consulta por un ras h eritematoso pruriginoso. Como antecedentes destacables consta un cólico nefrítico una semana antes, para el que recibió tratamiento con dexketoprofeno y omepra zol. En la analítica destaca un filtrado glomerular estimado de 45 ml/min (previamente normal), sin pr oteinuria ni otras alteraciones. ¿Cuál de los siguientes diagnósticos es más probable y qué actitud terapéutica debe adoptarse?:' WHERE id = 530;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 530 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 52 años que acude a urgencias por debilidad y dificultad para la articulación de la palabra. Constantes: TA 115/60 mmHg, FC 80 lpm, temperatura 37,8ºC. Exploración neurológica: bradilalia, bradipsiquia y pérdida de fuerza en mano izquierda. Auscultación y abdomen sin hallazgos. Petequias en cara interna de muslos y dorso de los pies. An gioTC cerebral sin signos de sangrado intracraneal ni patología isquémica aguda. Analítica: Hb 7,2 g/dl, 12 .340 leucocitos (92 % PMN), plaquetas 14.600, urea 183 mg/dl, creati nina 2,3 mg/dl, bilirrubina total 2 mg/dl, tra nsaminasas normales, LDH 2. 125 UI, ferritina 1.582 n g/mL, haptoglobina < 30 mg/dl. Frotis de sangre periférica con anis ocitosis y abundantes microesferocitos y esquistocitos (3-4 por campo) sin agregados plaquetarios. ¿Cuál de los siguentes tratamientos es MENOS apropiado?:' WHERE id = 531;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 531 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 52 años que acude a urgencias por debilidad y dificultad para la articulación de la palabra. Constantes: TA 115/60 mmHg, FC 80 lpm, temperatura 37,8ºC. Exploración neurológica: bradilalia, bradipsiquia y pérdida de fuerza en mano izquierda. Auscultación y abdomen sin hallazgos. Petequias en cara interna de muslos y dorso de los pies. An gioTC cerebral sin signos de sangrado intracraneal ni patología isquémica aguda. Analítica: Hb 7,2 g/dl, 12 .340 leucocitos (92 % PMN), plaquetas 14.600, urea 183 mg/dl, creati nina 2,3 mg/dl, bilirrubina total 2 mg/dl, tra nsaminasas normales, LDH 2. 125 UI, ferritina 1.582 n g/mL, haptoglobina < 30 mg/dl. Frotis de sangre periférica con anis ocitosis y abundantes microesferocitos y esquistocitos (3-4 por campo) sin agregados plaquetarios. ¿Cuál de los siguentes tratamientos es MENOS apropiado?:' WHERE id = 531;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 531 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 52 años que acude a urgencias por debilidad y dificultad para la articulación de la palabra. Constantes: TA 115/60 mmHg, FC 80 lpm, temperatura 37,8ºC. Exploración neurológica: bradilalia, bradipsiquia y pérdida de fuerza en mano izquierda. Auscultación y abdomen sin hallazgos. Petequias en cara interna de muslos y dorso de los pies. An gioTC cerebral sin signos de sangrado intracraneal ni patología isquémica aguda. Analítica: Hb 7,2 g/dl, 12 .340 leucocitos (92 % PMN), plaquetas 14.600, urea 183 mg/dl, creati nina 2,3 mg/dl, bilirrubina total 2 mg/dl, tra nsaminasas normales, LDH 2. 125 UI, ferritina 1.582 n g/mL, haptoglobina < 30 mg/dl. Frotis de sangre periférica con anis ocitosis y abundantes microesferocitos y esquistocitos (3-4 por campo) sin agregados plaquetarios. ¿Cuál de los siguentes tratamientos es MENOS apropiado?:' WHERE id = 531;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 531 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 17 años que acude a urgencias por dolor testicular izquierdo de 10 horas de evolución de inicio súbito, que le ha despertado mientras dormía, asociado a cortejo vegetativo y náuseas. En las últimas 24 horas refiere haber realizado actividad deportiva (un partido de fútbol en el que no recuerda haber sufrido traumatismo) y actividad sexual (con su pare ja habitual y con preservativo). A la exploración he miescroto izquierdo hipersensible, con testículo y epidídimo tumefactos y mu y dolorosos, horizontalizados y discretamente aumentados de tamaño respecto al contralateral, signo P rehn negativo, transiluminación negativa. No hay disponible urólogo ni radiólogo de presencia física. ¿Cuál es la actitud más apropiada?:' WHERE id = 534;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 534 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = '¿Cuál de las siguientes alteraciones es más frecuente en el cáncer de pulmón no m icrocítico metastásico?:' WHERE id = 537;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 537 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente con grupo sanguíneo A positivo y una leucemia mi eloide aguda es sometido a un trasplante h ematopoyético con un donante B positivo. La médula del don ante prende adecuadamente alcanzando un quimerismo completo. Sin haber recibido transfusiones en los cuatro meses previos, a los seis meses del procedimiento, permaneciendo en quimerismo completo, se realiza un nuevo grupo sanguíneo al receptor. El resultado será:' WHERE id = 542;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 542 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente con grupo sanguíneo A positivo y una leucemia mi eloide aguda es sometido a un trasplante h ematopoyético con un donante B positivo. La médula del don ante prende adecuadamente alcanzando un quimerismo completo. Sin haber recibido transfusiones en los cuatro meses previos, a los seis meses del procedimiento, permaneciendo en quimerismo completo, se realiza un nuevo grupo sanguíneo al receptor. El resultado será:' WHERE id = 542;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 542 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente con grupo sanguíneo A positivo y una leucemia mi eloide aguda es sometido a un trasplante h ematopoyético con un donante B positivo. La médula del don ante prende adecuadamente alcanzando un quimerismo completo. Sin haber recibido transfusiones en los cuatro meses previos, a los seis meses del procedimiento, permaneciendo en quimerismo completo, se realiza un nuevo grupo sanguíneo al receptor. El resultado será:' WHERE id = 542;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 542 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 50 años, con antecedentes de lumbalgia crónica desde los 30 años, que actualmente presenta gonalgi a bilateral de predominio izquierdo de 5 meses de evolución. A la exploración física se aprecia una mancha marrón en escalera en el ojo derecho y la rodilla izquierda aumentada de tamaño con limitación a la movilidad activa y pasiva. Se realiza una artrocentesis de esa rodilla donde se extrae líquido articular de color amarillo y ligeramente turbio. Recuento celular: 600 leucocitos/mm 3 y 7800 eritrocitos/mm3. No se observan microcristales bajo luz polarizada ni microorganismos en la tinción de Gram. Se realiza una artroscopia para toma de biopsia sinovial que informa de presencia de tejido de pigmentación ocre. ¿Cuál es el diagnóstico más probable?:' WHERE id = 560;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 560 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 75 años con antecedentes de insuficiencia venosa crónica que acude a urgencias por edema unilateral infrapoplíte o de extremidad inferior derecha, di agnosticándose de trombosis venosa profunda de venas gemelares derechas. Dado que no presenta ninguna otra comorbilidad ni clínica de embolia pulmonar se plantea el alta hospitalaria con tratamiento y seguimiento en consultas externas. ¿Cuál de estos fármacos es el MENOS indicado para iniciar tratamiento anticoagulante?:' WHERE id = 563;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 563 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 78 años con antecedentes de fibrilación auricular paroxística, hipertensión arterial y dislipidemia. Sigue tratamiento desde hace años con acen ocumarol, ami odarona, candesartan y pitavastatina. La pitavastatina es la tercer a estatina que toma por elevación persistente de la CK y mal control de la dislipidemia. Desde hace meses refiere estreñimiento, astenia y adinamia, caída del cabello y malestar general sin mialgias. Aporta análisis con CK 1200 U/L (normal hasta 171 U/L), función renal normal y cLDL 108 mg/dL a pesar del tratamiento. Seña le la afirmación correcta:' WHERE id = 564;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 564 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 78 años con antecedentes de fibrilación auricular paroxística, hipertensión arterial y dislipidemia. Sigue tratamiento desde hace años con acen ocumarol, ami odarona, candesartan y pitavastatina. La pitavastatina es la tercer a estatina que toma por elevación persistente de la CK y mal control de la dislipidemia. Desde hace meses refiere estreñimiento, astenia y adinamia, caída del cabello y malestar general sin mialgias. Aporta análisis con CK 1200 U/L (normal hasta 171 U/L), función renal normal y cLDL 108 mg/dL a pesar del tratamiento. Seña le la afirmación correcta:' WHERE id = 564;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 564 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 78 años con antecedentes de fibrilación auricular paroxística, hipertensión arterial y dislipidemia. Sigue tratamiento desde hace años con acen ocumarol, ami odarona, candesartan y pitavastatina. La pitavastatina es la tercer a estatina que toma por elevación persistente de la CK y mal control de la dislipidemia. Desde hace meses refiere estreñimiento, astenia y adinamia, caída del cabello y malestar general sin mialgias. Aporta análisis con CK 1200 U/L (normal hasta 171 U/L), función renal normal y cLDL 108 mg/dL a pesar del tratamiento. Seña le la afirmación correcta:' WHERE id = 564;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 564 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 23 años que seis meses antes inició cuadro de astenia y febrícula y en el último mes se añadió dolor en extremidad superior derecha, sobre todo con la movilización y la elevación mantenida. En la exploración física se detectó un soplo en la zona supraclavicular derecha, una disminución del pulso radial derecho y un a disminución de presión arterial de 30 mmHg en esta extremidad respecto a la izquierda. La VSG fue de 20 mm y la bioquímica y el hemograma no mostraron alteraciones destacables. Con la sospecha diagnóstica inicial de una va sculitis de grandes vasos, señale la respuesta INCORRECTA:' WHERE id = 565;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 565 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 73 años de edad diagnosticado hace 8 meses de un adenoc arcinoma de próstata con metástasis óseas, en tratamiento con hormonoterapia. Acude a urgencias por aumento del dolor dorso-lumbar que no cede con la medicación prescrita. Hasta el momento estaba en tratamiento con fentanilo en parche transdérmico 25 mcg/h cada 72 horas y metamizol en caso de dolor, pero desde hace unas 48 horas no le alivia el dolor, que refiere como continuo, sordo, que se exacerba con los movimientos y de características similares al de base pero con mayor intensidad. En este contexto, señale la respuesta INCORRECTA:' WHERE id = 569;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 569 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 82 años, con poliartrosis periférica e incontinencia urinaria de esfuerzo. Cuidadora de su marido de 84 años con enfermedad de Alzheimer. El marido llama a la vecina porque su mujer está muy adormilada y no le ha preparado el desayuno. Acude a su domicilio su médica de familia y objetiva que está desorientada, con sequedad de mucosas y dificultad para la marcha, sin otra foc alidad neurológica. Al revisar la historia clínica consta que fue atendida hace 2 días por el servicio de urgencias nocturno por sensación de mareo con prescripción de sulpiride. Ante esta situación clínica, de las siguientes, cuál sería la causa MENOS PROBABLE en el diagnóstico diferencial?:' WHERE id = 579;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 579 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 65 años con leucemia li nfoblástica aguda que acude a urgencias por presentar tras una sesión de quimioterapia hace 48 h un cuadro de náuseas, vómitos, irritabilidad neuromuscular, alteración del nivel de conciencia, fracaso renal agudo, hiperuricemia, hiperpotasemia, hiperfosfatemia e hipoc alcemia. El diagnóstico inicial de sospecha más probable es:' WHERE id = 582;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 582 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 65 años con leucemia li nfoblástica aguda que acude a urgencias por presentar tras una sesión de quimioterapia hace 48 h un cuadro de náuseas, vómitos, irritabilidad neuromuscular, alteración del nivel de conciencia, fracaso renal agudo, hiperuricemia, hiperpotasemia, hiperfosfatemia e hipoc alcemia. El diagnóstico inicial de sospecha más probable es:' WHERE id = 582;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 582 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Obstrucción intestinal secunda ria a neoplasia estenosante de colon descendente.' WHERE id = 399;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 399 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Estenosis mitral modera da con indicación de seguimiento clínico ambulatorio.' WHERE id = 402;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 402 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'A pesar de que nunca ha tenido síntomas de origen biliar está indicada la co lecistectomía como prevención del cáncer de vesícula biliar.' WHERE id = 404;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 404 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'No está indicada la colecis tectomía por estar asintomático, pero sí el seguimiento periódico.' WHERE id = 404;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 404 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Tiene una estenosis bilateral d e las arterias renales y la administración de e nalapril ha provocado una caída del FGe por la pérdida de vasoconstricción de la arteriola eferente.' WHERE id = 406;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 406 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'La i noculación intratumoral de células T reguladoras específicas frente a antígenos tumorales.' WHERE id = 424;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 424 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'El rechazo hiperagudo es mediado por linfocitos T ci totóxicos contra antígenos del donante presentes en el receptor.' WHERE id = 425;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 425 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_b = 'Un ele vado porcentaje de pacientes inmunodeprimidos, como aquellos con trasplante de órganos o con inmunodeficiencia, tienen un defecto en la respuesta a esta vacuna.' WHERE id = 426;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 426 campo opcion_b: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Es una forma de inmuniz ación activa cuyo resultado se asocia al cambio de isotipo de los anticuerpos.' WHERE id = 426;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 426 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'El síndrome de G oodpasture se asocia a la presencia de anticuerpos frente a la membrana basal glomerular renal y pulmonar.' WHERE id = 427;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 427 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Colgajo an terolateral fasciocu táneo d e muslo, pediculado.' WHERE id = 445;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 445 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Colgajo an terolateral fasciocu táneo d e muslo, pediculado.' WHERE id = 445;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 445 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Dados los hallazgos eco gráficos, solicita resonancia magnética preferente, pauta un análogo de la GnRH y revisión en consulta.' WHERE id = 455;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 455 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Ante la sospecha de desprendimiento prematuro de placenta normoinse rta, indica finalización mediante parto vaginal dado que el monitor es tranquilizador.' WHERE id = 459;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 459 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'No existe un antipsic ótico de elección en el tratamiento.' WHERE id = 470;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 470 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Las personas que la padecen tiene n una probabilidad de 2 a 3 veces menor de morir prematuramente que la población general.' WHERE id = 471;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 471 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'La incapacidad de reconocer la forma, el tamaño, el peso y la textura de un objeto por la palpación a ciegas, sien do normales las sensibilidades básicas.' WHERE id = 478;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 478 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Será necesario hacer qu imioprofilaxis en las personas que hayan estado en contacto íntimo con el paciente.' WHERE id = 481;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 481 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Tanto la rad iocirugía como los procedimientos ablativos (p.ej. radiofrecuencia) tienen riesgo de recidiva.' WHERE id = 483;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 483 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Los fármacos bet abloqueantes reducen la mortalidad de los síncopes reflejos.' WHERE id = 501;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 501 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Las contracciones muscula res isotónicas son útiles en pacientes jóvenes con síncope reflejo y pródromos.' WHERE id = 501;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 501 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_b = 'Colocación de un balón de c ontrapulsación intraaórtico.' WHERE id = 502;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 502 campo opcion_b: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Betabloqueante, digoxina, ARNI (inhibidor de neprilisina-receptor an giotensina) e iSGLT2 (inhibidores del cotransportador de sodio-glucosa tipo 2).' WHERE id = 505;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 505 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Se trata de una alteración ventilatoria mixta con un componente ob structivo grave. Probable EPOC en la que, una vez confirmada la ausencia de reversibilidad, se puede iniciar tratamiento con corticoides inhalados.' WHERE id = 511;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 511 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'La terapia an tifibrótica (pirfenidona y nintedanib) puede lentificar el deterioro de la función pulmonar.' WHERE id = 512;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 512 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Iniciar o xigenoterapia crónica domiciliaria y ventilación mecánica no invasiva domiciliaria.' WHERE id = 513;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 513 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Colocación de TIPS (protesis intrahe pática percutánea transyugular).' WHERE id = 520;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 520 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Cociente albúmina/crea tinina en orina > 30 mg/g.' WHERE id = 528;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 528 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Iniciar plas maféresis con plasma fresco congelado de forma precoz.' WHERE id = 531;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 531 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Es útil en los linfomas no Hod gkin de bajo grado.' WHERE id = 535;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 535 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_b = 'No se deben iniciar bi fosfonatos si presenta hipocalcemia.' WHERE id = 546;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 546 campo opcion_b: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Está indica do únicamente cuando existen metástasis a distancia.' WHERE id = 549;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 549 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Es necesario realizar un criba do de otras enfermedades de transmisión sexual.' WHERE id = 553;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 553 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'La azitromici na es una buena opción para el tratamiento de la enfermedad, y a que la resistencia a los macrólidos es escasa.' WHERE id = 557;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 557 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Hay qu e añadir otro hi polipemiante como un inhibidor de PCSK9.' WHERE id = 564;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 564 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_b = 'Si se logra la remisión, el único tratamiento curativo es el trasplante a utólogo de células madre hematopoyéticas.' WHERE id = 566;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 566 campo opcion_b: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'La de xametasona que se emplea como antiinflamatorio se usa también para mejorar el apetito.' WHERE id = 570;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 570 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Se obtiene calculando la relación entre la presión diastólica en el tobillo y la presión d iastólica braquial.' WHERE id = 575;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 575 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'Se acompaña de parálisis espást ica simétrica ascendente e hiperreflexia.' WHERE id = 581;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 581 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Alteración metabólica secunda ria a la hiperemesis postquimioterapia.' WHERE id = 582;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 582 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'El fenómeno de Koebner indica que la psoriasis es una enfermedad asociada a co morbilidades metabólicas y articulares.' WHERE id = 585;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 585 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'La ps oriasis es un trastorno crónico inmunomediado, con una herencia autosómica recesiva y factores desencadenantes ambientales, como traumatismos, infecciones, medicamentos o estrés psicológico.' WHERE id = 585;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 585 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_b = 'Si la lesión afectara la matriz ungu eal el tratamiento debe prolongarse hasta los 6- 9 meses.' WHERE id = 591;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 591 campo opcion_b: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_c = 'La primera opción de tratamiento es combina r gemfibrozilo con una estatina.' WHERE id = 593;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 593 campo opcion_c: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es D) Nefritis intersticial aguda. El antecedente de un nuevo fármaco (ciprofloxacino) seguido, una semana después, de mal estado general, artralgias, rash cutáneo y caída del filtrado glomerular es el cuadro clásico de nefritis intersticial aguda de mecanismo inmunoalérgico farmacológico, con las manifestaciones sistémicas (rash, artralgias) reflejando la reacción de hipersensibilidad. La glomerulonefritis postinfecciosa (A) no explica el pródromo alérgico ni la ausencia de un foco infeccioso claro previo a la introducción del fármaco; la pielonefritis aguda (C) queda descartada por la ausencia de nitritos y de clínica infecciosa activa; y la nefrotoxicidad directa del ciprofloxacino (B) es infrecuente y no explicaría las manifestaciones sistémicas de hipersensibilidad.' WHERE id = 149;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 149 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es B) Antimoniato de meglumina intralesional. El cuadro clínico (placa eritemato-anaranjada de crecimiento lento tras picadura de insecto, en zona endémica mediterránea, que se ulcera y cubre de escamocostra) es compatible con leishmaniasis cutánea localizada. El antimoniato de meglumina intralesional es el tratamiento de primera línea establecido para esta entidad, incluido en pacientes bajo tratamiento biológico como adalimumab, al ser un tratamiento local sin interacción sistémica relevante. La amoxicilina oral (opción D) carece de actividad frente a Leishmania y no trata la enfermedad de base, solo cubriría una hipotética sobreinfección bacteriana no descrita en el enunciado.' WHERE id = 175;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 175 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es A) La vaginosis bacteriana es habitualmente una infección monomicrobiana — esta es la afirmación INCORRECTA. La vaginosis bacteriana es, por definición, una disbiosis vaginal POLIMICROBIANA (sustitución de la microbiota normal dominada por Lactobacillus por una mezcla de anaerobios como Gardnerella vaginalis, Prevotella, Mobiluncus, entre otros), no una infección monomicrobiana. Las demás opciones son correctas: la candidiasis vulvovaginal es la infección vulvovaginal más prevalente en Europa (B), el umbral de vulvovaginitis candidiásica recidivante se sitúa en torno a los 3-4 episodios anuales según la fuente (C), y la vaginosis bacteriana asintomática habitualmente no requiere tratamiento farmacológico salvo en contextos específicos (D).' WHERE id = 251;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 251 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'El patrón subagudo (tos, disnea, crepitantes, infiltrados subpleurales reticulares y parcheados) que aparece tras el inicio del uso nocturno de un humidificador es sugestivo de neumonitis por hipersensibilidad por exposición a un antígeno ambiental; la actitud inicial es retirar la fuente de exposición y vigilar la evolución clínica.' WHERE id = 389;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 389 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La imagen muestra una RM axial a nivel infratentorial con una lesión redondeada bien delimitada en el ángulo pontocerebeloso derecho, característica de un schwannoma vestibular. La clínica de hipoacusia neurosensorial progresiva y acúfenos unilaterales son síntomas muy típicos de este tumor, que surge del nervio vestibular (VIII par craneal) en su segmento intracanalicular. El schwannoma vestibular es la lesión más frecuente del ángulo pontocerebeloso. La RM con contraste es el estudio de elección, donde estas lesiones muestran captación de gadolinio homogénea o heterogénea. Las características de esta imagen —masa bien circunscrita, localización exacta en el ángulo pontocerebeloso y correlación clínica perfecta con hipoacusia neurosensorial unilateral progresiva— permiten establecer este diagnóstico con seguridad.' WHERE id = 397;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 397 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es A) Obstrucción intestinal secunda ria a neoplasia estenosante de colon descendente. La TC muestra dilatación del marco cólico con una imagen estenosante en el colon izquierdo. Aunque el paciente tiene antecedentes de carcinoma oral, la carcinomatosis peritoneal es muy rara en este tipo de tumor, de estirpe epidermoide; la obstrucción por migración de la sonda de gastrostomía sería extremadamente improbable, al requerir atravesar el píloro y la válvula ileocecal, y la obstrucción funcional sería menos probable sin signos previos de íleo paralítico.' WHERE id = 399;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 399 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es A) Obstrucción intestinal secunda ria a neoplasia estenosante de colon descendente. La TC muestra dilatación del marco cólico con una imagen estenosante en el colon izquierdo. Aunque el paciente tiene antecedentes de carcinoma oral, la carcinomatosis peritoneal es muy rara en este tipo de tumor, de estirpe epidermoide; la obstrucción por migración de la sonda de gastrostomía sería extremadamente improbable, al requerir atravesar el píloro y la válvula ileocecal, y la obstrucción funcional sería menos probable sin signos previos de íleo paralítico.' WHERE id = 399;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 399 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es D) El tipo histológico más frecuente es el carcinoma epidermoide y su tratamiento quirúrgico asocia habitualmente disección ganglionar cervical. El carcinoma epidermoide (carcinoma de células escamosas) representa más del 90% de los cánceres de lengua, y su tratamiento de referencia es la resección quirúrgica del tumor primario, que requiere casi siempre disección ganglionar cervical electiva o terapéutica dado el alto riesgo de metástasis linfáticas cervicales (presente en el 20-40% de los casos al diagnóstico). El carcinoma basocelular es excepcional en la lengua y la radioterapia es tratamiento adyuvante, no primario (descarta A). El VPH sí se relaciona con el cáncer de lengua/orofaringe, pero la irradiación solar no es factor etiológico relevante en la mucosa oral (descarta B). El cáncer de lengua tiene alta tendencia a la metástasis linfática cervical, lo que justifica la disección ganglionar sistemática (descarta C).' WHERE id = 444;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 444 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Paciente de 2 años con fiebre, conjuntivitis, rinorrea y tos repetitiva. Su estado vacunal es desconocido. En la exploración presenta en la mucosa oral, a la altura de los premolares, puntos de color blanco azulado rodeados d e un halo eritematoso. ¿Cuál de los siguientes es el diagnóstico más probable?:' WHERE id = 465;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 465 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 33 años, soltero, vive en pareja desde hace 10 años. Operario de profesión. Muy buena relación con su familia de o rigen, cierta dependencia emocional de la madre. Desde hace un año presenta un aumento de preocupación por cualquier aspecto de su vida y está muy inquieto y en ocasiones irritable. Se siente agotado, tenso y enfermo, por lo que el último año ha acudido un par de veces a urgencias. Además, tiene sensación de falta de control, r umiaciones, ansiedad anticipatoria, tristeza y apatía. El cuadro clínico se inició cuando la empresa en la que trabaja inició un expediente de regulación de empleo. ¿Cuál de los siguientes es el diagnóstico más probable?:' WHERE id = 477;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 477 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 23 años que tras un cuadro gripal acude en situación de shoc k cardiogénico refractario a aminas a un hospital de 3º nivel. En el ecocardiograma tr anstorácico se aprecia una fracción de eyección de ventrículo izquierdo del 15 %. Ante la sospecha de miocarditis vírica ¿cuál de las siguientes es la opción terapéutica de elección para mejorar su situación hemodinámica?:' WHERE id = 502;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 502 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_b = 'Betabloqueante, antagonistas de la aldosterona, ivabradina e i SGLT2 (inhibidores del cotransportador de sodio-glucosa tipo 2).' WHERE id = 505;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 505 campo opcion_b: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Betabloqueante, antagonistas de la aldosterona, ARNI (inhibidor de neprilisina-receptor angiotensina) e i SGLT2 (inhibidores del cotransportador de sodio-glucosa tipo 2).' WHERE id = 505;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 505 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 57 años con cirrosis hepática metabólica que consulta por un cuadro recidivante de confusión y desorientación a pesar del tratamiento con rifaximina y lactulosa. En la angio-CT se aprecia una comunicación portosistémica d e gran calibre. La función hepática está alterada con MELD 17p y C hild- Pugh B8. ¿Cuál de los siguientes tratamientos es más apropiado?:' WHERE id = 520;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 520 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 45 años que presenta un pólipo sesil de aspecto ma croscópicamente benigno en colon sigmoide. Extraído mediante po lipectomía endoscópica, la biopsia muestra un adenocarcinoma. ¿Cuál de los siguientes hallazgos anatomopatológicos indica alto riesgo de recurrencia y es indicación de c olectomía segmentaria?:' WHERE id = 525;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 525 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es A) Glomerulonefritis de cambios mínimos. La asociación paraneoplásica clásica y mejor establecida entre linfoma de Hodgkin y enfermedad glomerular es la nefropatía por cambios mínimos, que debuta característicamente con un síndrome nefrótico florido (proteinuria masiva, hipoalbuminemia, edemas) y función renal preservada, tal y como se describe en este caso. La glomerulonefritis membranoproliferativa (C) se asocia más a procesos infecciosos crónicos o enfermedades por depósito de inmunocomplejos, no siendo la asociación clásica con el linfoma de Hodgkin, que sí lo es con cambios mínimos.' WHERE id = 529;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 529 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 52 años que acude a urgencias por debilidad y dificultad para la articulación de la palabra. Constantes: TA 115/60 mmHg, FC 80 lpm, temperatura 37,8ºC. Exploración neurológica: bradilalia, bradipsiquia y pérdida de fuerza en mano izquierda. Auscultación y abdomen sin hallazgos. Petequias en cara interna de muslos y dorso de los pies. An gioTC cerebral sin signos de sangrado intracraneal ni patología isquémica aguda. Analítica: Hb 7,2 g/dl, 12 .340 leucocitos (92 % PMN), plaquetas 14.600, urea 183 mg/dl, creati nina 2,3 mg/dl, bilirrubina total 2 mg/dl, tra nsaminasas normales, LDH 2. 125 UI, ferritina 1.582 n g/mL, haptoglobina < 30 mg/dl. Frotis de sangre periférica con anis ocitosis y abundantes microesferocitos y esquistocitos (3-4 por campo) sin agregados plaquetarios. ¿Cuál de los siguentes tratamientos es MENOS apropiado?:' WHERE id = 531;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 531 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 17 años que acude a urgencias por dolor testicular izquierdo de 10 horas de evolución de inicio súbito, que le ha despertado mientras dormía, asociado a cortejo vegetativo y náuseas. En las últimas 24 horas refiere haber realizado actividad deportiva (un partido de fútbol en el que no recuerda haber sufrido traumatismo) y actividad sexual (con su pare ja habitual y con preservativo). A la exploración he miescroto izquierdo hipersensible, con testículo y epidídimo tumefactos y mu y dolorosos, horizontalizados y discretamente aumentados de tamaño respecto al contralateral, signo P rehn negativo, transiluminación negativa. No hay disponible urólogo ni radiólogo de presencia física. ¿Cuál es la actitud más apropiada?:' WHERE id = 534;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 534 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 17 años que acude a urgencias por dolor testicular izquierdo de 10 horas de evolución de inicio súbito, que le ha despertado mientras dormía, asociado a cortejo vegetativo y náuseas. En las últimas 24 horas refiere haber realizado actividad deportiva (un partido de fútbol en el que no recuerda haber sufrido traumatismo) y actividad sexual (con su pare ja habitual y con preservativo). A la exploración he miescroto izquierdo hipersensible, con testículo y epidídimo tumefactos y mu y dolorosos, horizontalizados y discretamente aumentados de tamaño respecto al contralateral, signo P rehn negativo, transiluminación negativa. No hay disponible urólogo ni radiólogo de presencia física. ¿Cuál es la actitud más apropiada?:' WHERE id = 534;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 534 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es B) No se deben iniciar bi fosfonatos si presenta hipocalcemia. Antes de iniciar tratamiento osteoprotector con bifosfonatos tras una fractura osteoporótica debe corregirse cualquier hipocalcemia, ya que estos fármacos inhiben la resorción ósea y pueden agravarla; ni la edad avanzada ni la demencia leve contraindican por sí solas el tratamiento, no está indicada la suplementación sistemática de calcio si sus valores son normales, y el encamamiento prolongado tras una fractura de cadera es perjudicial y debe evitarse, favoreciendo la movilización precoz.' WHERE id = 546;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 546 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Mujer de 75 años con antecedentes de insuficiencia venosa crónica que acude a urgencias por edema unilateral infrapoplíte o de extremidad inferior derecha, di agnosticándose de trombosis venosa profunda de venas gemelares derechas. Dado que no presenta ninguna otra comorbilidad ni clínica de embolia pulmonar se plantea el alta hospitalaria con tratamiento y seguimiento en consultas externas. ¿Cuál de estos fármacos es el MENOS indicado para iniciar tratamiento anticoagulante?:' WHERE id = 563;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 563 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente de 45 años ha sido recientemente diagnosticado de tuberculosis pulmonar por un cuadro clínico característico, una lesión cavitada en la Rx de tórax y una bacilosc opia positiva. Refiere ser su segundo episodio de tuberculosis pulmonar, habiendo sufrido otro hace 6 años. El curso clínico esta siendo de lenta resolución y en el estudio de resistencias se identifica resistencia a isoniacida. El mejor tratamiento de entre los siguientes es:' WHERE id = 567;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 567 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_a = 'Inhibidores del enzima di peptidil peptidasa 4 (iDPP4).' WHERE id = 576;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 576 campo opcion_a: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET opcion_d = 'Los hallazgos histológicos típicos incluyen acantosis con crestas elongadas, hipogranulosis, hiper y pa raqueratosis, vas os dilatados y agregados de neutrófilos en la epidermis.' WHERE id = 585;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 585 campo opcion_d: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Hombre de 45 años que en las últimas 6 semanas presenta astenia, pérdida de 5 kg de peso y artromialgias de predominio en región proximal de ambas extremidades inferiores, junto a hipoestesia asimétrica en manos y pies. Además, en los últimos 3 días desarrolla una livedo reticularis y varios nódulos subcutáneos, eritematosos y dolorosos, en cara anterior de ambas piernas. En la analítica destaca VSG 90 mm/h (normal <20) y proteína C reactiva 12 mg/dl (normal < 1,0). Radiografía de tórax normal. Electroneuromio grafía (ENMG): hallazgos compatibles con mononeuritis múltiple. Teniendo en cuenta el diagnóstico más probable, marque la opción correcta:' WHERE id = 590;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 590 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es B) Nefrectomía parcial derecha. Dado que el riñón contralateral presenta compromiso funcional (hidronefrosis y atrofia cortical por litiasis) junto con una creatinina ya elevada (1,5 mg/dL), la cirugía conservadora de nefronas (nefrectomía parcial) es la opción preferida para preservar al máximo la función renal, siendo técnicamente factible para una masa de 4,9 cm. La nefrectomía bilateral sería una medida excesiva e inadecuada, ya que el problema del riñón contralateral es una litiasis tratable, no una neoplasia.' WHERE id = 728;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 728 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'El envejecimiento poblacional es uno de los grandes desafíos de nuestra sociedad. En la consulta del médico de familia debemos usar herramientas para intentar mejorar la calidad de vida de nuestros mayores. Debemos adaptarnos a esta realidad, ofreciendo una atención integral, centrada en la persona y orientada a la prevención, la autonomía y la calidad de vida de dichos pacientes. Si hablamos de atención al anciano en Atención Primaria, elige la respuesta INCORRECTA:' WHERE id = 906;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 906 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET explicacion = 'La respuesta correcta es D) Pacientes con IAH ≥15 eventos/hora y somnolencia diurna (Epworth >10 puntos). El tratamiento con CPAP se prioriza en pacientes con carga sintomática relevante (somnolencia diurna significativa) y/o apnea obstructiva del sueño moderada-grave, que es exactamente el perfil descrito en esta opción. Un IAH ≥5 eventos/hora sin ningún síntoma ni comorbilidad es, por el contrario, el perfil que MENOS prioridad de tratamiento tiene entre las opciones planteadas.' WHERE id = 954;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 954 campo explicacion: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'Un paciente de 62 años con diabetes mellitus tipo 2, en tratamiento con metformina, enalapril a dosis máximas toleradas y 10 mg diarios de empagliflozina, mantiene un buen control tensional (130/78 mmHg) y una HbA1c de 6.3 %. A pesar de ello, persiste una albuminuria con un cociente albúmina/creatinina de 160 mg/g. Su tasa de filtrado glomerular es de 65 ml/min/1.73m² y su potasio sérico es de 4.4 mEq/L. ¿Cuál sería la siguiente medida terapéutica más adecuada para reducir la progresión de su enfermedad renal diabética?:' WHERE id = 989;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 989 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+  UPDATE preguntas SET pregunta = 'El conjunto de todas las capacidades físicas y mentales de una persona que permiten hacer frente a los cambios de lentor no, originando discapacidad cuando fallan, se denomina:' WHERE id = 543;
+  GET DIAGNOSTICS n = ROW_COUNT;
+  IF n <> 1 THEN RAISE EXCEPTION 'rollback id 543 campo pregunta: % filas afectadas (se esperaba 1)', n; END IF;
+
+END $$;
+
+COMMIT;
