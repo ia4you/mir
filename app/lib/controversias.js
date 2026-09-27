@@ -36,11 +36,14 @@ function parseArchivoMd() {
 
   const entradas = [];
   for (let chunk of chunks) {
-    // recorta notas de cierre de lote (verificación 2022/2024, nota general,
-    // separador "---" del siguiente lote) que no forman parte de la entrada
-    chunk = chunk.split(/\n\*\*Verificación (?:2022\/2024|adicional 2022\/2024)/)[0];
+    // recorta notas de cierre de lote (verificación 2023/2025, nota general,
+    // separador "---" del siguiente lote) y la nota de estado de resolución
+    // (añadida el 2026-09-27 tras corregir el desfase de año) que no forman
+    // parte de la objeción mostrada al alumno
+    chunk = chunk.split(/\n\*\*Verificación (?:2023\/2025|adicional 2023\/2025)/)[0];
     chunk = chunk.split(/\n\*\*Nota general/)[0];
     chunk = chunk.split(/\n---\n/)[0];
+    chunk = chunk.split(/\n\*\*Estado:/)[0];
 
     const lineas = chunk.split("\n");
     const cabecera = lineas[0];
