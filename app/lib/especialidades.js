@@ -1,5 +1,6 @@
 import { cache } from "react";
 import { query } from "../../lib/db";
+import { getControversias } from "./controversias";
 
 // Casos donde la transliteración automática del nombre no da una URL clara
 // para SEO (siglas, abreviaturas); el resto se genera con slugify().
@@ -183,4 +184,38 @@ export async function getTodasLasPreguntasParaSitemap() {
     `SELECT id, especialidad FROM preguntas WHERE origen = 'oficial' AND anulada = false ORDER BY id`
   );
   return rows.map((r) => ({ id: r.id, especialidadSlug: slugify(r.especialidad) }));
+}
+
+// Datos extra de la landing de especialidad, todos calculados desde la BD:
+// media por convocatoria, temas más frecuentes (campo `tema`, sin el cajón
+// "Otros/Miscelánea" ni los sin clasificar) y preguntas controvertidas que
+// siguen siendo públicas (las anuladas no tienen página /preguntas/...).
+export async function getExtrasEspecialidad(nombre) {
+  const { rows: porAnio } = await query(
+    `SELECT COUNT(DISTINCT año)::int AS convocatorias
+     FROM preguntas
+     WHERE especialidad = $1 AND origen = 'oficial' AND anulada = false`,
+    [nombre]
+  );
+  const { rows: temas } = await query(
+    `SELECT tema, COUNT(*)::int AS total
+     FROM preguntas
+     WHERE especialidad = $1 AND origen = 'oficial' AND anulada = false
+       AND tema IS NOT NULL AND tema <> '' AND tema !~* '^otros'
+     GROUP BY tema ORDER BY total DESC, tema LIMIT 4`,
+    [nombre]
+  );
+  const candidatas = (await getControversias()).filter((c) => c.especialidad === nombre);
+  const { rows: publicas } = candidatas.length
+    ? await query(
+        `SELECT id FROM preguntas WHERE id = ANY($1::int[]) AND anulada = false`,
+        [candidatas.map((c) => c.id)]
+      )
+    : { rows: [] };
+  const ids = new Set(publicas.map((r) => r.id));
+  return {
+    convocatorias: porAnio[0].convocatorias,
+    temas,
+    controversias: candidatas.filter((c) => ids.has(c.id)),
+  };
 }

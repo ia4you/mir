@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   getEspecialidadPorSlug,
   getPreguntasPaginadas,
+  getExtrasEspecialidad,
   PREGUNTAS_POR_PAGINA,
 } from "../../lib/especialidades";
 import ListaPreguntasEspecialidad from "../../components/ListaPreguntasEspecialidad";
@@ -27,7 +28,7 @@ export async function generateMetadata({ params }) {
 
   return {
     title: `Preguntas MIR de ${especialidad.nombre} (${especialidad.anioMin}-${especialidad.anioMax}) – Test Online Gratis | MIR Turel`,
-    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR 2022–2026. Practica gratis con preguntas oficiales verificadas.`,
+    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR ${especialidad.anioMin}–${especialidad.anioMax}. Practica gratis con preguntas oficiales verificadas.`,
     alternates: {
       canonical: `https://mir.turel.es/especialidades/${especialidad.slug}`,
     },
@@ -40,12 +41,16 @@ export default async function EspecialidadPage({ params }) {
 
   const totalPaginas = Math.max(1, Math.ceil(especialidad.total / PREGUNTAS_POR_PAGINA));
   const preguntas = await getPreguntasPaginadas(especialidad.nombre, 1);
+  const extras = await getExtrasEspecialidad(especialidad.nombre);
+  const mediaPorConvocatoria = extras.convocatorias
+    ? Math.round(especialidad.total / extras.convocatorias)
+    : null;
 
   const schemaCurso = {
     "@context": "https://schema.org",
     "@type": "Course",
     name: `Preguntas MIR de ${especialidad.nombre}`,
-    description: `${especialidad.total} preguntas oficiales de ${especialidad.nombre} de las convocatorias MIR 2022-2026.`,
+    description: `${especialidad.total} preguntas oficiales de ${especialidad.nombre} de las convocatorias MIR ${especialidad.anioMin}-${especialidad.anioMax}.`,
     provider: {
       "@type": "Organization",
       name: "MIR Turel",
@@ -79,10 +84,56 @@ export default async function EspecialidadPage({ params }) {
 
         <p className="mt-4 text-ink-muted">{especialidad.descripcion}</p>
 
-        <p className="mt-4 text-sm font-semibold text-ink-muted">
-          {especialidad.total} preguntas disponibles · convocatorias {especialidad.anioMin}–
-          {especialidad.anioMax}
+        <p className="mt-4 text-ink-muted">
+          Practica con {especialidad.total} preguntas reales de {especialidad.nombre} de los
+          exámenes oficiales del Ministerio de Sanidad (convocatorias {especialidad.anioMin} a{" "}
+          {especialidad.anioMax})
+          {mediaPorConvocatoria
+            ? `, con una media de ${mediaPorConvocatoria} preguntas por convocatoria.`
+            : "."}
         </p>
+
+        {extras.temas.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-track bg-card p-5">
+            <h2 className="text-lg font-extrabold text-ink">
+              Temas más preguntados en {especialidad.nombre}
+            </h2>
+            <ul className="mt-2 list-disc pl-5 text-ink-muted">
+              {extras.temas.map((t) => (
+                <li key={t.tema}>
+                  {t.tema} ({t.total} preguntas)
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {extras.controversias.length > 0 && (
+          <div className="mt-6 rounded-2xl border border-track bg-card p-5">
+            <h2 className="text-lg font-extrabold text-ink">
+              Preguntas con respuesta oficial controvertida
+            </h2>
+            <p className="mt-2 text-sm text-ink-muted">
+              Revisa con especial atención estas preguntas de {especialidad.nombre}; consulta el{" "}
+              <Link href="/controversias" className="font-semibold text-brand">
+                listado completo de controversias
+              </Link>
+              .
+            </p>
+            <ul className="mt-2 list-disc pl-5 text-sm text-ink-muted">
+              {extras.controversias.map((c) => (
+                <li key={c.id}>
+                  <Link
+                    href={`/preguntas/${especialidad.slug}/${c.id}`}
+                    className="font-semibold text-brand"
+                  >
+                    MIR {c.año}, pregunta {c.numero}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <h2 className="mt-10 text-xl font-extrabold text-ink">
           Todas las preguntas de {especialidad.nombre}
