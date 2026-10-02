@@ -2,6 +2,10 @@ import { cache } from "react";
 import { query } from "../../lib/db";
 import { slugify } from "./especialidades";
 
+// Anuladas/de reserva que NUNCA se cargaron en la BD (documentado en
+// fuentes_banco_preguntas.md); la BD no puede listarlas, así que se anotan aquí.
+const NO_CARGADAS = { 2022: [189], 2026: [208] };
+
 export const slugConvocatoria = (anio) => `mir-${anio}`;
 
 // Una fila por convocatoria con preguntas oficiales cargadas (año 0 = banco IA,
@@ -32,8 +36,10 @@ export async function getConvocatoria(slug) {
      GROUP BY especialidad ORDER BY total DESC, especialidad`,
     [conv.anio]
   );
+  const excluidas = [...conv.anuladas, ...(NO_CARGADAS[conv.anio] || [])].sort((a, b) => a - b);
   return {
     ...conv,
+    excluidas,
     especialidades: rows.map((r) => ({ nombre: r.especialidad, slug: slugify(r.especialidad), total: r.total })),
   };
 }

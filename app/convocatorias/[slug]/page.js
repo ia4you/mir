@@ -28,7 +28,7 @@ export default async function ConvocatoriaPage({ params }) {
 
   const otras = (await getConvocatorias()).filter((c) => c.anio !== conv.anio);
   const controversias = (await getControversias()).filter(
-    (c) => c.año === conv.anio && !conv.anuladas.includes(c.numero)
+    (c) => c.año === conv.anio && !conv.excluidas.includes(c.numero)
   );
 
   return (
@@ -43,10 +43,10 @@ export default async function ConvocatoriaPage({ params }) {
         </h1>
 
         <p className="mt-4 text-ink-muted">
-          {conv.publicas} preguntas del examen MIR {conv.anio}, con la respuesta de la plantilla
-          oficial del Ministerio de Sanidad.
-          {conv.anuladas.length > 0 &&
-            ` Se excluyen ${conv.anuladas.length} preguntas anuladas por el Ministerio (n.º ${conv.anuladas.join(", ")}).`}
+          Se publican {conv.publicas} preguntas del examen MIR {conv.anio}, con la respuesta de la
+          plantilla oficial del Ministerio de Sanidad. No es el examen completo: no se incluyen las
+          preguntas anuladas ni las de reserva
+          {conv.excluidas.length > 0 && ` (n.º ${conv.excluidas.join(", ")})`}.
         </p>
 
         <Link
