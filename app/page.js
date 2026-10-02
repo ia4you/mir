@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getImageProps } from "next/image";
 import { getEspecialidadesConConteo } from "./lib/especialidades";
+import { getConvocatorias, slugConvocatoria } from "./lib/convocatorias";
 import { getControversias } from "./lib/controversias";
 import LandingHeader from "./components/LandingHeader";
 import SocialLinks from "./components/SocialLinks";
@@ -176,6 +177,7 @@ export default async function LandingPage() {
   const especialidades = await getEspecialidadesConConteo();
   const { total: totalPreguntas, anioMin, anioMax } = resumenBanco(especialidades);
   const totalEspecialidades = especialidades.length;
+  const convocatorias = await getConvocatorias();
 
   const todasControversias = await getControversias();
   // Igual que getPreguntasMuestra/getPreguntasMuestraTema: fuera las que
@@ -362,6 +364,21 @@ export default async function LandingPage() {
               <h3 className="mt-2 text-lg font-bold text-ink">{paso.titulo}</h3>
               <p className="mt-1 text-sm text-ink-muted">{paso.texto}</p>
             </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="convocatorias" className="border-t border-track px-5 py-14 sm:py-16">
+        <h2 className="text-center text-2xl font-extrabold text-ink">Exámenes MIR por convocatoria</h2>
+        <div className="mx-auto mt-9 flex max-w-3xl flex-wrap justify-center gap-3">
+          {convocatorias.map((c) => (
+            <Link
+              key={c.anio}
+              href={`/convocatorias/${slugConvocatoria(c.anio)}`}
+              className="rounded-xl border border-track bg-card px-5 py-3 font-bold text-ink active:bg-brand-light"
+            >
+              MIR {c.anio}
+            </Link>
           ))}
         </div>
       </section>

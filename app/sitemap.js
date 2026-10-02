@@ -1,4 +1,5 @@
 import { getEspecialidadesConConteo, getTodasLasPreguntasParaSitemap } from "./lib/especialidades";
+import { getConvocatorias, slugConvocatoria } from "./lib/convocatorias";
 import { getTemasConConteo } from "./lib/temas";
 import { query } from "@/lib/db";
 
@@ -16,17 +17,19 @@ async function getPostsBlogParaSitemap() {
 }
 
 export default async function sitemap() {
-  const [especialidades, preguntas, temas, postsBlog] = await Promise.all([
+  const [especialidades, preguntas, temas, postsBlog, convocatorias] = await Promise.all([
     getEspecialidadesConConteo(),
     getTodasLasPreguntasParaSitemap(),
     getTemasConConteo(),
     getPostsBlogParaSitemap(),
+    getConvocatorias(),
   ]);
 
   const estaticas = [
     { url: `${BASE_URL}/`, priority: 1.0, changeFrequency: "weekly" },
     { url: `${BASE_URL}/demo`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/controversias`, priority: 0.8, changeFrequency: "monthly" },
+    { url: `${BASE_URL}/convocatorias`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/temas`, priority: 0.7, changeFrequency: "monthly" },
     { url: `${BASE_URL}/blog`, priority: 0.7, changeFrequency: "weekly" },
     { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" },
@@ -46,6 +49,12 @@ export default async function sitemap() {
     changeFrequency: "monthly",
   }));
 
+  const convocatoriasUrls = convocatorias.map((c) => ({
+    url: `${BASE_URL}/convocatorias/${slugConvocatoria(c.anio)}`,
+    priority: 0.8,
+    changeFrequency: "monthly",
+  }));
+
   const temasUrls = temas.map((t) => ({
     url: `${BASE_URL}/temas/${t.slug}`,
     priority: 0.6,
@@ -58,7 +67,7 @@ export default async function sitemap() {
     changeFrequency: "yearly",
   }));
 
-  return [...estaticas, ...blogUrls, ...especialidadesUrls, ...temasUrls, ...preguntasUrls].map(
+  return [...estaticas, ...blogUrls, ...especialidadesUrls, ...convocatoriasUrls, ...temasUrls, ...preguntasUrls].map(
     (entry) => ({
       ...entry,
       lastModified: entry.lastModified || new Date(),

@@ -6,6 +6,7 @@ import {
   getExtrasEspecialidad,
   PREGUNTAS_POR_PAGINA,
 } from "../../lib/especialidades";
+import { getConvocatorias, slugConvocatoria } from "../../lib/convocatorias";
 import ListaPreguntasEspecialidad from "../../components/ListaPreguntasEspecialidad";
 import PaginacionEspecialidad from "../../components/PaginacionEspecialidad";
 
@@ -41,6 +42,7 @@ export default async function EspecialidadPage({ params }) {
 
   const totalPaginas = Math.max(1, Math.ceil(especialidad.total / PREGUNTAS_POR_PAGINA));
   const preguntas = await getPreguntasPaginadas(especialidad.nombre, 1);
+  const convocatorias = await getConvocatorias();
   const extras = await getExtrasEspecialidad(especialidad.nombre);
   const mediaPorConvocatoria = extras.convocatorias
     ? Math.round(especialidad.total / extras.convocatorias)
@@ -146,6 +148,19 @@ export default async function EspecialidadPage({ params }) {
           paginaActual={1}
           totalPaginas={totalPaginas}
         />
+
+        <p className="mt-8 flex flex-wrap gap-x-4 gap-y-2 text-sm text-ink-muted">
+          Ver por convocatoria:
+          {convocatorias.map((c) => (
+            <Link
+              key={c.anio}
+              href={`/convocatorias/${slugConvocatoria(c.anio)}`}
+              className="font-semibold text-brand"
+            >
+              MIR {c.anio}
+            </Link>
+          ))}
+        </p>
 
         <Link
           href="/registro"
