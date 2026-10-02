@@ -74,40 +74,54 @@ function formatearMiles(n) {
 // y twitter:title/twitter:description: lo que se ve al buscar en Google y lo
 // que se ve al compartir en redes debe decir lo mismo, no dos mensajes
 // distintos que puedan desincronizarse en una edición futura.
-const META_TITLE = "Preparación MIR sin pagar mil euros | MIR Turel";
-const META_DESCRIPTION =
-  "1.004 preguntas 100% oficiales del Ministerio de Sanidad, sin IA mezclada. Controversias documentadas. Empieza gratis, sin pagar mil euros.";
+const META_TITLE = "MIR Turel | Banco 100% Oficial de Preguntas MIR (Sanidad)";
 
-export const metadata = {
-  title: META_TITLE,
-  description: META_DESCRIPTION,
-  alternates: { canonical: "https://mir.turel.es" },
-  openGraph: {
+// N y años salen de la BD (mismas preguntas públicas que la home y las
+// especialidades), para que la description no se quede obsoleta al
+// añadir una convocatoria o anular preguntas.
+function resumenBanco(especialidades) {
+  return {
+    total: especialidades.reduce((acc, e) => acc + e.total, 0),
+    anioMin: Math.min(...especialidades.map((e) => e.anioMin)),
+    anioMax: Math.max(...especialidades.map((e) => e.anioMax)),
+  };
+}
+
+export async function generateMetadata() {
+  const especialidades = await getEspecialidadesConConteo();
+  const { total, anioMin, anioMax } = resumenBanco(especialidades);
+  const META_DESCRIPTION = `Practica gratis con ${formatearMiles(total)} preguntas oficiales del Ministerio de Sanidad (MIR ${anioMin}-${anioMax}). Explicaciones instantáneas en tus errores y controversias clínicas explicadas.`;
+  return {
     title: META_TITLE,
     description: META_DESCRIPTION,
-    url: "https://mir.turel.es",
-    siteName: "MIR Turel",
-    type: "website",
-    locale: "es_ES",
-    // 1200x630 (estándar OG/Twitter): recorte propio de hero-1024w.jpg, no
-    // el archivo tal cual — su proporción (1024x716, ~1.43:1) no coincide
-    // con la de una tarjeta de red social (1200x630, ~1.9:1).
-    images: [
-      {
-        url: "https://mir.turel.es/images/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "MIR Turel — preparación MIR con preguntas 100% oficiales",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: META_TITLE,
-    description: META_DESCRIPTION,
-    images: ["https://mir.turel.es/images/og-image.jpg"],
-  },
-};
+    alternates: { canonical: "https://mir.turel.es" },
+    openGraph: {
+      title: META_TITLE,
+      description: META_DESCRIPTION,
+      url: "https://mir.turel.es",
+      siteName: "MIR Turel",
+      type: "website",
+      locale: "es_ES",
+      // 1200x630 (estándar OG/Twitter): recorte propio de hero-1024w.jpg, no
+      // el archivo tal cual — su proporción (1024x716, ~1.43:1) no coincide
+      // con la de una tarjeta de red social (1200x630, ~1.9:1).
+      images: [
+        {
+          url: "https://mir.turel.es/images/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: "MIR Turel — preparación MIR con preguntas 100% oficiales",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: META_TITLE,
+      description: META_DESCRIPTION,
+      images: ["https://mir.turel.es/images/og-image.jpg"],
+    },
+  };
+}
 
 export const viewport = {
   width: "device-width",
@@ -160,7 +174,7 @@ export default async function LandingPage() {
   const { movilSrcSet, escritorioSrcSet, imgProps: heroImgProps, alt: heroAlt } = imagenHero();
 
   const especialidades = await getEspecialidadesConConteo();
-  const totalPreguntas = especialidades.reduce((acc, e) => acc + e.total, 0);
+  const { total: totalPreguntas, anioMin, anioMax } = resumenBanco(especialidades);
   const totalEspecialidades = especialidades.length;
 
   const todasControversias = await getControversias();
@@ -180,7 +194,7 @@ export default async function LandingPage() {
     "@type": "EducationalOrganization",
     name: "MIR Turel",
     url: "https://mir.turel.es",
-    description: `Plataforma de preparación del examen MIR con ${formatearMiles(totalPreguntas)} preguntas oficiales de las convocatorias 2022-2026 del Ministerio de Sanidad, sin contenido generado por IA mezclado en el banco.`,
+    description: `Plataforma de preparación del examen MIR con ${formatearMiles(totalPreguntas)} preguntas oficiales de las convocatorias ${anioMin}-${anioMax} del Ministerio de Sanidad, sin contenido generado por IA mezclado en el banco.`,
     educationalCredentialAwarded: "Médico Interno Residente (MIR)",
     provider: {
       "@type": "Organization",
@@ -231,7 +245,7 @@ export default async function LandingPage() {
 
           <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-3 sm:text-lg">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
-            2022–2026, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
+            {anioMin}–{anioMax}, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
