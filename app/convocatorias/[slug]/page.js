@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getConvocatoria, getConvocatorias, slugConvocatoria } from "../../lib/convocatorias";
 import { getControversias } from "../../lib/controversias";
+import { breadcrumb } from "../../lib/jsonld";
 import { slugify } from "../../lib/especialidades";
 
 // Mismo patrón que /especialidades/[slug]: el build no ve la BD, así que no se
@@ -31,8 +32,18 @@ export default async function ConvocatoriaPage({ params }) {
     (c) => c.año === conv.anio && !conv.excluidas.includes(c.numero)
   );
 
+  const schemaMigas = breadcrumb([
+    ["Inicio", "https://mir.turel.es/"],
+    ["Convocatorias", "https://mir.turel.es/convocatorias"],
+    [`MIR ${conv.anio}`, `https://mir.turel.es/convocatorias/${params.slug}`],
+  ]);
+
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMigas) }}
+      />
       <div className="mx-auto max-w-2xl">
         <Link href="/convocatorias" className="text-sm font-semibold text-brand">
           ← Todas las convocatorias

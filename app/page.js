@@ -205,8 +205,20 @@ export default async function LandingPage() {
     },
   };
 
+  const SCHEMA_WEBSITE = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "MIR Turel",
+    url: "https://mir.turel.es",
+    inLanguage: "es",
+  };
+
   return (
     <div className="min-h-screen bg-surface">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_WEBSITE) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA_ORGANIZACION) }}

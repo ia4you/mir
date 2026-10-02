@@ -7,6 +7,7 @@ import {
   PREGUNTAS_POR_PAGINA,
 } from "../../lib/especialidades";
 import { getConvocatorias, slugConvocatoria } from "../../lib/convocatorias";
+import { breadcrumb } from "../../lib/jsonld";
 import ListaPreguntasEspecialidad from "../../components/ListaPreguntasEspecialidad";
 import PaginacionEspecialidad from "../../components/PaginacionEspecialidad";
 
@@ -63,8 +64,17 @@ export default async function EspecialidadPage({ params }) {
     inLanguage: "es",
   };
 
+  const schemaMigas = breadcrumb([
+    ["Inicio", "https://mir.turel.es/"],
+    [especialidad.nombre, `https://mir.turel.es/especialidades/${especialidad.slug}`],
+  ]);
+
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMigas) }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaCurso) }}

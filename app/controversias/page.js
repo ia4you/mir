@@ -17,27 +17,8 @@ const LETRAS = ["a", "b", "c", "d", "e"];
 export default async function ControversiasPage() {
   const controversias = await getControversias();
 
-  const schemaFaq = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: controversias.map((c) => ({
-      "@type": "Question",
-      name: c.pregunta,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: c.objecion
-          ? `Respuesta oficial: ${c.correcta}. ${c.objecion}`
-          : `Respuesta oficial: ${c.correcta}. Respuesta cuestionada — sin detalle disponible.`,
-      },
-    })),
-  };
-
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaFaq) }}
-      />
       <div className="mx-auto max-w-3xl">
         <Link href="/" className="text-sm font-semibold text-brand">
           ← Volver a inicio
