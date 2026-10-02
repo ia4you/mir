@@ -453,7 +453,8 @@ export default async function LandingPage() {
           >
             Ministerio de Sanidad
           </a>
-          . MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
+          . Preguntas y respuestas oficiales; explicaciones generadas por IA, que pueden contener
+          errores. MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
           preparación MIR.
         </p>
       </footer>
