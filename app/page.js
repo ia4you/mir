@@ -456,7 +456,7 @@ export default async function LandingPage() {
           <Link href="/privacidad">Privacidad</Link>
         </nav>
         <p className="mx-auto mt-3 max-w-2xl">
-          Fuentes: cuadernillos oficiales MIR 2022–2026,{" "}
+          Preguntas y respuestas 100% oficiales del{" "}
           <a
             href="https://www.sanidad.gob.es"
             rel="noopener noreferrer"
@@ -464,10 +464,10 @@ export default async function LandingPage() {
             className="font-semibold text-brand"
           >
             Ministerio de Sanidad
-          </a>
-          . Preguntas y respuestas oficiales; explicaciones generadas por IA, que pueden contener
-          errores. MIR Turel no está afiliado al Ministerio de Sanidad ni a ninguna academia de
-          preparación MIR.
+          </a>{" "}
+          (MIR {anioMin}–{anioMax}). Las explicaciones paso a paso las genera una IA como apoyo,
+          pueden contener errores y no sustituyen el material oficial. MIR Turel no está afiliado
+          al Ministerio ni a ninguna academia.
         </p>
       </footer>
     </div>

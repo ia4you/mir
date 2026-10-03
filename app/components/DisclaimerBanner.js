@@ -69,10 +69,8 @@ export default function DisclaimerBanner() {
           Desde sm se mantiene el diseño original sin cambios (ver abajo). */}
       <div className="mx-auto flex max-w-4xl items-center gap-3 sm:hidden">
         <p className="flex-1 text-xs leading-snug text-ink-muted">
-          Las preguntas y respuestas del banco son 100% oficiales del Ministerio de Sanidad. Solo
-          las explicaciones están generadas por IA como apoyo rápido: pueden contener errores y no
-          sustituyen el material oficial de preparación. MIR Turel no está afiliado al Ministerio
-          ni a ninguna academia. Consulta nuestro{" "}
+          Preguntas y respuestas 100% oficiales. Las explicaciones las genera una IA, pueden
+          contener errores y no sustituyen el material oficial. Consulta nuestro{" "}
           <a
             href="/aviso-legal"
             target="_blank"
@@ -95,10 +93,8 @@ export default function DisclaimerBanner() {
       {/* Diseño original, sin cambios, a partir de sm. */}
       <div className="mx-auto hidden max-w-4xl items-center gap-3 sm:flex">
         <p className="flex-1 text-xs leading-snug text-ink-muted">
-          Las preguntas y respuestas del banco son 100% oficiales del Ministerio de Sanidad. Solo
-          las explicaciones están generadas por IA como apoyo rápido: pueden contener errores y no
-          sustituyen el material oficial de preparación. MIR Turel no está afiliado al Ministerio
-          ni a ninguna academia. Consulta nuestro aviso legal.
+          Preguntas y respuestas 100% oficiales. Las explicaciones las genera una IA, pueden
+          contener errores y no sustituyen el material oficial. Consulta nuestro aviso legal.
         </p>
         <div className="flex flex-shrink-0 flex-col gap-2">
           <button
