@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { netas } from "@/lib/notas";
 
 export const dynamic = "force-dynamic";
 
@@ -68,7 +69,7 @@ export async function GET(request, { params }) {
         [sesionId]
       );
       const { fallos_respondidos, en_blanco, anio } = conteoRes.rows[0];
-      const puntuacion = Math.round((sesion.aciertos - fallos_respondidos / 3) * 100) / 100;
+      const puntuacion = Math.round(netas(sesion.aciertos, fallos_respondidos) * 100) / 100;
       const porcentajeEstimado =
         sesion.total_preguntas > 0
           ? Math.round((puntuacion / sesion.total_preguntas) * 1000) / 10
@@ -94,7 +95,7 @@ export async function GET(request, { params }) {
       for (const r of historicoRes.rows) {
         if (r.id === sesion.id || vistos.has(r.anio)) continue;
         vistos.add(r.anio);
-        const puntuacionAnio = Math.round((r.aciertos - r.fallos_respondidos / 3) * 100) / 100;
+        const puntuacionAnio = Math.round(netas(r.aciertos, r.fallos_respondidos) * 100) / 100;
         comparativaAnios.push({
           anio: r.anio,
           fecha: r.fecha,
