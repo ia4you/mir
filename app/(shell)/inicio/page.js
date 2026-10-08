@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AvatarUploader from "../../components/AvatarUploader";
 import BottomNav from "../../components/BottomNav";
+import NotasInicio from "../../components/NotasInicio";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
 import { getMetaDiaria } from "../../lib/preferencias";
@@ -99,6 +100,8 @@ export default function Inicio() {
           metaDiariaPct={datos?.meta_diaria.porcentaje}
         />
       </div>
+
+      <NotasInicio />
 
       <section className="mt-5 px-5">
         <Link
