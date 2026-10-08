@@ -21,35 +21,44 @@ function fmtFecha(fecha) {
   });
 }
 
-// El color nunca va solo: la flecha y la diferencia siempre acompañan.
-const COLOR_NOTA = { sube: "text-success", baja: "text-danger" };
-const COLOR_PILDORA = {
-  sube: "bg-success-bg text-success-text",
-  baja: "bg-danger-bg text-danger-text",
+// Estilo cotización de bolsa: sin fondo ni borde. El color nunca va solo: la
+// flecha y la diferencia siempre acompañan. Tonos claros solo en modo oscuro
+// (ratios sobre la tarjeta: verde 5,02 claro / 8,40 oscuro; rojo 4,67 / 5,29).
+const COLOR = {
+  sube: "text-green-700 dark:text-green-400",
+  baja: "text-danger dark:text-red-400",
 };
 
-function Nota({ nota, direccion, diferencia, textoIgual, textoCompara, textoSinRef }) {
-  const claseNota = COLOR_NOTA[direccion] || "text-ink-muted";
+// `sub` es la línea pequeña de debajo ("vs. hace 7 días", fecha, etc.).
+function Nota({ nota, direccion, diferencia, textoIgual, textoSinRef, sub }) {
+  const color = COLOR[direccion] || "text-ink-muted";
+  const sube = direccion === "sube";
+  const cambia = sube || direccion === "baja";
   return (
     <>
-      <p className="flex flex-wrap items-baseline gap-x-2">
-        <span className={`text-3xl font-extrabold ${claseNota}`}>{fmt(nota)}</span>
-        <span className="text-sm text-ink-muted">/ 200</span>
+      <p className={`flex items-baseline gap-x-3 ${color}`}>
+        <span className="flex items-baseline gap-x-1.5">
+          <span className="text-4xl font-extrabold">{fmt(nota)}</span>
+          <span className="text-sm font-normal text-ink-muted">/ 200</span>
+        </span>
+        <span className="flex items-baseline gap-x-1 text-base font-bold">
+          {cambia ? (
+            <>
+              <span aria-hidden="true" className="text-xl leading-none">
+                {sube ? "▲" : "▼"}
+              </span>
+              <span className="sr-only">{sube ? "Sube" : "Baja"}</span>
+              {fmt(diferencia, true)}
+            </>
+          ) : (
+            <>
+              <span aria-hidden="true">–</span>
+              {direccion === "igual" ? textoIgual : textoSinRef}
+            </>
+          )}
+        </span>
       </p>
-      {direccion === "sube" || direccion === "baja" ? (
-        <p className="mt-2 text-xs text-ink-muted">
-          <span
-            className={`mr-1.5 inline-block rounded-full px-2 py-0.5 font-bold ${COLOR_PILDORA[direccion]}`}
-          >
-            {direccion === "sube" ? "▲" : "▼"} {fmt(diferencia, true)}
-          </span>
-          {textoCompara}
-        </p>
-      ) : (
-        <p className="mt-2 text-xs text-ink-muted">
-          {direccion === "igual" ? textoIgual : textoSinRef}
-        </p>
-      )}
+      {sub && <p className="mt-1 text-xs text-ink-muted">{sub}</p>}
     </>
   );
 }
@@ -80,9 +89,9 @@ function TarjetaEvolucion({ e }) {
         nota={e.nota}
         direccion={e.direccion}
         diferencia={e.diferencia}
-        textoCompara="respecto a hace 7 días"
-        textoIgual="sin cambios respecto a hace 7 días"
+        textoIgual="sin cambios"
         textoSinRef="sin referencia aún"
+        sub={e.direccion ? "vs. hace 7 días" : null}
       />
     </Tarjeta>
   );
@@ -118,11 +127,10 @@ function TarjetaSimulacro({ s, plan }) {
         nota={s.nota}
         direccion={s.direccion}
         diferencia={s.diferencia}
-        textoCompara="respecto al anterior"
-        textoIgual="sin cambios respecto al anterior"
-        textoSinRef="primer simulacro"
+        textoIgual="sin cambios"
+        textoSinRef="sin referencia aún"
+        sub={`${fmtFecha(s.fecha)} · ${s.direccion ? "vs. simulacro anterior" : "primer simulacro"}`}
       />
-      <p className="mt-1 text-xs text-ink-muted">{fmtFecha(s.fecha)}</p>
     </Tarjeta>
   );
 }
@@ -150,15 +158,15 @@ export default function NotasInicio() {
   }
   if (!datos) {
     return (
-      <div className="mt-3 grid grid-cols-2 gap-3 px-5">
+      <div className="mt-3 grid grid-cols-1 gap-3 px-5">
         {[0, 1].map((i) => (
-          <div key={i} className="h-[104px] animate-pulse rounded-2xl bg-card shadow-sm" />
+          <div key={i} className="h-[96px] animate-pulse rounded-2xl bg-card shadow-sm" />
         ))}
       </div>
     );
   }
   return (
-    <section className="mt-3 grid grid-cols-2 gap-3 px-5">
+    <section className="mt-3 grid grid-cols-1 gap-3 px-5">
       <TarjetaEvolucion e={datos.evolucion} />
       <TarjetaSimulacro s={datos.simulacro} plan={datos.plan} />
     </section>
