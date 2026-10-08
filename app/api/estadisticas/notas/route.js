@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+import { query } from "@/lib/db";
 import { evolucion, notaSimulacro, comparar } from "@/lib/notas";
 import { getPesosEspecialidad, getPrimerasRespuestas, getUltimosSimulacros } from "@/lib/notasDb";
 
@@ -14,10 +15,12 @@ export async function GET() {
   const userId = session.user.id;
 
   try {
-    const [pesos, primeras, simulacros] = await Promise.all([
+    const [pesos, primeras, simulacros, usuario] = await Promise.all([
       getPesosEspecialidad(),
       getPrimerasRespuestas(userId),
       getUltimosSimulacros(userId),
+      // plan real de la BD (el del JWT puede ir desfasado tras un pago)
+      query(`SELECT plan FROM usuarios WHERE id = $1`, [userId]),
     ]);
 
     let simulacro = null;
@@ -33,7 +36,7 @@ export async function GET() {
     return NextResponse.json({
       evolucion: evolucion(primeras, pesos),
       simulacro,
-      plan: session.user.plan,
+      plan: usuario.rows[0]?.plan ?? session.user.plan,
     });
   } catch (err) {
     console.error(err);
