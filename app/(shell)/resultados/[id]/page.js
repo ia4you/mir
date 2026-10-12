@@ -156,7 +156,7 @@ export default function Resultados({ params }) {
         <section className="mt-6 px-5">
           <div className="rounded-2xl bg-card p-4 shadow-sm">
             <p className="text-sm font-bold uppercase tracking-wide text-ink-muted">
-              Resultado del Simulacro MIR {datos.simulacro.anio}
+              Resultado del Simulacro MIR
             </p>
             <p className="mt-2 text-3xl font-extrabold text-ink">
               {datos.simulacro.puntuacion.toFixed(2)}{" "}
@@ -184,15 +184,17 @@ export default function Resultados({ params }) {
               </div>
             </div>
 
-            {datos.simulacro.comparativa_anios.length > 0 && (
+            {datos.simulacro.comparativa.length > 0 && (
               <div className="mt-4 border-t border-track pt-3">
                 <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
-                  Comparativa con años anteriores
+                  Simulacros anteriores
                 </p>
                 <div className="flex flex-col gap-1.5">
-                  {datos.simulacro.comparativa_anios.map((c) => (
-                    <div key={c.anio} className="flex items-center justify-between text-sm">
-                      <span className="text-ink">Simulacro {c.anio}</span>
+                  {datos.simulacro.comparativa.map((c) => (
+                    <div key={c.id} className="flex items-center justify-between text-sm">
+                      <span className="text-ink">
+                        {new Date(c.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })}
+                      </span>
                       <span className="font-bold text-ink">
                         {c.puntuacion.toFixed(2)} pts · {c.porcentaje_estimado}%
                       </span>

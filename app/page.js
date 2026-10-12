@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getImageProps } from "next/image";
-import { getEspecialidadesConConteo } from "./lib/especialidades";
+import { getEspecialidadesConConteo, formatearMiles, resumenBanco } from "./lib/especialidades";
 import { getConvocatorias, slugConvocatoria } from "./lib/convocatorias";
 import { getControversias } from "./lib/controversias";
 import LandingHeader from "./components/LandingHeader";
@@ -63,30 +63,11 @@ function imagenHero() {
   return { movilSrcSet, escritorioSrcSet, imgProps, alt };
 }
 
-// No usar toLocaleString("es-ES"): depende de que el runtime de Node tenga
-// datos ICU completos, y el build small-icu por defecto (el mismo que
-// probablemente corre en producción) lo ignora en silencio y devuelve el
-// número sin separador — verificado con un screenshot real antes de esto.
-function formatearMiles(n) {
-  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-}
-
 // Un único título/descripción reutilizado en <title>, og:title/og:description
 // y twitter:title/twitter:description: lo que se ve al buscar en Google y lo
 // que se ve al compartir en redes debe decir lo mismo, no dos mensajes
 // distintos que puedan desincronizarse en una edición futura.
 const META_TITLE = "MIR Turel | Banco 100% Oficial de Preguntas MIR (Sanidad)";
-
-// N y años salen de la BD (mismas preguntas públicas que la home y las
-// especialidades), para que la description no se quede obsoleta al
-// añadir una convocatoria o anular preguntas.
-function resumenBanco(especialidades) {
-  return {
-    total: especialidades.reduce((acc, e) => acc + e.total, 0),
-    anioMin: Math.min(...especialidades.map((e) => e.anioMin)),
-    anioMax: Math.max(...especialidades.map((e) => e.anioMax)),
-  };
-}
 
 export async function generateMetadata() {
   const especialidades = await getEspecialidadesConConteo();

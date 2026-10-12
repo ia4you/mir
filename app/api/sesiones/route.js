@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { diaCanarias, HOY_CANARIAS } from "@/lib/racha";
 
 export const dynamic = "force-dynamic";
 
@@ -78,7 +79,7 @@ export async function POST(request) {
       const { rows } = await query(
         `SELECT COALESCE(SUM(total_preguntas), 0)::int AS total
          FROM sesiones
-         WHERE user_id = $1 AND duracion_segundos IS NOT NULL AND DATE(fecha) = CURRENT_DATE`,
+         WHERE user_id = $1 AND duracion_segundos IS NOT NULL AND ${diaCanarias()} = ${HOY_CANARIAS}`,
         [userId]
       );
       if (rows[0].total >= LIMITE_DIARIO_FREE) {

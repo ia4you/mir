@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { calcularRacha, diaCanarias, HOY_CANARIAS } from "@/lib/racha";
 
 export const dynamic = "force-dynamic";
 
@@ -30,29 +31,19 @@ export async function GET(request) {
     const metaDiariaPreguntas =
       Number.isInteger(metaParam) && metaParam > 0 ? metaParam : META_DIARIA_POR_DEFECTO;
 
+    // Días en hora de Canarias, no en UTC (ver lib/racha.js).
     const diasRes = await query(
-      `SELECT DISTINCT DATE(fecha) AS dia FROM sesiones WHERE user_id = $1 ORDER BY dia DESC`,
+      `SELECT ${HOY_CANARIAS}::text AS hoy,
+              ARRAY(SELECT DISTINCT ${diaCanarias()}::text FROM sesiones WHERE user_id = $1) AS dias`,
       [userId]
     );
-    const dias = diasRes.rows.map((r) => r.dia.toISOString().slice(0, 10));
-
-    let racha = 0;
-    let cursor = new Date();
-    for (;;) {
-      const clave = cursor.toISOString().slice(0, 10);
-      if (dias.includes(clave)) {
-        racha++;
-        cursor.setDate(cursor.getDate() - 1);
-      } else {
-        break;
-      }
-    }
+    const racha = calcularRacha(diasRes.rows[0].dias, diasRes.rows[0].hoy);
 
     const hoyRes = await query(
       `SELECT COUNT(*)::int AS total
        FROM respuestas_sesion rs
        JOIN sesiones s ON s.id = rs.sesion_id
-       WHERE DATE(s.fecha) = CURRENT_DATE AND rs.user_id = $1`,
+       WHERE ${diaCanarias("s.fecha")} = ${HOY_CANARIAS} AND rs.user_id = $1`,
       [userId]
     );
     const respondidasHoy = hoyRes.rows[0].total;

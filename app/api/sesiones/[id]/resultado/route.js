@@ -61,60 +61,53 @@ export async function GET(request, { params }) {
       // NULL): la fórmula oficial del MIR solo penaliza fallos "reales".
       const conteoRes = await query(
         `SELECT COUNT(*) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos,
-                COUNT(*) FILTER (WHERE rs.respuesta_dada IS NULL)::int AS en_blanco,
-                MIN(p.año)::int AS anio
+                COUNT(*) FILTER (WHERE rs.respuesta_dada IS NULL)::int AS en_blanco
          FROM respuestas_sesion rs
-         JOIN preguntas p ON p.id = rs.pregunta_id
          WHERE rs.sesion_id = $1`,
         [sesionId]
       );
-      const { fallos_respondidos, en_blanco, anio } = conteoRes.rows[0];
+      const { fallos_respondidos, en_blanco } = conteoRes.rows[0];
       const puntuacion = Math.round(netas(sesion.aciertos, fallos_respondidos) * 100) / 100;
       const porcentajeEstimado =
         sesion.total_preguntas > 0
           ? Math.round((puntuacion / sesion.total_preguntas) * 1000) / 10
           : 0;
 
-      // Comparativa con simulacros anteriores del usuario: el año de cada
-      // sesión se infiere de sus propias preguntas (no hay columna "año" en
-      // `sesiones`), ya que un simulacro solo contiene preguntas de un año.
+      // Comparativa con los simulacros anteriores del usuario, por fecha.
+      // Un simulacro mezcla preguntas de todas las convocatorias
+      // (generarSimulacro en api/preguntas), así que no tiene "año" propio.
       const historicoRes = await query(
-        `SELECT s.id, s.fecha, s.aciertos, s.total_preguntas, p.año AS anio,
-                COUNT(*) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos
+        `SELECT s.id, s.fecha, s.aciertos, s.total_preguntas,
+                COUNT(rs.id) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos
          FROM sesiones s
-         JOIN respuestas_sesion rs ON rs.sesion_id = s.id
-         JOIN preguntas p ON p.id = rs.pregunta_id
+         LEFT JOIN respuestas_sesion rs ON rs.sesion_id = s.id
          WHERE s.user_id = $1 AND s.modo = 'simulacro' AND s.duracion_segundos IS NOT NULL
-         GROUP BY s.id, s.fecha, s.aciertos, s.total_preguntas, p.año
-         ORDER BY s.fecha DESC`,
-        [sesion.user_id]
+           AND s.id <> $2 AND s.fecha <= (SELECT fecha FROM sesiones WHERE id = $2)
+         GROUP BY s.id
+         ORDER BY s.fecha DESC
+         LIMIT 5`,
+        [sesion.user_id, sesion.id]
       );
 
-      const vistos = new Set([anio]);
-      const comparativaAnios = [];
-      for (const r of historicoRes.rows) {
-        if (r.id === sesion.id || vistos.has(r.anio)) continue;
-        vistos.add(r.anio);
-        const puntuacionAnio = Math.round(netas(r.aciertos, r.fallos_respondidos) * 100) / 100;
-        comparativaAnios.push({
-          anio: r.anio,
+      const comparativa = historicoRes.rows.map((r) => {
+        const puntuacionPrevia = Math.round(netas(r.aciertos, r.fallos_respondidos) * 100) / 100;
+        return {
+          id: r.id,
           fecha: r.fecha,
-          puntuacion: puntuacionAnio,
+          puntuacion: puntuacionPrevia,
           porcentaje_estimado:
             r.total_preguntas > 0
-              ? Math.round((puntuacionAnio / r.total_preguntas) * 1000) / 10
+              ? Math.round((puntuacionPrevia / r.total_preguntas) * 1000) / 10
               : 0,
-        });
-      }
-      comparativaAnios.sort((a, b) => a.anio - b.anio);
+        };
+      });
 
       simulacro = {
-        anio,
         fallos_respondidos,
         en_blanco,
         puntuacion,
         porcentaje_estimado: porcentajeEstimado,
-        comparativa_anios: comparativaAnios,
+        comparativa,
       };
     }
 

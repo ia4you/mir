@@ -219,3 +219,22 @@ export async function getExtrasEspecialidad(nombre) {
     controversias: candidatas.filter((c) => ids.has(c.id)),
   };
 }
+
+// No usar toLocaleString("es-ES"): depende de que el runtime de Node tenga
+// datos ICU completos, y el build small-icu por defecto (el mismo que
+// probablemente corre en producción) lo ignora en silencio y devuelve el
+// número sin separador — verificado con un screenshot real antes de esto.
+export function formatearMiles(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// N y años salen de la BD (mismas preguntas públicas que la home y las
+// especialidades), para que la description no se quede obsoleta al
+// añadir una convocatoria o anular preguntas.
+export function resumenBanco(especialidades) {
+  return {
+    total: especialidades.reduce((acc, e) => acc + e.total, 0),
+    anioMin: Math.min(...especialidades.map((e) => e.anioMin)),
+    anioMax: Math.max(...especialidades.map((e) => e.anioMax)),
+  };
+}

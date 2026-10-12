@@ -17,15 +17,10 @@ if (!CRON_SECRET) {
 
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 
-function hoyISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function ayerISO() {
-  const d = new Date();
-  d.setDate(d.getDate() - 1);
-  return d.toISOString().slice(0, 10);
-}
+// Día en hora de Canarias; mismas expresiones que lib/racha.js (aquí
+// duplicadas porque este script no puede importar módulos de la app).
+const DIA_CANARIAS = "((fecha AT TIME ZONE 'UTC') AT TIME ZONE 'Atlantic/Canary')::date";
+const HOY_CANARIAS = "(now() AT TIME ZONE 'Atlantic/Canary')::date";
 
 async function main() {
   // Solo tiene sentido calcular la racha de usuarios que además tienen
@@ -40,22 +35,22 @@ async function main() {
   const idsConPush = usuariosConPush.map((r) => r.user_id);
 
   const { rows: diasPorUsuario } = await pool.query(
-    `SELECT user_id, DATE(fecha) AS dia
+    `SELECT user_id, ${DIA_CANARIAS}::text AS dia
      FROM sesiones
      WHERE user_id = ANY($1::int[])
-     GROUP BY user_id, DATE(fecha)
-     ORDER BY user_id, dia DESC`,
+     GROUP BY user_id, ${DIA_CANARIAS}`,
     [idsConPush]
   );
 
   const diasDeCadaUsuario = new Map();
   for (const { user_id, dia } of diasPorUsuario) {
-    const clave = dia.toISOString().slice(0, 10);
     if (!diasDeCadaUsuario.has(user_id)) diasDeCadaUsuario.set(user_id, new Set());
-    diasDeCadaUsuario.get(user_id).add(clave);
+    diasDeCadaUsuario.get(user_id).add(dia);
   }
 
-  const hoy = hoyISO();
+  const { rows: [{ hoy, ayer }] } = await pool.query(
+    `SELECT ${HOY_CANARIAS}::text AS hoy, (${HOY_CANARIAS} - 1)::text AS ayer`
+  );
   let notificados = 0;
 
   for (const userId of idsConPush) {
@@ -64,7 +59,7 @@ async function main() {
 
     // Racha activa = días consecutivos jugados terminando ayer.
     let racha = 0;
-    const cursor = new Date(`${ayerISO()}T00:00:00Z`);
+    const cursor = new Date(`${ayer}T00:00:00Z`);
     for (;;) {
       const clave = cursor.toISOString().slice(0, 10);
       if (dias.has(clave)) {
