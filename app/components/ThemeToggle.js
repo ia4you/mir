@@ -2,30 +2,19 @@
 
 import { useEffect, useState } from "react";
 import Chip from "./Chip";
-import { getTema, setTema, aplicarTema } from "../lib/preferencias";
+import { getTema, setTema, TEMA_POR_DEFECTO } from "../lib/preferencias";
 
 const OPCIONES = [
-  { valor: "sistema", etiqueta: "Sistema" },
-  { valor: "claro", etiqueta: "Claro" },
   { valor: "oscuro", etiqueta: "Oscuro" },
+  { valor: "claro", etiqueta: "Claro" },
 ];
 
 export default function ThemeToggle() {
-  const [tema, setTemaState] = useState("sistema");
+  const [tema, setTemaState] = useState(TEMA_POR_DEFECTO);
 
   useEffect(() => {
     setTemaState(getTema());
   }, []);
-
-  // Si la preferencia es "sistema", refleja en vivo un cambio de tema del
-  // SO mientras la app está abierta (sin esto solo se aplicaría al recargar).
-  useEffect(() => {
-    if (tema !== "sistema") return;
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const onChange = () => aplicarTema("sistema");
-    media.addEventListener("change", onChange);
-    return () => media.removeEventListener("change", onChange);
-  }, [tema]);
 
   function elegir(valor) {
     setTemaState(valor);

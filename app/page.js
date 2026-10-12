@@ -108,10 +108,7 @@ export async function generateMetadata() {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B0C0E" },
-  ],
+  themeColor: "#0B0C0E",
 };
 
 // El build de Dokploy corre sin acceso a mir-db (red de build aislada de la

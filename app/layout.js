@@ -52,23 +52,26 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B0C0E" },
-  ],
+  themeColor: "#0B0C0E", // oscuro por defecto; aplicarTema lo cambia si se elige claro
 };
 
 // Se ejecuta antes de hidratar React para fijar la clase "dark" sin parpadeo
 // (flash of wrong theme). Clave duplicada de CLAVE_TEMA en app/lib/preferencias.js.
-// Oscuro es el predeterminado: sin preferencia guardada se sigue al sistema,
-// y solo se pasa a claro si el sistema lo pide explícitamente. El <html> ya
-// sale con "dark" del servidor, así que sin JS también se ve oscuro.
+// Oscuro es el tema principal y siempre el predeterminado: se ignora
+// prefers-color-scheme y solo se pasa a claro si el usuario lo eligió
+// ("claro" en mir_tema). El <html> ya sale con "dark" del servidor, así que
+// sin JS también se ve oscuro. El antiguo valor "sistema" se migra a "oscuro".
+// theme-color: misma lógica que aplicarTema() en app/lib/preferencias.js.
 const SCRIPT_TEMA = `
 (function () {
   try {
     var t = localStorage.getItem("mir_tema");
-    var oscuro = t === "oscuro" || (t !== "claro" && !window.matchMedia("(prefers-color-scheme: light)").matches);
-    document.documentElement.classList.toggle("dark", oscuro);
+    if (t === "sistema") localStorage.setItem("mir_tema", "oscuro");
+    if (t === "claro") {
+      document.documentElement.classList.remove("dark");
+      var m = document.querySelector('meta[name="theme-color"]');
+      if (m) m.setAttribute("content", "#F7F5F0");
+    }
   } catch (e) {}
 })();
 `;

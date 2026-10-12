@@ -9,9 +9,9 @@ export const CLAVE_TEMA = "mir_tema";
 
 export const META_DIARIA_POR_DEFECTO = 20;
 export const TEMPORIZADOR_POR_DEFECTO = { activo: false, segundos: 60 };
-// "sistema" sigue prefers-color-scheme (oscuro salvo que el sistema pida
-// claro); "claro"/"oscuro" fuerzan el tema.
-export const TEMA_POR_DEFECTO = "sistema";
+// Oscuro es el predeterminado y no depende del sistema operativo; "claro"
+// solo si el usuario lo elige en Perfil.
+export const TEMA_POR_DEFECTO = "oscuro";
 
 export function getMetaDiaria() {
   if (typeof window === "undefined") return META_DIARIA_POR_DEFECTO;
@@ -45,12 +45,11 @@ export function setTemporizadorDefecto(valor) {
 export function getTema() {
   if (typeof window === "undefined") return TEMA_POR_DEFECTO;
   const v = localStorage.getItem(CLAVE_TEMA);
-  return v === "claro" || v === "oscuro" ? v : TEMA_POR_DEFECTO;
+  return v === "claro" ? "claro" : TEMA_POR_DEFECTO;
 }
 
-// Aplica el tema al <html> (clase "dark") y lo persiste. Se llama tanto al
-// cambiar la preferencia en Perfil como al reaccionar a un cambio del tema
-// del sistema operativo mientras la preferencia es "sistema".
+// Aplica el tema al <html> (clase "dark") y lo persiste. Misma lógica que
+// SCRIPT_TEMA en app/layout.js.
 export function setTema(valor) {
   localStorage.setItem(CLAVE_TEMA, valor);
   aplicarTema(valor);
@@ -58,8 +57,7 @@ export function setTema(valor) {
 
 export function aplicarTema(valor) {
   if (typeof document === "undefined") return;
-  const oscuro =
-    valor === "oscuro" ||
-    (valor !== "claro" && !window.matchMedia("(prefers-color-scheme: light)").matches);
-  document.documentElement.classList.toggle("dark", oscuro);
+  const claro = valor === "claro";
+  document.documentElement.classList.toggle("dark", !claro);
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", claro ? "#F7F5F0" : "#0B0C0E");
 }
