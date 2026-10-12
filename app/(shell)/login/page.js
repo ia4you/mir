@@ -49,7 +49,7 @@ function FormularioLogin() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
+          className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-accent"
           placeholder="tu@email.com"
         />
       </FieldCard>
@@ -71,14 +71,14 @@ function FormularioLogin() {
       <button
         type="submit"
         disabled={enviando}
-        className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+        className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
       >
         {enviando ? "Entrando…" : "Entrar"}
       </button>
 
       <p className="text-center text-sm text-ink-muted">
         ¿No tienes cuenta?{" "}
-        <Link href="/registro" className="font-semibold text-brand">
+        <Link href="/registro" className="font-semibold text-accent">
           Regístrate
         </Link>
       </p>
@@ -90,7 +90,7 @@ export default function Login() {
   return (
     <div className="min-h-screen pb-10">
       <header className="px-5 pt-safe text-center">
-        <Logo className="mx-auto h-16 w-auto" />
+        <Logo className="block text-5xl" />
         <p className="mt-2 text-ink-muted">Inicia sesión para continuar</p>
       </header>
 

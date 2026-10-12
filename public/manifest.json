@@ -3,8 +3,8 @@
   "short_name": "MIR",
   "start_url": "/inicio",
   "display": "standalone",
-  "background_color": "#00878E",
-  "theme_color": "#00878E",
+  "background_color": "#0B0C0E",
+  "theme_color": "#0B0C0E",
   "icons": [
     {
       "src": "/icons/icon-192.png",

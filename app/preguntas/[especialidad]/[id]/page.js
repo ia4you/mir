@@ -98,7 +98,7 @@ export default async function PreguntaPublicaPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaBreadcrumb) }}
       />
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -152,7 +152,7 @@ export default async function PreguntaPublicaPage({ params }) {
                 existe explicación para esta pregunta (teaser). */}
             <p className="mt-2 text-sm leading-relaxed text-ink">
               Esta pregunta incluye una explicación clínica completa paso a paso.{" "}
-              <Link href="/registro" className="font-bold text-brand">
+              <Link href="/registro" className="font-bold text-accent">
                 Crea tu cuenta gratis
               </Link>{" "}
               para verla junto con la corrección.
@@ -162,14 +162,14 @@ export default async function PreguntaPublicaPage({ params }) {
 
         <Link
           href="/registro"
-          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Practica con 1.004 preguntas oficiales → Crear cuenta gratis
         </Link>
 
         <Link
           href={`/especialidades/${pregunta.especialidadSlug}`}
-          className="mt-6 block text-center text-sm font-semibold text-brand"
+          className="mt-6 block text-center text-sm font-semibold text-accent"
         >
           Ver más preguntas de {pregunta.especialidad} →
         </Link>
@@ -177,7 +177,7 @@ export default async function PreguntaPublicaPage({ params }) {
         {siguiente && (
           <Link
             href={`/preguntas/${pregunta.especialidadSlug}/${siguiente.id}`}
-            className="mt-3 block text-center text-sm font-semibold text-ink-muted hover:text-brand"
+            className="mt-3 block text-center text-sm font-semibold text-ink-muted hover:text-accent"
           >
             Siguiente pregunta de {pregunta.especialidad} →
           </Link>

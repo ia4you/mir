@@ -7,7 +7,7 @@ export default function BlogHeader() {
   return (
     <header className="flex items-center justify-between gap-3 border-b border-track bg-card px-5 py-3 pt-safe">
       <Link href="/" aria-label="Ir al inicio" className="flex-shrink-0">
-        <Logo className="h-11 w-auto sm:h-12" />
+        <Logo className="flex min-h-[44px] items-center text-3xl sm:text-4xl" />
       </Link>
       <nav className="flex items-center gap-2 sm:gap-3">
         <Link
@@ -18,7 +18,7 @@ export default function BlogHeader() {
         </Link>
         <Link
           href="/demo"
-          className="whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-white shadow-sm active:bg-brand-dark"
+          className="whitespace-nowrap rounded-xl bg-brand px-4 py-2 text-sm font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Empezar gratis
         </Link>

@@ -74,7 +74,7 @@ export default function PuntosDebiles({ especialidades }) {
             type="button"
             onClick={entrenarPuntosDebiles}
             disabled={cargando}
-            className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+            className="mt-4 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
           >
             {cargando ? "Preparando…" : "Entrenar mis puntos débiles →"}
           </button>

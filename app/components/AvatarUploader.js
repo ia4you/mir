@@ -59,7 +59,7 @@ export default function AvatarUploader() {
           onClick={() => inputRef.current?.click()}
           aria-label="Cambiar foto de perfil"
           disabled={subiendo}
-          className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-brand bg-brand-light disabled:opacity-60"
+          className="flex h-full w-full items-center justify-center overflow-hidden rounded-full border-2 border-accent bg-brand-light disabled:opacity-60"
         >
           {avatarPath ? (
             <Image
@@ -75,7 +75,7 @@ export default function AvatarUploader() {
               fill="none"
               stroke="currentColor"
               strokeWidth={1.5}
-              className="h-9 w-9 text-brand"
+              className="h-9 w-9 text-accent"
             >
               <path
                 strokeLinecap="round"
@@ -91,7 +91,7 @@ export default function AvatarUploader() {
           onClick={() => inputRef.current?.click()}
           aria-label="Editar foto de perfil"
           disabled={subiendo}
-          className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand text-white shadow-sm ring-2 ring-white"
+          className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full bg-brand text-on-brand shadow-sm ring-2 ring-white"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-3.5 w-3.5">
             <path

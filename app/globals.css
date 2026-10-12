@@ -3,28 +3,92 @@
 @tailwind utilities;
 
 :root {
-  --background: #f1f6f8;
-  --foreground: #0e171e;
+  /* Tema claro. Todos los colores de la app salen de aquí (tailwind.config.js
+     solo apunta a estas variables), así ambos temas comparten componentes.
+     Contraste AA comprobado: ver RESPUESTAS.md, fase 1. */
+  --background: #f7f5f0;
+  --foreground: #1a1814;
 
-  --surface: #f1f6f8;
-  --card: #ffffff;
-  --ink: #0e171e;
-  --ink-muted: #5f6b74;
-  --track: #dee5ea;
-  --panel: #eef3f5;
-  --brand-light: #d1f3f4;
+  --surface: #f7f5f0; /* fondo de página */
+  --card: #ffffff; /* tarjeta */
+  --panel: #f1eee6; /* tarjeta secundaria */
+  --track: #e2ded4; /* bordes y pista de barras */
+  --line: #ece8df; /* separadores */
+  --ink: #1a1814;
+  --ink-muted: #5e6168; /* texto secundario */
+  --ink-subtle: #64676e; /* texto terciario */
+
+  --brand: #e3b95c; /* relleno dorado (botón principal) */
+  --brand-hover: #d4a847;
+  --on-brand: #17130a; /* texto sobre el dorado */
+  --accent: #8a6514; /* dorado como texto, borde o foco */
+  --brand-light: #fbf1db; /* fondo dorado suave (seleccionado, racha) */
+
+  --success: #1e6b45;
+  --success-bg: #e3f4ea;
+  --success-border: #a3d5af;
+  --success-text: #1e6b45;
+  --danger: #a8452f;
+  --danger-bar: #c25a42;
+  --danger-bg: #fbe9e4;
+  --danger-border: #e8a898;
+  --danger-text: #8e3825;
+  --warning: #8a6514;
+  --warning-bg: #fbf1db;
+  --warning-border: #e8c874;
+  --warning-text: #7a5810;
+  --on-status: #ffffff; /* texto sobre success/danger/warning sólidos */
+  --badge-bg: #f1eee6;
+  --badge-text: #1a1814;
 }
 
-/* Paleta oscura: fondo/superficie de app/globals.css según CAMBIO 5.
-   El teal de marca (brand DEFAULT/dark) no cambia entre temas. */
+/* Tema oscuro (el predeterminado, ver SCRIPT_TEMA en app/layout.js). */
 :root.dark {
-  --surface: #0f172a;
-  --card: #1e293b;
-  --ink: #ffffff;
-  --ink-muted: #94a3b8;
-  --track: #334155;
-  --panel: #1e293b;
-  --brand-light: #0a2c2e;
+  --background: #0b0c0e;
+  --foreground: #f2f0ea;
+
+  --surface: #0b0c0e;
+  --card: #141518;
+  --panel: #1b1d21;
+  --track: #26282d;
+  --line: #222428;
+  --ink: #f2f0ea;
+  --ink-muted: #a3a6ad;
+  --ink-subtle: #8a8e96;
+
+  --brand: #e3b95c;
+  --brand-hover: #f0cd80;
+  --on-brand: #17130a;
+  --accent: #e3b95c;
+  --brand-light: #2a2312;
+
+  --success: #7fd3a6;
+  --success-bg: #12261c;
+  --success-border: #2b5a40;
+  --success-text: #7fd3a6;
+  --danger: #e8957f;
+  --danger-bar: #d9765e;
+  --danger-bg: #2a1612;
+  --danger-border: #5a2e24;
+  --danger-text: #e8957f;
+  --warning: #e3b95c;
+  --warning-bg: #2a2312;
+  --warning-border: #5c4a22;
+  --warning-text: #e3b95c;
+  --on-status: #0b0c0e;
+  --badge-bg: #1b1d21;
+  --badge-text: #f2f0ea;
+}
+
+/* Que los controles nativos (scrollbars, date pickers) sigan el tema. */
+:root { color-scheme: light; }
+:root.dark { color-scheme: dark; }
+
+/* Foco de teclado visible en ambos temas (el borde #26282d no vale como
+   indicador: 1,2:1). Solo con teclado, no al hacer clic. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 body {
@@ -68,4 +132,13 @@ body {
 }
 .animate-slide-out-left {
   animation: slide-out-left 0.3s ease-in;
+}
+
+:root {
+  --radius-card: 18px;
+}
+@media (min-width: 640px) {
+  :root {
+    --radius-card: 20px;
+  }
 }

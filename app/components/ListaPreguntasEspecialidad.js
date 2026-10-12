@@ -12,7 +12,7 @@ export default function ListaPreguntasEspecialidad({ preguntas, especialidadSlug
         <li key={p.id} className="rounded-2xl bg-card p-4 shadow-sm">
           <Link
             href={`/preguntas/${especialidadSlug}/${p.id}`}
-            className="text-sm font-semibold leading-snug text-ink hover:text-brand"
+            className="text-sm font-semibold leading-snug text-ink hover:text-accent"
           >
             {p.pregunta}
           </Link>

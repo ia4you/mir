@@ -1,4 +1,5 @@
-import { Inter } from "next/font/google";
+import { Instrument_Serif } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
@@ -6,9 +7,25 @@ import DisclaimerBanner from "./components/DisclaimerBanner";
 import VisitaTracker from "./components/VisitaTracker";
 import Providers from "./providers";
 
-const inter = Inter({
+// Geist no está en el next/font/google de Next 14.2: woff2 variables (subset
+// latin, de Google Fonts) servidos en local. Licencia en app/fonts/OFL.txt.
+const geist = localFont({
+  src: "./fonts/Geist-Variable.woff2",
+  weight: "100 900",
+  variable: "--font-geist",
+  display: "swap",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMono-Variable.woff2",
+  weight: "100 900",
+  variable: "--font-geist-mono",
+  display: "swap",
+});
+const instrument = Instrument_Serif({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-instrument",
   display: "swap",
 });
 
@@ -35,16 +52,22 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#00838A",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0C0E" },
+  ],
 };
 
 // Se ejecuta antes de hidratar React para fijar la clase "dark" sin parpadeo
 // (flash of wrong theme). Clave duplicada de CLAVE_TEMA en app/lib/preferencias.js.
+// Oscuro es el predeterminado: sin preferencia guardada se sigue al sistema,
+// y solo se pasa a claro si el sistema lo pide explícitamente. El <html> ya
+// sale con "dark" del servidor, así que sin JS también se ve oscuro.
 const SCRIPT_TEMA = `
 (function () {
   try {
     var t = localStorage.getItem("mir_tema");
-    var oscuro = t === "oscuro" || (t !== "claro" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    var oscuro = t === "oscuro" || (t !== "claro" && !window.matchMedia("(prefers-color-scheme: light)").matches);
     document.documentElement.classList.toggle("dark", oscuro);
   } catch (e) {}
 })();
@@ -63,11 +86,11 @@ const GA_DEBUG = process.env.NEXT_PUBLIC_GA_DEBUG === "true";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="es" className="scroll-smooth" suppressHydrationWarning>
+    <html lang="es" className="dark scroll-smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
       </head>
-      <body className={`${inter.variable} font-sans antialiased bg-surface text-ink`}>
+      <body className={`${geist.variable} ${geistMono.variable} ${instrument.variable} font-sans antialiased bg-surface text-ink`}>
         <Providers>
           <main>{children}</main>
           <ServiceWorkerRegister />

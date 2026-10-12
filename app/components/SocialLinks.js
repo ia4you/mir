@@ -38,7 +38,7 @@ export default function SocialLinks() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label={label}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-ink-muted transition-colors hover:text-brand"
+          className="flex h-9 w-9 items-center justify-center rounded-full text-ink-muted transition-colors hover:text-accent"
         >
           <Icono className="h-5 w-5" />
         </a>

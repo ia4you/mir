@@ -409,7 +409,7 @@ export default function TestPregunta({ params }) {
               type="button"
               disabled={!seleccionada || enviando}
               onClick={() => confirmarRespuesta()}
-              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
+              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
             >
               {enviando ? "Enviando…" : "Confirmar respuesta"}
             </button>
@@ -449,7 +449,7 @@ export default function TestPregunta({ params }) {
           <button
             type="button"
             onClick={siguientePregunta}
-            className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
           >
             {indice + 1 < preguntas.length ? "Siguiente pregunta" : "Ver resultados"}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
@@ -515,7 +515,7 @@ export default function TestPregunta({ params }) {
                             <button
                               type="button"
                               onClick={pedirTutorFallo}
-                              className="text-sm font-bold text-brand"
+                              className="text-sm font-bold text-accent"
                             >
                               Reintentar
                             </button>
@@ -523,7 +523,7 @@ export default function TestPregunta({ params }) {
                         )}
                         {tutorFallo && (
                           <div className="mt-3 rounded-xl bg-brand-light p-3">
-                            <p className="mb-1 text-xs font-bold uppercase tracking-wide text-brand">
+                            <p className="mb-1 text-xs font-bold uppercase tracking-wide text-accent">
                               🎓 Tutor IA — ¿por qué he fallado esto?
                             </p>
                             <p className="text-sm leading-relaxed text-ink">{tutorFallo}</p>
@@ -541,7 +541,7 @@ export default function TestPregunta({ params }) {
                 <div className="flex items-center justify-between gap-3 pt-2">
                   <div className="flex items-center gap-3">
                     <span
-                      className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-white ${
+                      className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-on-status ${
                         resultado.correcta ? "bg-success" : "bg-danger"
                       }`}
                     >
@@ -645,7 +645,7 @@ export default function TestPregunta({ params }) {
                         </p>
                       </div>
 
-                      <Link href="/controversias" target="_blank" className="text-sm font-bold text-brand">
+                      <Link href="/controversias" target="_blank" className="text-sm font-bold text-accent">
                         Ver todas las controversias →
                       </Link>
                     </div>
@@ -677,7 +677,7 @@ export default function TestPregunta({ params }) {
                       <button
                         type="button"
                         onClick={pedirTutorFallo}
-                        className="flex items-center gap-1.5 text-sm font-bold text-brand"
+                        className="flex items-center gap-1.5 text-sm font-bold text-accent"
                       >
                         🤔 ¿Por qué he fallado esto?
                       </button>
@@ -693,7 +693,7 @@ export default function TestPregunta({ params }) {
                         <button
                           type="button"
                           onClick={pedirTutorFallo}
-                          className="text-sm font-bold text-brand"
+                          className="text-sm font-bold text-accent"
                         >
                           Reintentar
                         </button>
@@ -702,7 +702,7 @@ export default function TestPregunta({ params }) {
 
                     {tutorFallo && (
                       <div className="rounded-xl bg-brand-light p-3">
-                        <p className="mb-1 text-xs font-bold uppercase tracking-wide text-brand">
+                        <p className="mb-1 text-xs font-bold uppercase tracking-wide text-accent">
                           🎓 Tutor IA — ¿por qué he fallado esto?
                         </p>
                         <p className="text-sm leading-relaxed text-ink">{tutorFallo}</p>
@@ -719,7 +719,7 @@ export default function TestPregunta({ params }) {
               <button
                 type="button"
                 onClick={siguientePregunta}
-                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
               >
                 {indice + 1 < preguntas.length ? "Siguiente pregunta" : "Ver resultados"}
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
@@ -779,7 +779,7 @@ export default function TestPregunta({ params }) {
               <button
                 type="button"
                 onClick={salir}
-                className="h-11 flex-1 rounded-xl bg-danger font-bold text-white"
+                className="h-11 flex-1 rounded-xl bg-danger font-bold text-on-status"
               >
                 Salir
               </button>

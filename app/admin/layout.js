@@ -14,7 +14,7 @@ export default async function AdminLayout({ children }) {
           <h1 className="text-xl font-extrabold text-ink">Panel de administración</h1>
           <p className="text-sm text-ink-muted">MIR Turel</p>
         </div>
-        <Link href="/inicio" className="flex-shrink-0 text-sm font-bold text-brand">
+        <Link href="/inicio" className="flex-shrink-0 text-sm font-bold text-accent">
           ← Volver a la app
         </Link>
       </header>

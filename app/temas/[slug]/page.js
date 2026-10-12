@@ -59,7 +59,7 @@ export default async function TemaPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaCurso) }}
       />
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -69,7 +69,7 @@ export default async function TemaPage({ params }) {
 
         <p className="mt-2 text-sm font-semibold text-ink-muted">
           Parte de{" "}
-          <Link href={`/especialidades/${tema.especialidadSlug}`} className="text-brand">
+          <Link href={`/especialidades/${tema.especialidadSlug}`} className="text-accent">
             {tema.especialidad}
           </Link>
         </p>
@@ -105,7 +105,7 @@ export default async function TemaPage({ params }) {
 
         <Link
           href="/registro"
-          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Practica gratis este tema → Crear cuenta gratis
         </Link>

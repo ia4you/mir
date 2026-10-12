@@ -68,10 +68,10 @@ export default function BottomNav() {
                 className={`flex h-11 w-11 items-center justify-center rounded-2xl ${
                   esPremiumTab
                     ? activo
-                      ? "bg-warning text-white"
+                      ? "bg-warning text-on-brand"
                       : "bg-warning-bg text-warning"
                     : activo
-                    ? "bg-brand text-white"
+                    ? "bg-brand text-on-brand"
                     : "bg-transparent text-ink-muted"
                 }`}
               >
@@ -79,7 +79,7 @@ export default function BottomNav() {
               </span>
               <span
                 className={`text-xs font-semibold ${
-                  esPremiumTab ? "text-warning" : activo ? "text-brand" : "text-ink-muted"
+                  esPremiumTab ? "text-warning" : activo ? "text-accent" : "text-ink-muted"
                 }`}
               >
                 {tab.label}

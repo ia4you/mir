@@ -103,7 +103,7 @@ export default function Resultados({ params }) {
 
   return (
     <div className="min-h-screen pb-10">
-      <header className="rounded-b-3xl bg-brand px-5 pb-8 pt-safe text-center text-white">
+      <header className="rounded-b-3xl bg-brand px-5 pb-8 pt-safe text-center text-on-brand">
         <p className="mt-2 text-sm">Resultados de la sesión</p>
         <p className="mt-2 text-5xl font-extrabold">
           {datos.aciertos}/{datos.total_preguntas}
@@ -144,7 +144,7 @@ export default function Resultados({ params }) {
             </p>
             <Link
               href="/premium"
-              className="mt-3 inline-block rounded-xl bg-warning px-4 py-2 text-sm font-bold text-white active:opacity-90"
+              className="mt-3 inline-block rounded-xl bg-warning px-4 py-2 text-sm font-bold text-on-status active:opacity-90"
             >
               Ver plan Premium →
             </Link>
@@ -308,13 +308,13 @@ export default function Resultados({ params }) {
           type="button"
           onClick={repasarFallos}
           disabled={sinFallos || repasando}
-          className="h-14 flex-1 rounded-2xl border-2 border-brand font-bold text-brand disabled:border-track disabled:text-ink-muted"
+          className="h-14 flex-1 rounded-2xl border-2 border-accent font-bold text-accent disabled:border-track disabled:text-ink-muted"
         >
           {repasando ? "Preparando…" : "Repasar fallos"}
         </button>
         <Link
           href="/inicio"
-          className="flex h-14 flex-1 items-center justify-center rounded-2xl bg-brand font-bold text-white active:bg-brand-dark"
+          className="flex h-14 flex-1 items-center justify-center rounded-2xl bg-brand font-bold text-on-brand active:bg-brand-dark"
         >
           Volver al inicio
         </Link>

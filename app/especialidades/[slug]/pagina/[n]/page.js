@@ -73,7 +73,7 @@ export default async function EspecialidadPaginaPage({ params }) {
       )}
 
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -100,7 +100,7 @@ export default async function EspecialidadPaginaPage({ params }) {
 
         <Link
           href="/registro"
-          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Practica con todas las preguntas → Crear cuenta gratis
         </Link>

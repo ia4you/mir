@@ -11,7 +11,7 @@ export default function AvisoLegalPage() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 pb-32 sm:py-14">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -37,7 +37,7 @@ export default function AvisoLegalPage() {
                 href="https://www.sanidad.gob.es"
                 rel="noopener noreferrer"
                 target="_blank"
-                className="font-semibold text-brand"
+                className="font-semibold text-accent"
               >
                 Ministerio de Sanidad
               </a>
@@ -76,7 +76,7 @@ export default function AvisoLegalPage() {
               Las respuestas correctas son las oficiales de las plantillas definitivas del
               Ministerio de Sanidad. Algunas respuestas han sido documentadas como controvertidas
               por la comunidad médica —{" "}
-              <Link href="/controversias" className="font-semibold text-brand">
+              <Link href="/controversias" className="font-semibold text-accent">
                 consulta /controversias
               </Link>{" "}
               para más información.
@@ -88,7 +88,7 @@ export default function AvisoLegalPage() {
             <p className="mt-2">
               Para cualquier duda, consulta o solicitud relacionada con este aviso legal, puedes
               escribirnos desde nuestro{" "}
-              <Link href="/contacto" className="font-semibold text-brand">
+              <Link href="/contacto" className="font-semibold text-accent">
                 formulario de contacto
               </Link>
               .

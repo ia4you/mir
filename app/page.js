@@ -108,7 +108,10 @@ export async function generateMetadata() {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#00878E",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#F7F5F0" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B0C0E" },
+  ],
 };
 
 // El build de Dokploy corre sin acceso a mir-db (red de build aislada de la
@@ -209,11 +212,11 @@ export default async function LandingPage() {
 
       <section id="hero" className="px-5 pt-4 pb-14 sm:pt-6 sm:pb-20">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-brand">
+          <p className="text-xs font-bold uppercase tracking-widest text-accent">
             Banco 100% oficial · Ministerio de Sanidad
           </p>
 
-          <h1 className="mx-auto mt-1 max-w-2xl text-4xl font-extrabold leading-tight text-ink sm:mt-1 sm:text-5xl">
+          <h1 className="mx-auto mt-1 max-w-2xl font-serif text-5xl font-normal leading-tight text-ink sm:mt-1 sm:text-6xl">
             Preparación MIR sin pagar mil euros
           </h1>
 
@@ -239,7 +242,7 @@ export default async function LandingPage() {
           </div>
 
           <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-3 sm:text-lg">
-            {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias
+            {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias{" "}
             {anioMin}–{anioMax}, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
@@ -260,13 +263,13 @@ export default async function LandingPage() {
           <div className="mx-auto mt-3 flex max-w-xs flex-col gap-3 sm:mt-4 sm:max-w-none sm:flex-row sm:justify-center">
             <Link
               href="/demo"
-              className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+              className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
             >
               Empezar gratis
             </Link>
             <a
               href="#controversias"
-              className="flex h-14 items-center justify-center rounded-2xl border-2 border-brand px-8 text-lg font-bold text-brand"
+              className="flex h-14 items-center justify-center rounded-2xl border-2 border-accent px-8 text-lg font-bold text-accent"
             >
               Ver controversias
             </a>
@@ -283,8 +286,8 @@ export default async function LandingPage() {
         <h2 className="text-center text-2xl font-extrabold text-ink">Por qué es distinto</h2>
         <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3">
           {DIFERENCIALES.map((d) => (
-            <div key={d.titulo} className="border-t-2 border-brand pt-4">
-              <p className="text-xs font-bold uppercase tracking-wide text-brand">{d.etiqueta}</p>
+            <div key={d.titulo} className="border-t-2 border-accent pt-4">
+              <p className="text-xs font-bold uppercase tracking-wide text-accent">{d.etiqueta}</p>
               <h3 className="mt-1 text-lg font-bold text-ink">{d.titulo}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-muted">{d.texto}</p>
             </div>
@@ -340,7 +343,7 @@ export default async function LandingPage() {
             </div>
 
             <div className="mt-6 text-center">
-              <Link href="/controversias" className="text-sm font-bold text-brand">
+              <Link href="/controversias" className="text-sm font-bold text-accent">
                 Ver todas las controversias documentadas →
               </Link>
             </div>
@@ -353,7 +356,7 @@ export default async function LandingPage() {
         <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3">
           {PASOS.map((paso, i) => (
             <div key={paso.titulo} className="rounded-2xl border border-track bg-card p-5">
-              <p className="text-2xl font-extrabold text-brand">{String(i + 1).padStart(2, "0")}</p>
+              <p className="text-2xl font-extrabold text-accent">{String(i + 1).padStart(2, "0")}</p>
               <h3 className="mt-2 text-lg font-bold text-ink">{paso.titulo}</h3>
               <p className="mt-1 text-sm text-ink-muted">{paso.texto}</p>
             </div>
@@ -397,7 +400,7 @@ export default async function LandingPage() {
         <p className="mt-2 text-ink-muted">Sin tarjeta de crédito.</p>
         <Link
           href="/registro"
-          className="mx-auto mt-6 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mx-auto mt-6 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Crear cuenta gratis
         </Link>
@@ -419,7 +422,7 @@ export default async function LandingPage() {
             href="https://eir.turel.es"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-block text-sm font-bold text-brand"
+            className="mt-3 inline-block text-sm font-bold text-accent"
           >
             Visitar eir.turel.es →
           </a>
@@ -432,7 +435,7 @@ export default async function LandingPage() {
           obligatorios y el disclaimer de fuente/no afiliación. */}
       <footer className="border-t border-track px-5 py-6 text-center text-xs text-ink-muted">
         <SocialLinks />
-        <nav className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-brand">
+        <nav className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-accent">
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
         </nav>
@@ -442,7 +445,7 @@ export default async function LandingPage() {
             href="https://www.sanidad.gob.es"
             rel="noopener noreferrer"
             target="_blank"
-            className="font-semibold text-brand"
+            className="font-semibold text-accent"
           >
             Ministerio de Sanidad
           </a>{" "}

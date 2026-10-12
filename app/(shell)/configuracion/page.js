@@ -29,7 +29,7 @@ function SelectNativo({ value, onChange, children }) {
       <select
         value={value}
         onChange={onChange}
-        className="h-12 w-full appearance-none rounded-xl border border-track bg-card px-4 pr-10 font-semibold text-ink focus:border-brand focus:outline-none"
+        className="h-12 w-full appearance-none rounded-xl border border-track bg-card px-4 pr-10 font-semibold text-ink focus:border-accent"
       >
         {children}
       </select>
@@ -255,7 +255,7 @@ export default function Configuracion() {
           {!esPremium && (
             <p className="mt-3 text-xs text-ink-muted">
               El simulacro MIR completo (examen real cronometrado) es una función premium.{" "}
-              <Link href="/premium" className="font-bold text-brand">
+              <Link href="/premium" className="font-bold text-accent">
                 Hazte premium
               </Link>{" "}
               para desbloquearlo.
@@ -314,7 +314,7 @@ export default function Configuracion() {
                   {restanteHoy > 0 ? (
                     <p className="mt-3 text-xs text-ink-muted">
                       Con tu plan gratuito puedes responder {restanteHoy} preguntas más hoy.{" "}
-                      <Link href="/premium" className="font-bold text-brand">
+                      <Link href="/premium" className="font-bold text-accent">
                         Hazte premium
                       </Link>{" "}
                       para acceso ilimitado.
@@ -384,7 +384,7 @@ export default function Configuracion() {
             (modoTest === "practica" && restanteHoy === 0) ||
             (modoTest === "simulacro" && !esPremium)
           }
-          className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+          className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
         >
           {enviando
             ? "Preparando test…"
@@ -408,7 +408,7 @@ export default function Configuracion() {
             <div className="mt-5 flex flex-col gap-2">
               <Link
                 href="/premium"
-                className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark"
+                className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-on-brand shadow-sm active:bg-brand-dark"
               >
                 Hazte Premium por 9,99€/mes →
               </Link>

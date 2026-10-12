@@ -96,7 +96,7 @@ export default async function BlogPost({ params }) {
       <BlogHeader />
       <div className="mx-auto max-w-5xl px-5 py-8 sm:py-12 lg:grid lg:grid-cols-[1fr_300px] lg:items-start lg:gap-12">
         <article className="mx-auto w-full max-w-[700px] lg:mx-0">
-          <Link href="/blog" className="text-sm font-bold text-brand">
+          <Link href="/blog" className="text-sm font-bold text-accent">
             ← Volver al blog
           </Link>
 
@@ -124,7 +124,7 @@ export default async function BlogPost({ params }) {
               prose-h2:mt-10 prose-h2:text-2xl
               prose-h3:mt-8 prose-h3:text-xl
               prose-p:leading-relaxed prose-p:text-ink
-              prose-a:font-semibold prose-a:text-brand
+              prose-a:font-semibold prose-a:text-accent
               prose-strong:text-ink
               prose-img:rounded-xl
               prose-li:text-ink"
@@ -137,7 +137,7 @@ export default async function BlogPost({ params }) {
               href="https://eir.turel.es"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-bold text-brand"
+              className="font-bold text-accent"
             >
               eir.turel.es
             </a>
@@ -168,7 +168,7 @@ export default async function BlogPost({ params }) {
             </a>
             <Link
               href="/demo"
-              className="mt-3 inline-block text-sm font-bold text-brand underline"
+              className="mt-3 inline-block text-sm font-bold text-accent underline"
             >
               O pruébalo gratis en el navegador →
             </Link>
@@ -188,7 +188,7 @@ export default async function BlogPost({ params }) {
                       className="h-14 w-14 flex-shrink-0 rounded-lg"
                     />
                     <div className="min-w-0">
-                      <p className="line-clamp-2 text-sm font-bold leading-snug text-ink group-hover:text-brand">
+                      <p className="line-clamp-2 text-sm font-bold leading-snug text-ink group-hover:text-accent">
                         {u.titulo}
                       </p>
                       <p className="mt-0.5 text-xs text-ink-muted">

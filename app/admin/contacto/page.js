@@ -78,7 +78,7 @@ export default function AdminContacto() {
                 <div className="flex flex-wrap items-center gap-2">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-bold ${
-                      m.leido ? "bg-track text-ink-muted" : "bg-brand text-white"
+                      m.leido ? "bg-track text-ink-muted" : "bg-brand text-on-brand"
                     }`}
                   >
                     {m.leido ? "Leído" : "Nuevo"}
@@ -99,7 +99,7 @@ export default function AdminContacto() {
                   <p className="whitespace-pre-wrap text-sm text-ink">{m.mensaje}</p>
                   <a
                     href={`mailto:${m.email}?subject=${encodeURIComponent("Re: MIR Turel")}`}
-                    className="mt-4 inline-flex h-10 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-white"
+                    className="mt-4 inline-flex h-10 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand"
                   >
                     Responder
                   </a>

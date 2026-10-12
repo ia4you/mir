@@ -75,7 +75,7 @@ export default function Demo() {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-5 text-center">
         <p className="text-ink-muted">No se ha podido cargar la demo. Inténtalo de nuevo.</p>
-        <Link href="/" className="text-sm font-bold text-brand">
+        <Link href="/" className="text-sm font-bold text-accent">
           ← Volver a inicio
         </Link>
       </div>
@@ -106,13 +106,13 @@ export default function Demo() {
       </p>
       <Link
         href="/registro"
-        className="flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+        className="flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
       >
         Crear cuenta gratis
       </Link>
       <Link
         href="/premium"
-        className="flex h-14 w-full items-center justify-center rounded-2xl border-2 border-brand text-lg font-bold text-brand"
+        className="flex h-14 w-full items-center justify-center rounded-2xl border-2 border-accent text-lg font-bold text-accent"
       >
         Ver plan Premium
       </Link>
@@ -197,7 +197,7 @@ export default function Demo() {
               type="button"
               disabled={!seleccionada}
               onClick={confirmarRespuesta}
-              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
+              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:bg-track disabled:text-ink-muted"
             >
               Confirmar respuesta
             </button>
@@ -221,7 +221,7 @@ export default function Demo() {
               <button
                 type="button"
                 onClick={siguientePregunta}
-                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
               >
                 Siguiente pregunta
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
@@ -250,7 +250,7 @@ export default function Demo() {
             <div className="flex items-center justify-between gap-3 pt-2">
               <div className="flex items-center gap-3">
                 <span
-                  className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-white ${
+                  className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-on-status ${
                     resultado.correcta ? "bg-success" : "bg-danger"
                   }`}
                 >
@@ -315,7 +315,7 @@ export default function Demo() {
                   )}
                   <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
                   {resultado.explicacion_calidad === "controversia" && (
-                    <Link href="/controversias" target="_blank" className="text-sm font-bold text-brand">
+                    <Link href="/controversias" target="_blank" className="text-sm font-bold text-accent">
                       Ver /controversias →
                     </Link>
                   )}
@@ -337,7 +337,7 @@ export default function Demo() {
                   </span>
                   <p className="text-sm leading-relaxed text-ink-muted">
                     La respuesta oficial de esta pregunta ha sido cuestionada.{" "}
-                    <Link href="/controversias" target="_blank" className="font-bold text-brand">
+                    <Link href="/controversias" target="_blank" className="font-bold text-accent">
                       Ver /controversias
                     </Link>
                     .
@@ -365,7 +365,7 @@ export default function Demo() {
               <button
                 type="button"
                 onClick={siguientePregunta}
-                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
               >
                 Siguiente pregunta
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">

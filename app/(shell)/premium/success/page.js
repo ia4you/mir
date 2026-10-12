@@ -53,7 +53,7 @@ function ContenidoSuccess() {
 
       <Link
         href="/inicio"
-        className="mt-8 flex h-14 w-full max-w-xs items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+        className="mt-8 flex h-14 w-full max-w-xs items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
       >
         Empezar a practicar
       </Link>

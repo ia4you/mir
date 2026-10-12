@@ -3,7 +3,7 @@
 export default function BlogImagen({ src, alt = "", className = "" }) {
   if (!src) {
     return (
-      <div className={`flex items-center justify-center bg-brand-light text-brand ${className}`}>
+      <div className={`flex items-center justify-center bg-brand-light text-accent ${className}`}>
         <svg viewBox="0 0 24 24" fill="none" strokeWidth={1.5} stroke="currentColor" className="h-8 w-8">
           <path
             strokeLinecap="round"

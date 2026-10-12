@@ -42,7 +42,7 @@ export default function Contacto() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
       <div className="mx-auto max-w-xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -66,7 +66,7 @@ export default function Contacto() {
                 required
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
-                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
+                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-accent"
                 placeholder="Tu nombre"
               />
             </FieldCard>
@@ -77,7 +77,7 @@ export default function Contacto() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
+                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-accent"
                 placeholder="tu@email.com"
               />
             </FieldCard>
@@ -87,7 +87,7 @@ export default function Contacto() {
                 <select
                   value={tipo}
                   onChange={(e) => setTipo(e.target.value)}
-                  className="h-12 w-full appearance-none rounded-xl border border-track bg-card px-4 pr-10 font-semibold text-ink focus:border-brand focus:outline-none"
+                  className="h-12 w-full appearance-none rounded-xl border border-track bg-card px-4 pr-10 font-semibold text-ink focus:border-accent"
                 >
                   {TIPOS.map((t) => (
                     <option key={t} value={t}>
@@ -113,7 +113,7 @@ export default function Contacto() {
                 rows={5}
                 value={mensaje}
                 onChange={(e) => setMensaje(e.target.value)}
-                className="w-full rounded-xl border border-track bg-card px-4 py-3 font-medium text-ink focus:border-brand focus:outline-none"
+                className="w-full rounded-xl border border-track bg-card px-4 py-3 font-medium text-ink focus:border-accent"
                 placeholder="Cuéntanos con detalle qué ha pasado o qué te gustaría ver…"
               />
               <p
@@ -134,7 +134,7 @@ export default function Contacto() {
             <button
               type="submit"
               disabled={estado === "enviando"}
-              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+              className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
             >
               {estado === "enviando" ? "Enviando…" : "Enviar mensaje"}
             </button>

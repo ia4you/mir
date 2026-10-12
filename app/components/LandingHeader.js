@@ -38,7 +38,7 @@ export default function LandingHeader() {
           className="flex-shrink-0"
           onClick={() => setAbierto(false)}
         >
-          <Logo className="h-11 w-auto sm:h-12 md:h-14 lg:h-16" />
+          <Logo className="flex min-h-[44px] items-center text-3xl sm:text-4xl" />
         </Link>
 
         {/* Nav principal: a partir de md cabe entera junto al logo y los
@@ -49,22 +49,22 @@ export default function LandingHeader() {
             <a
               key={enlace.href}
               href={enlace.href}
-              className="whitespace-nowrap text-sm font-semibold text-ink hover:text-brand"
+              className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent"
             >
               {enlace.label}
             </a>
           ))}
-          <Link href="/blog" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-brand">
+          <Link href="/blog" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent">
             Blog
           </Link>
-          <Link href="/contacto" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-brand">
+          <Link href="/contacto" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent">
             Contacto
           </Link>
           <a
             href="https://play.google.com/store/apps/details?id=es.turel.mir"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-ink hover:text-brand"
+            className="flex items-center gap-1.5 whitespace-nowrap text-sm font-semibold text-ink hover:text-accent"
           >
             <IconoPlay className="h-4 w-4" />
             Google Play
@@ -77,7 +77,7 @@ export default function LandingHeader() {
           </Link>
           <Link
             href="/registro"
-            className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-white active:bg-brand-dark"
+            className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-on-brand active:bg-brand-dark"
           >
             Registro
           </Link>
@@ -150,7 +150,7 @@ export default function LandingHeader() {
             <Link
               href="/registro"
               onClick={() => setAbierto(false)}
-              className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-white active:bg-brand-dark"
+              className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand active:bg-brand-dark"
             >
               Registro
             </Link>

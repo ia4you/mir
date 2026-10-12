@@ -121,7 +121,7 @@ export default function Estadisticas() {
       <section className="mt-7 px-5">
         <Link
           href="/errores"
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-brand font-bold text-brand"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-accent font-bold text-accent"
         >
           Mis errores →
         </Link>
@@ -135,7 +135,7 @@ export default function Estadisticas() {
         {sesiones && sesiones.length === 0 && (
           <div className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             Todavía no has completado ningún test — ¡empieza desde{" "}
-            <span className="font-semibold text-brand">Práctica</span>!
+            <span className="font-semibold text-accent">Práctica</span>!
           </div>
         )}
 

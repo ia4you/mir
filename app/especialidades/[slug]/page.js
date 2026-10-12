@@ -86,7 +86,7 @@ export default async function EspecialidadPage({ params }) {
         <link rel="next" href={`https://mir.turel.es/especialidades/${especialidad.slug}/pagina/2`} />
       )}
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -127,7 +127,7 @@ export default async function EspecialidadPage({ params }) {
             </h2>
             <p className="mt-2 text-sm text-ink-muted">
               Revisa con especial atención estas preguntas de {especialidad.nombre}; consulta el{" "}
-              <Link href="/controversias" className="font-semibold text-brand">
+              <Link href="/controversias" className="font-semibold text-accent">
                 listado completo de controversias
               </Link>
               .
@@ -137,7 +137,7 @@ export default async function EspecialidadPage({ params }) {
                 <li key={c.id}>
                   <Link
                     href={`/preguntas/${especialidad.slug}/${c.id}`}
-                    className="font-semibold text-brand"
+                    className="font-semibold text-accent"
                   >
                     MIR {c.año}, pregunta {c.numero}
                   </Link>
@@ -165,7 +165,7 @@ export default async function EspecialidadPage({ params }) {
             <Link
               key={c.anio}
               href={`/convocatorias/${slugConvocatoria(c.anio)}`}
-              className="font-semibold text-brand"
+              className="font-semibold text-accent"
             >
               MIR {c.anio}
             </Link>
@@ -174,7 +174,7 @@ export default async function EspecialidadPage({ params }) {
 
         <Link
           href="/registro"
-          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Practica con todas las preguntas → Crear cuenta gratis
         </Link>

@@ -160,7 +160,7 @@ export default function AdminUsuarios() {
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           placeholder="Buscar por nombre o email…"
-          className="h-11 w-full rounded-xl border border-track bg-card px-4 text-sm font-medium text-ink focus:border-brand focus:outline-none sm:w-72"
+          className="h-11 w-full rounded-xl border border-track bg-card px-4 text-sm font-medium text-ink focus:border-accent sm:w-72"
         />
       </div>
 
@@ -187,7 +187,7 @@ export default function AdminUsuarios() {
                 <td className="px-4 py-3">
                   <span
                     className={`inline-block rounded-full px-2.5 py-1 text-xs font-bold ${
-                      u.plan === "premium" ? "bg-brand text-white" : "bg-track text-ink-muted"
+                      u.plan === "premium" ? "bg-brand text-on-brand" : "bg-track text-ink-muted"
                     }`}
                   >
                     {u.plan === "premium" ? "PREMIUM" : "FREE"}
@@ -218,7 +218,7 @@ export default function AdminUsuarios() {
                       <button
                         type="button"
                         onClick={() => setConfirmando({ id: u.id, nombre: u.nombre, nuevoPlan: "premium" })}
-                        className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-white"
+                        className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-on-brand"
                       >
                         → Premium
                       </button>
@@ -226,7 +226,7 @@ export default function AdminUsuarios() {
                     <button
                       type="button"
                       onClick={() => abrirConfirmarBorrado(u)}
-                      className="rounded-lg bg-danger px-3 py-1.5 text-xs font-bold text-white"
+                      className="rounded-lg bg-danger px-3 py-1.5 text-xs font-bold text-on-status"
                     >
                       Borrar
                     </button>
@@ -268,7 +268,7 @@ export default function AdminUsuarios() {
                 type="button"
                 onClick={cambiarPlan}
                 disabled={actualizando}
-                className="h-11 flex-1 rounded-xl bg-brand font-bold text-white disabled:opacity-60"
+                className="h-11 flex-1 rounded-xl bg-brand font-bold text-on-brand disabled:opacity-60"
               >
                 {actualizando ? "Guardando…" : "Confirmar"}
               </button>
@@ -321,7 +321,7 @@ export default function AdminUsuarios() {
                 type="button"
                 onClick={confirmarBorrado}
                 disabled={borrando || confirmandoBorrado.cargandoConteos}
-                className="h-11 flex-1 rounded-xl bg-danger font-bold text-white disabled:opacity-60"
+                className="h-11 flex-1 rounded-xl bg-danger font-bold text-on-status disabled:opacity-60"
               >
                 {borrando ? "Eliminando…" : "Eliminar definitivamente"}
               </button>

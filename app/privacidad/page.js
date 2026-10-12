@@ -11,7 +11,7 @@ export default function PrivacidadPage() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 pb-32 sm:py-14">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -26,7 +26,7 @@ export default function PrivacidadPage() {
             <p className="mt-2">
               MIR Turel (mir.turel.es) es una plataforma operada por José. Para cualquier
               cuestión sobre esta política o sobre tus datos personales, puedes escribir a{" "}
-              <a href="mailto:jose@turel.es" className="font-semibold text-brand">
+              <a href="mailto:jose@turel.es" className="font-semibold text-accent">
                 jose@turel.es
               </a>
               .
@@ -138,14 +138,14 @@ export default function PrivacidadPage() {
               </li>
               <li>
                 Sin acceso a tu cuenta:{" "}
-                <Link href="/eliminar-cuenta" className="font-semibold text-brand">
+                <Link href="/eliminar-cuenta" className="font-semibold text-accent">
                   solicita la eliminación aquí
                 </Link>{" "}
                 indicando el email con el que te registraste.
               </li>
               <li>
                 Para cualquier otro derecho (acceso, rectificación, portabilidad), escríbenos a{" "}
-                <a href="mailto:jose@turel.es" className="font-semibold text-brand">
+                <a href="mailto:jose@turel.es" className="font-semibold text-accent">
                   jose@turel.es
                 </a>
                 .
@@ -158,7 +158,7 @@ export default function PrivacidadPage() {
                 href="https://www.aepd.es"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-semibold text-brand"
+                className="font-semibold text-accent"
               >
                 Agencia Española de Protección de Datos (AEPD)
               </a>
@@ -189,11 +189,11 @@ export default function PrivacidadPage() {
             <h2 className="text-lg font-bold text-ink">Contacto</h2>
             <p className="mt-2">
               Para cualquier duda sobre esta política o sobre tus datos personales, escríbenos a{" "}
-              <a href="mailto:jose@turel.es" className="font-semibold text-brand">
+              <a href="mailto:jose@turel.es" className="font-semibold text-accent">
                 jose@turel.es
               </a>{" "}
               o a través de nuestro{" "}
-              <Link href="/contacto" className="font-semibold text-brand">
+              <Link href="/contacto" className="font-semibold text-accent">
                 formulario de contacto
               </Link>
               .

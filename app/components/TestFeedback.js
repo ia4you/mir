@@ -58,13 +58,13 @@ export default function TestFeedback({
   const accent = isCorrect
     ? {
         iconBg: "bg-success",
-        iconColor: "text-white",
+        iconColor: "text-on-status",
         label: "text-success-text",
         title: "Correcto",
       }
     : {
         iconBg: "bg-danger",
-        iconColor: "text-white",
+        iconColor: "text-on-status",
         label: "text-danger-text",
         title: "Incorrecto",
       };
@@ -85,14 +85,14 @@ export default function TestFeedback({
       {!isCorrect && (
         <div className="flex flex-col gap-2 px-6 pb-5">
           <div className="flex items-center gap-3 rounded-lg bg-danger-bg px-3 py-2.5">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-danger text-[13px] font-bold text-white">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-danger text-[13px] font-bold text-on-status">
               {userLetter}
             </span>
             <span className="flex-1 text-sm text-danger-text">{userText}</span>
             <span className="whitespace-nowrap text-xs text-danger-text">Tu respuesta</span>
           </div>
           <div className="flex items-center gap-3 rounded-lg bg-success-bg px-3 py-2.5">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-success text-[13px] font-bold text-white">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-success text-[13px] font-bold text-on-status">
               {correctLetter}
             </span>
             <span className="flex-1 text-sm text-success-text">{correctText}</span>
@@ -134,7 +134,7 @@ export default function TestFeedback({
         <button
           type="button"
           onClick={onSiguiente}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           {siguienteLabel}
           <IconArrowRight />

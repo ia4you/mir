@@ -15,7 +15,7 @@ export default function PaginacionEspecialidad({ especialidadSlug, paginaActual,
   return (
     <nav aria-label="Paginación de preguntas" className="mt-6 flex items-center justify-between text-sm font-bold">
       {paginaActual > 1 ? (
-        <Link href={hrefPagina(especialidadSlug, paginaActual - 1)} className="text-brand">
+        <Link href={hrefPagina(especialidadSlug, paginaActual - 1)} className="text-accent">
           ← Anterior
         </Link>
       ) : (
@@ -27,7 +27,7 @@ export default function PaginacionEspecialidad({ especialidadSlug, paginaActual,
       </span>
 
       {paginaActual < totalPaginas ? (
-        <Link href={hrefPagina(especialidadSlug, paginaActual + 1)} className="text-brand">
+        <Link href={hrefPagina(especialidadSlug, paginaActual + 1)} className="text-accent">
           Siguiente →
         </Link>
       ) : (

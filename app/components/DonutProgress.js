@@ -13,7 +13,7 @@ export default function DonutProgress({ porcentaje, size = 56, stroke = 6 }) {
         cy={centro}
         r={radio}
         fill="none"
-        stroke="#00878E"
+        stroke="var(--accent)"
         strokeWidth={stroke}
         strokeDasharray={circunferencia}
         strokeDashoffset={offset}

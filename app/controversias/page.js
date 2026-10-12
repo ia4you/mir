@@ -20,7 +20,7 @@ export default async function ControversiasPage() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
       <div className="mx-auto max-w-3xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -73,13 +73,13 @@ export default async function ControversiasPage() {
                     <li
                       key={letra}
                       className={`rounded-xl border-2 p-3 ${
-                        esCorrecta ? "border-brand bg-brand-light" : "border-track"
+                        esCorrecta ? "border-accent bg-brand-light" : "border-track"
                       }`}
                     >
                       <span className="font-bold text-ink">{letra.toUpperCase()})</span>{" "}
                       <span className="text-ink">{opcion}</span>
                       {esCorrecta && (
-                        <span className="ml-2 inline-block rounded-full bg-brand px-2 py-0.5 text-xs font-bold text-white">
+                        <span className="ml-2 inline-block rounded-full bg-brand px-2 py-0.5 text-xs font-bold text-on-brand">
                           Respuesta oficial
                         </span>
                       )}
@@ -139,7 +139,7 @@ export default async function ControversiasPage() {
           </h2>
           <Link
             href="/registro"
-            className="mx-auto mt-4 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+            className="mx-auto mt-4 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
           >
             Crear cuenta gratis
           </Link>

@@ -45,7 +45,7 @@ export default async function ConvocatoriaPage({ params }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMigas) }}
       />
       <div className="mx-auto max-w-2xl">
-        <Link href="/convocatorias" className="text-sm font-semibold text-brand">
+        <Link href="/convocatorias" className="text-sm font-semibold text-accent">
           ← Todas las convocatorias
         </Link>
 
@@ -62,7 +62,7 @@ export default async function ConvocatoriaPage({ params }) {
 
         <Link
           href="/registro"
-          className="mt-6 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mt-6 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Practica gratis → Crear cuenta
         </Link>
@@ -94,7 +94,7 @@ export default async function ConvocatoriaPage({ params }) {
                 <li key={c.id}>
                   <Link
                     href={`/preguntas/${slugify(c.especialidad)}/${c.id}`}
-                    className="font-semibold text-brand"
+                    className="font-semibold text-accent"
                   >
                     Pregunta {c.numero} ({c.especialidad})
                   </Link>
@@ -110,7 +110,7 @@ export default async function ConvocatoriaPage({ params }) {
             <Link
               key={c.anio}
               href={`/convocatorias/${slugConvocatoria(c.anio)}`}
-              className="font-semibold text-brand"
+              className="font-semibold text-accent"
             >
               MIR {c.anio}
             </Link>

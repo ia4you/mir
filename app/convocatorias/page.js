@@ -16,7 +16,7 @@ export default async function ConvocatoriasPage() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
       <div className="mx-auto max-w-2xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
         <h1 className="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">

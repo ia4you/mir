@@ -13,12 +13,12 @@ export default function OptionCard({
         type="button"
         onClick={onClick}
         className={`flex w-full items-start gap-3 rounded-2xl border-2 p-4 text-left transition-colors ${
-          seleccionada ? "border-brand bg-brand-light" : "border-track bg-card"
+          seleccionada ? "border-accent bg-brand-light" : "border-track bg-card"
         }`}
       >
         <span
           className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-            seleccionada ? "bg-brand text-white" : "border border-track text-ink-muted"
+            seleccionada ? "bg-brand text-on-brand" : "border border-track text-ink-muted"
           }`}
         >
           {letra}
@@ -35,11 +35,11 @@ export default function OptionCard({
 
   if (esCorrecta) {
     estilo = "border-success bg-success-bg";
-    circulo = "bg-success text-white";
+    circulo = "bg-success text-on-status";
     badge = <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-success-text">Correcta</span>;
   } else if (esRespuestaUsuario) {
     estilo = "border-danger bg-danger-bg";
-    circulo = "bg-danger text-white";
+    circulo = "bg-danger text-on-status";
     badge = <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-danger-text">Tu respuesta</span>;
   }
 

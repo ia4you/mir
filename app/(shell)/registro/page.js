@@ -83,7 +83,7 @@ export default function Registro() {
   return (
     <div className="min-h-screen pb-10">
       <header className="px-5 pt-safe text-center">
-        <Logo className="mx-auto h-16 w-auto" />
+        <Logo className="block text-5xl" />
         <p className="mt-2 text-ink-muted">Empieza a practicar gratis</p>
       </header>
 
@@ -94,7 +94,7 @@ export default function Registro() {
             required
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
-            className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
+            className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-accent"
             placeholder="Tu nombre"
           />
         </FieldCard>
@@ -105,7 +105,7 @@ export default function Registro() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
+            className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-accent"
             placeholder="tu@email.com"
           />
         </FieldCard>
@@ -128,7 +128,7 @@ export default function Registro() {
                 >
                   <span
                     className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[10px] ${
-                      cumplido ? "bg-success text-white" : "bg-track text-ink-muted"
+                      cumplido ? "bg-success text-on-status" : "bg-track text-ink-muted"
                     }`}
                   >
                     {cumplido ? "✓" : "·"}
@@ -153,7 +153,7 @@ export default function Registro() {
             type="checkbox"
             checked={terminos}
             onChange={(e) => setTerminos(e.target.checked)}
-            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-track text-brand focus:outline-none focus:ring-2 focus:ring-brand"
+            className="mt-0.5 h-4 w-4 flex-shrink-0 rounded border-track text-accent focus:outline-none focus:ring-2 focus:ring-accent"
           />
           <span>
             He leído y acepto los{" "}
@@ -161,7 +161,7 @@ export default function Registro() {
               href="/aviso-legal"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-brand"
+              className="font-semibold text-accent"
             >
               Términos de uso y Aviso legal
             </Link>
@@ -177,14 +177,14 @@ export default function Registro() {
         <button
           type="submit"
           disabled={enviando || !puedeEnviar}
-          className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+          className="h-14 w-full rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
         >
           {enviando ? "Creando cuenta…" : "Crear cuenta"}
         </button>
 
         <p className="text-center text-sm text-ink-muted">
           ¿Ya tienes cuenta?{" "}
-          <Link href="/login" className="font-semibold text-brand">
+          <Link href="/login" className="font-semibold text-accent">
             Inicia sesión
           </Link>
         </p>
@@ -198,13 +198,13 @@ export default function Registro() {
 
             <ul className="mt-4 flex flex-col gap-2 text-left text-sm text-ink">
               <li className="flex items-start gap-2">
-                <span className="text-brand">•</span> Hasta 15 preguntas por día
+                <span className="text-accent">•</span> Hasta 15 preguntas por día
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand">•</span> Acceso a las 23 especialidades
+                <span className="text-accent">•</span> Acceso a las 23 especialidades
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-brand">•</span> Historial y estadísticas incluidos
+                <span className="text-accent">•</span> Historial y estadísticas incluidos
               </li>
             </ul>
 
@@ -216,7 +216,7 @@ export default function Registro() {
               <button
                 type="button"
                 onClick={() => router.push("/premium")}
-                className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark"
+                className="flex h-12 w-full items-center justify-center rounded-xl bg-brand font-bold text-on-brand shadow-sm active:bg-brand-dark"
               >
                 Hazte Premium →
               </button>

@@ -78,7 +78,7 @@ export default function PushBanner() {
           type="button"
           onClick={ahoraNo}
           disabled={activando}
-          className="h-10 flex-1 rounded-xl border border-brand text-sm font-bold text-brand disabled:opacity-60"
+          className="h-10 flex-1 rounded-xl border border-accent text-sm font-bold text-accent disabled:opacity-60"
         >
           Ahora no
         </button>
@@ -86,7 +86,7 @@ export default function PushBanner() {
           type="button"
           onClick={activar}
           disabled={activando}
-          className="h-10 flex-1 rounded-xl bg-brand text-sm font-bold text-white disabled:opacity-60"
+          className="h-10 flex-1 rounded-xl bg-brand text-sm font-bold text-on-brand disabled:opacity-60"
         >
           {activando ? "Activando…" : "Sí, activar"}
         </button>

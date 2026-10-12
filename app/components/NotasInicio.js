@@ -21,12 +21,13 @@ function fmtFecha(fecha) {
   });
 }
 
-// Estilo cotización de bolsa: sin fondo ni borde. El color nunca va solo: la
-// flecha y la diferencia siempre acompañan. Tonos claros solo en modo oscuro
-// (ratios sobre la tarjeta: verde 5,02 claro / 8,40 oscuro; rojo 4,67 / 5,29).
+// Estilo cotización de bolsa: sin fondo ni borde. La cifra va siempre en
+// color de texto; solo la flecha y la diferencia se colorean. El color nunca va solo: la
+// flecha y la diferencia siempre acompañan. Los tonos de cada tema salen de
+// las variables --success/--danger (AA sobre la tarjeta en ambos).
 const COLOR = {
-  sube: "text-green-700 dark:text-green-400",
-  baja: "text-danger dark:text-red-400",
+  sube: "text-success",
+  baja: "text-danger",
 };
 
 // `sub` es la línea pequeña de debajo ("vs. hace 7 días", fecha, etc.).
@@ -36,12 +37,12 @@ function Nota({ nota, direccion, diferencia, textoIgual, textoSinRef, sub }) {
   const cambia = sube || direccion === "baja";
   return (
     <>
-      <p className={`flex items-baseline gap-x-3 ${color}`}>
+      <p className="flex items-baseline gap-x-3">
         <span className="flex items-baseline gap-x-1.5">
-          <span className="text-4xl font-extrabold">{fmt(nota)}</span>
+          <span className="text-4xl font-extrabold text-ink">{fmt(nota)}</span>
           <span className="text-sm font-normal text-ink-muted">/ 200</span>
         </span>
-        <span className="flex items-baseline gap-x-1 text-base font-bold">
+        <span className={`flex items-baseline gap-x-1 text-base font-bold ${color}`}>
           {cambia ? (
             <>
               <span aria-hidden="true" className="text-xl leading-none">
@@ -102,7 +103,7 @@ function TarjetaSimulacro({ s, plan }) {
     return (
       <Tarjeta titulo="Simulacro">
         <p className="text-sm font-semibold text-ink">🔒 Disponible en Premium</p>
-        <Link href="/premium" className="mt-2 inline-block text-sm font-bold text-brand">
+        <Link href="/premium" className="mt-2 inline-block text-sm font-bold text-accent">
           Ver planes →
         </Link>
       </Tarjeta>
@@ -114,7 +115,7 @@ function TarjetaSimulacro({ s, plan }) {
         <p className="text-sm text-ink-muted">Aún no has hecho ningún simulacro</p>
         <Link
           href="/configuracion"
-          className="mt-3 flex h-10 items-center justify-center rounded-xl bg-brand text-sm font-bold text-white active:bg-brand-dark"
+          className="mt-3 flex h-10 items-center justify-center rounded-xl bg-brand text-sm font-bold text-on-brand active:bg-brand-dark"
         >
           Hacer simulacro
         </Link>

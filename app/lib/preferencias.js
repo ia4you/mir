@@ -9,7 +9,8 @@ export const CLAVE_TEMA = "mir_tema";
 
 export const META_DIARIA_POR_DEFECTO = 20;
 export const TEMPORIZADOR_POR_DEFECTO = { activo: false, segundos: 60 };
-// "sistema" sigue prefers-color-scheme; "claro"/"oscuro" fuerzan el tema.
+// "sistema" sigue prefers-color-scheme (oscuro salvo que el sistema pida
+// claro); "claro"/"oscuro" fuerzan el tema.
 export const TEMA_POR_DEFECTO = "sistema";
 
 export function getMetaDiaria() {
@@ -59,6 +60,6 @@ export function aplicarTema(valor) {
   if (typeof document === "undefined") return;
   const oscuro =
     valor === "oscuro" ||
-    (valor !== "claro" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    (valor !== "claro" && !window.matchMedia("(prefers-color-scheme: light)").matches);
   document.documentElement.classList.toggle("dark", oscuro);
 }

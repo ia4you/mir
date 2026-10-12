@@ -264,7 +264,7 @@ export default function AdminBlog() {
             <button
               onClick={guardar}
               disabled={guardando}
-              className="bg-brand text-white font-bold px-4 py-2 rounded"
+              className="bg-brand text-on-brand font-bold px-4 py-2 rounded"
             >
               {guardando ? "Guardando..." : "Guardar"}
             </button>
@@ -286,7 +286,7 @@ export default function AdminBlog() {
         <h2 className="text-lg font-bold">Blog ({posts?.length ?? "..."})</h2>
         <button
           onClick={() => setEditando({ ...POST_VACIO })}
-          className="bg-brand text-white font-bold px-4 py-2 rounded"
+          className="bg-brand text-on-brand font-bold px-4 py-2 rounded"
         >
           + Nuevo post
         </button>

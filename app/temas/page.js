@@ -45,7 +45,7 @@ export default async function TemasIndexPage() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
       <div className="mx-auto max-w-5xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -63,7 +63,7 @@ export default async function TemasIndexPage() {
             <section key={grupo.especialidad}>
               <div className="flex items-baseline justify-between gap-3">
                 <h2 className="text-xl font-extrabold text-ink">
-                  <Link href={`/especialidades/${grupo.especialidadSlug}`} className="hover:text-brand">
+                  <Link href={`/especialidades/${grupo.especialidadSlug}`} className="hover:text-accent">
                     {grupo.especialidad}
                   </Link>
                 </h2>
@@ -90,7 +90,7 @@ export default async function TemasIndexPage() {
 
         <Link
           href="/registro"
-          className="mt-10 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="mt-10 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Practica gratis todos los temas → Crear cuenta gratis
         </Link>

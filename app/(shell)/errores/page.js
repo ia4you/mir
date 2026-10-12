@@ -125,7 +125,7 @@ export default function MisErrores() {
                 type="button"
                 onClick={() => repasar(todosLosIds, null, "todos")}
                 disabled={repasando !== null}
-                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
               >
                 {repasando === "todos" ? "Preparando…" : "Repasar estos errores →"}
               </button>
@@ -180,7 +180,7 @@ export default function MisErrores() {
                         repasar(g.preguntas.map((p) => p.id), g.especialidad, g.especialidad)
                       }
                       disabled={repasando !== null}
-                      className="mt-1 h-11 w-full rounded-xl border-2 border-brand text-sm font-bold text-brand disabled:border-track disabled:text-ink-muted"
+                      className="mt-1 h-11 w-full rounded-xl border-2 border-accent text-sm font-bold text-accent disabled:border-track disabled:text-ink-muted"
                     >
                       {repasando === g.especialidad
                         ? "Preparando…"

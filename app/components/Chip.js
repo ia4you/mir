@@ -9,7 +9,7 @@ export default function Chip({ activo, onClick, disabled = false, title, childre
         disabled
           ? "cursor-not-allowed border border-track bg-track text-ink-muted opacity-60"
           : activo
-            ? "bg-brand text-white"
+            ? "bg-brand text-on-brand"
             : "border border-track bg-card text-ink"
       }`}
     >

@@ -11,9 +11,16 @@ import {
   YAxis,
 } from "recharts";
 
-// Paleta tomada de tailwind.config.js (brand/success/warning/danger/badge) —
-// nada de colores inventados fuera de la paleta de la app.
-const COLORES = ["#00878E", "#218A45", "#C58D04", "#CB4644", "#124A7B", "#006166"];
+// Variables del tema (app/globals.css), para que las series cambien con
+// claro/oscuro — nada de colores inventados fuera de la paleta de la app.
+const COLORES = [
+  "var(--accent)",
+  "var(--success)",
+  "var(--danger)",
+  "var(--ink-muted)",
+  "var(--ink)",
+  "var(--danger-bar)",
+];
 
 const TODAS = "Todas las especialidades";
 

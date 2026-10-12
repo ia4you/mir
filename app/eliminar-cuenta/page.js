@@ -31,7 +31,7 @@ export default function EliminarCuenta() {
   return (
     <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
       <div className="mx-auto max-w-xl">
-        <Link href="/" className="text-sm font-semibold text-brand">
+        <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
 
@@ -56,7 +56,7 @@ export default function EliminarCuenta() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-brand focus:outline-none"
+                className="h-12 w-full rounded-xl border border-track bg-card px-4 font-medium text-ink focus:border-accent"
                 placeholder="tu@email.com"
               />
             </FieldCard>
@@ -66,7 +66,7 @@ export default function EliminarCuenta() {
             <button
               type="submit"
               disabled={estado === "enviando"}
-              className="h-14 w-full rounded-2xl bg-danger text-lg font-bold text-white shadow-sm disabled:opacity-60"
+              className="h-14 w-full rounded-2xl bg-danger text-lg font-bold text-on-status shadow-sm disabled:opacity-60"
             >
               {estado === "enviando" ? "Enviando…" : "Solicitar eliminación de mi cuenta"}
             </button>

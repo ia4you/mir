@@ -75,7 +75,7 @@ export default function DisclaimerBanner() {
             href="/aviso-legal"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-semibold text-brand underline"
+            className="font-semibold text-accent underline"
           >
             aviso legal
           </a>
@@ -84,7 +84,7 @@ export default function DisclaimerBanner() {
         <button
           type="button"
           onClick={aceptar}
-          className="flex h-9 flex-shrink-0 items-center justify-center rounded-xl bg-brand px-4 text-xs font-bold text-white active:bg-brand-dark"
+          className="flex h-9 flex-shrink-0 items-center justify-center rounded-xl bg-brand px-4 text-xs font-bold text-on-brand active:bg-brand-dark"
         >
           Entendido
         </button>
@@ -100,7 +100,7 @@ export default function DisclaimerBanner() {
           <button
             type="button"
             onClick={aceptar}
-            className="flex h-9 items-center justify-center rounded-xl bg-brand px-4 text-xs font-bold text-white active:bg-brand-dark"
+            className="flex h-9 items-center justify-center rounded-xl bg-brand px-4 text-xs font-bold text-on-brand active:bg-brand-dark"
           >
             Entendido
           </button>
@@ -108,7 +108,7 @@ export default function DisclaimerBanner() {
             href="/aviso-legal"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex h-9 items-center justify-center rounded-xl border-2 border-brand px-4 text-xs font-bold text-brand"
+            className="flex h-9 items-center justify-center rounded-xl border-2 border-accent px-4 text-xs font-bold text-accent"
           >
             Aviso legal
           </a>

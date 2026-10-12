@@ -124,7 +124,7 @@ export default function Perfil() {
             <span
               className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
                 session?.user?.plan === "premium"
-                  ? "bg-brand text-white"
+                  ? "bg-brand text-on-brand"
                   : "bg-track text-ink-muted"
               }`}
             >
@@ -142,7 +142,7 @@ export default function Perfil() {
           ) : (
             <Link
               href="/premium"
-              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-white"
+              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-on-brand"
             >
               Hazte Premium →
             </Link>
@@ -232,14 +232,14 @@ export default function Perfil() {
             href="/controversias"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 block text-sm font-bold text-brand"
+            className="mt-3 block text-sm font-bold text-accent"
           >
             Ver preguntas con respuesta oficial cuestionada →
           </Link>
         </FieldCard>
 
         <FieldCard label="Ayuda">
-          <Link href="/contacto" className="block text-sm font-bold text-brand">
+          <Link href="/contacto" className="block text-sm font-bold text-accent">
             Contacto y soporte →
           </Link>
         </FieldCard>
@@ -276,7 +276,7 @@ export default function Perfil() {
                 type="button"
                 onClick={resetearHistorial}
                 disabled={reseteando}
-                className="h-11 flex-1 rounded-xl bg-danger font-bold text-white disabled:opacity-60"
+                className="h-11 flex-1 rounded-xl bg-danger font-bold text-on-status disabled:opacity-60"
               >
                 {reseteando ? "Borrando…" : "Resetear"}
               </button>
@@ -306,7 +306,7 @@ export default function Perfil() {
                 type="button"
                 onClick={eliminarCuenta}
                 disabled={eliminando}
-                className="h-11 flex-1 rounded-xl bg-danger font-bold text-white disabled:opacity-60"
+                className="h-11 flex-1 rounded-xl bg-danger font-bold text-on-status disabled:opacity-60"
               >
                 {eliminando ? "Eliminando…" : "Eliminar"}
               </button>

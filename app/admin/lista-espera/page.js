@@ -57,7 +57,7 @@ export default function AdminListaEspera() {
           type="button"
           onClick={exportarCsv}
           disabled={emails.length === 0}
-          className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-white disabled:opacity-60"
+          className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand disabled:opacity-60"
         >
           Exportar CSV
         </button>

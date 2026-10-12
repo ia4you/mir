@@ -8,52 +8,64 @@ module.exports = {
   ],
   theme: {
     extend: {
+      // Todos los colores son variables CSS de app/globals.css (tema claro en
+      // :root, oscuro en :root.dark); no poner hex aquí.
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        // Paleta extraída del PDF de diseño (MIR_Quiz.pdf) — no inventar
-        // tonos nuevos, reutilizar estos en toda la app.
-        // surface/track/ink/panel/brand.light están atados a variables CSS
-        // (ver globals.css) para poder tener modo oscuro; brand.DEFAULT y
-        // brand.dark quedan fijos a propósito, el teal es igual en ambos modos.
         brand: {
-          DEFAULT: "#007980", // botones primarios, acentos, nav activo (oscurecido desde #00838A para contraste AA 4.5:1 también sobre bg-surface/bg-panel, no solo blanco — ver auditoría 2026-09-13)
-          light: "var(--brand-light)", // tarjeta "días seguidos", opción seleccionada
-          dark: "#006166", // hover/estados pulsados
+          DEFAULT: "var(--brand)", // relleno dorado: botón principal, nav activo
+          light: "var(--brand-light)", // fondo dorado suave (seleccionado, racha)
+          dark: "var(--brand-hover)", // hover/pulsado del dorado
         },
+        "on-brand": "var(--on-brand)", // texto sobre bg-brand
+        accent: "var(--accent)", // dorado como texto, borde o anillo (AA en ambos temas)
         surface: "var(--surface)", // fondo de página
-        card: "var(--card)", // tarjetas y superficies elevadas (antes bg-white)
-        track: "var(--track)", // pista gris de barras de progreso
+        card: {
+          DEFAULT: "var(--card)", // tarjeta
+          2: "var(--panel)", // tarjeta secundaria
+        },
+        panel: "var(--panel)", // = card-2 (caja de explicación, etc.)
+        track: "var(--track)", // bordes y pista de barras
+        line: "var(--line)", // separadores
         ink: {
-          DEFAULT: "var(--ink)", // texto principal
-          muted: "var(--ink-muted)", // texto secundario ("Hola,", labels)
+          DEFAULT: "var(--ink)",
+          muted: "var(--ink-muted)", // texto secundario
+          subtle: "var(--ink-subtle)", // texto terciario
         },
         success: {
-          DEFAULT: "#218A45", // barras de progreso altas
-          bg: "#D9F3DD",
-          border: "#A3D5AF",
-          text: "#005E26",
+          DEFAULT: "var(--success)",
+          bg: "var(--success-bg)",
+          border: "var(--success-border)",
+          text: "var(--success-text)",
         },
         danger: {
-          DEFAULT: "#CB4644", // barras de progreso bajas, incorrecto
-          bg: "#FFE6E3",
-          border: "#DE8A89",
-          text: "#972527",
+          DEFAULT: "var(--danger)",
+          bar: "var(--danger-bar)", // barras "a reforzar"
+          bg: "var(--danger-bg)",
+          border: "var(--danger-border)",
+          text: "var(--danger-text)",
         },
         warning: {
-          DEFAULT: "#C58D04", // barras de progreso medias
-          bg: "#FBEFD1", // badge "explicación orientativa"
-          border: "#E8C874",
-          text: "#8A6100",
+          DEFAULT: "var(--warning)",
+          bg: "var(--warning-bg)",
+          border: "var(--warning-border)",
+          text: "var(--warning-text)",
         },
+        "on-status": "var(--on-status)", // texto sobre success/danger/warning sólidos
         badge: {
-          bg: "#DDEDFF", // etiqueta de especialidad en la pregunta
-          text: "#124A7B",
+          bg: "var(--badge-bg)",
+          text: "var(--badge-text)",
         },
-        panel: "var(--panel)", // caja de explicación en la corrección
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        sans: ["var(--font-geist)", "system-ui", "sans-serif"], // interfaz
+        serif: ["var(--font-instrument)", "Georgia", "serif"], // logo, saludo, títulos grandes
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"], // cifras
+      },
+      borderRadius: {
+        // Tarjetas: 18px en móvil, 20px desde sm. Los botones usan rounded-xl (12px).
+        "2xl": "var(--radius-card)",
       },
     },
   },

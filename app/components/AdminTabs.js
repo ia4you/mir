@@ -24,7 +24,7 @@ export default function AdminTabs() {
             key={p.href}
             href={p.href}
             className={`flex-shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-bold ${
-              activa ? "border-brand text-brand" : "border-transparent text-ink-muted"
+              activa ? "border-accent text-accent" : "border-transparent text-ink-muted"
             }`}
           >
             {p.label}

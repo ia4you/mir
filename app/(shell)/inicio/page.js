@@ -70,8 +70,8 @@ export default function Inicio() {
     <div className="min-h-screen pb-28">
       <header className="flex flex-col items-center px-5 pt-safe text-center">
         <AvatarUploader />
-        <p className="mt-3 text-ink-muted">Hola,</p>
-        <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
+        <p className="mt-3 font-serif text-2xl text-ink-muted">Hola,</p>
+        <h1 className="font-serif text-4xl font-normal text-ink">{session?.user?.name || "…"}</h1>
       </header>
 
       <Suspense fallback={null}>
@@ -85,7 +85,7 @@ export default function Inicio() {
             <p className="text-sm font-semibold text-ink">
               Estás en el plan gratuito — puedes responder hasta 15 preguntas al día.
             </p>
-            <Link href="/premium" className="mt-1 inline-block text-sm font-bold text-brand">
+            <Link href="/premium" className="mt-1 inline-block text-sm font-bold text-accent">
               ¿Quieres acceso ilimitado? Hazte premium →
             </Link>
           </div>
@@ -106,7 +106,7 @@ export default function Inicio() {
       <section className="mt-5 px-5">
         <Link
           href="/configuracion"
-          className="flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-white shadow-sm active:bg-brand-dark"
+          className="flex h-14 w-full items-center justify-center rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
         >
           Continuar test
         </Link>

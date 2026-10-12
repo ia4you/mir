@@ -70,7 +70,7 @@ export default function Premium() {
             <tr className="border-b border-track bg-panel">
               <th className="px-3 py-2.5 font-bold text-ink">Característica</th>
               <th className="px-3 py-2.5 text-center font-bold text-ink-muted">Free</th>
-              <th className="px-3 py-2.5 text-center font-bold text-brand">Premium</th>
+              <th className="px-3 py-2.5 text-center font-bold text-accent">Premium</th>
             </tr>
           </thead>
           <tbody>
@@ -90,7 +90,7 @@ export default function Premium() {
       </div>
 
       <div className="mt-6 w-full max-w-sm rounded-2xl bg-brand-light p-4">
-        <p className="text-sm font-bold uppercase tracking-wide text-brand">Precio</p>
+        <p className="text-sm font-bold uppercase tracking-wide text-accent">Precio</p>
         <p className="mt-1 text-2xl font-extrabold text-ink">9,99€/mes</p>
         <p className="mt-1 text-sm text-ink-muted">Cancela cuando quieras</p>
       </div>
@@ -108,7 +108,7 @@ export default function Premium() {
             type="button"
             onClick={suscribirse}
             disabled={enviando}
-            className="mt-6 flex h-14 w-full max-w-sm items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-white shadow-sm active:bg-brand-dark disabled:opacity-60"
+            className="mt-6 flex h-14 w-full max-w-sm items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
           >
             {enviando ? "Redirigiendo…" : "Suscribirme por 9,99€/mes"}
           </button>

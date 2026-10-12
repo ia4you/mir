@@ -131,7 +131,7 @@ export default function TemasPorEspecialidad({ temas }) {
                               entrenarTema(t.tema);
                             }}
                             disabled={cargandoTema === t.tema}
-                            className="flex-shrink-0 text-xs font-bold text-brand active:text-brand-dark disabled:opacity-60"
+                            className="flex-shrink-0 text-xs font-bold text-accent active:text-accent disabled:opacity-60"
                           >
                             {cargandoTema === t.tema ? "Preparando…" : "Entrenar →"}
                           </button>
