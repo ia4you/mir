@@ -108,6 +108,16 @@ body {
   .pb-safe {
     padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
   }
+  /* Hueco para BottomNav (fija): su alto (~81px) más su pb-safe y ~19px de
+     aire. Desde lg no hay barra inferior. */
+  .pb-nav {
+    padding-bottom: calc(6.25rem + max(env(safe-area-inset-bottom), 0.75rem));
+  }
+  @media (min-width: 1024px) {
+    .pb-nav {
+      padding-bottom: 3rem;
+    }
+  }
 }
 
 @keyframes slide-in-left {

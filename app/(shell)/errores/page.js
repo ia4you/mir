@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import BottomNav from "../../components/BottomNav";
 
 async function iniciarRepaso({ router, ids, especialidad, onError }) {
   try {
@@ -72,8 +71,8 @@ export default function MisErrores() {
   const todosLosIds = datos ? datos.grupos.flatMap((g) => g.preguntas.map((p) => p.id)) : [];
 
   return (
-    <div className="min-h-screen pb-28">
-      <header className="flex items-center gap-3 px-5 pt-safe">
+    <div className="min-h-screen pb-nav">
+      <header className="flex items-center gap-3 px-5 pt-5">
         <Link
           href="/estadisticas"
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
@@ -194,7 +193,6 @@ export default function MisErrores() {
         )}
       </div>
 
-      <BottomNav />
     </div>
   );
 }

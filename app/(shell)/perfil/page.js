@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import AvatarUploader from "../../components/AvatarUploader";
-import BottomNav from "../../components/BottomNav";
 import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
 import ToggleSwitch from "../../components/ToggleSwitch";
@@ -36,6 +35,16 @@ const FUENTES = [
 
 export default function Perfil() {
   const { data: session } = useSession();
+  // Recuento real del banco (mismo que la portada y /configuracion).
+  const [totalBanco, setTotalBanco] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/especialidades")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((filas) => setTotalBanco(filas.reduce((suma, e) => suma + e.total, 0)))
+      .catch(() => {});
+  }, []);
+
   const [meta, setMeta] = useState(20);
   const [temporizadorActivo, setTemporizadorActivoState] = useState(false);
   const [segundos, setSegundosState] = useState(60);
@@ -98,8 +107,8 @@ export default function Perfil() {
   }
 
   return (
-    <div className="min-h-screen pb-28">
-      <header className="flex flex-col items-center px-5 pt-safe text-center">
+    <div className="min-h-screen pb-nav">
+      <header className="flex flex-col items-center px-5 pt-5 text-center">
         <AvatarUploader />
         <p className="mt-3 text-ink-muted">Hola,</p>
         <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
@@ -213,7 +222,8 @@ export default function Perfil() {
 
         <FieldCard label="Fuentes del banco de preguntas">
           <p className="text-sm text-ink">
-            1004 preguntas de los exámenes MIR oficiales de Medicina, convocatorias
+            {totalBanco ? String(totalBanco).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "…"} preguntas de
+            los exámenes MIR oficiales de Medicina, convocatorias
             2022-2026. Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
             respuestas correctas de las plantillas definitivas del Ministerio de Sanidad
             tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
@@ -315,7 +325,6 @@ export default function Perfil() {
         </div>
       )}
 
-      <BottomNav />
     </div>
   );
 }

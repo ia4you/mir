@@ -6,7 +6,6 @@ import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AvatarUploader from "../../components/AvatarUploader";
-import BottomNav from "../../components/BottomNav";
 import NotasInicio from "../../components/NotasInicio";
 import ResumenDiario from "../../components/ResumenDiario";
 import SpecialtyProgressRow from "../../components/SpecialtyProgressRow";
@@ -67,8 +66,8 @@ export default function Inicio() {
   }, []);
 
   return (
-    <div className="min-h-screen pb-28">
-      <header className="flex flex-col items-center px-5 pt-safe text-center">
+    <div className="min-h-screen pb-nav">
+      <header className="flex flex-col items-center px-5 pt-5 text-center">
         <AvatarUploader />
         <p className="mt-3 font-serif text-2xl text-ink-muted">Hola,</p>
         <h1 className="font-serif text-4xl font-normal text-ink">{session?.user?.name || "…"}</h1>
@@ -78,18 +77,19 @@ export default function Inicio() {
         <AvisoDesdeUrl />
       </Suspense>
 
-      {session?.user?.plan !== "premium" &&
-        datos &&
-        datos.especialidades.every((e) => e.total === 0) && (
-          <div className="mx-5 mt-4 rounded-2xl bg-brand-light p-4">
-            <p className="text-sm font-semibold text-ink">
-              Estás en el plan gratuito — puedes responder hasta 15 preguntas al día.
-            </p>
-            <Link href="/premium" className="mt-1 inline-block text-sm font-bold text-accent">
-              ¿Quieres acceso ilimitado? Hazte premium →
-            </Link>
-          </div>
-        )}
+      {session && session.user?.plan !== "premium" && (
+        <div className="mx-5 mt-4 rounded-2xl border border-accent bg-card p-4 lg:hidden">
+          <p className="text-sm font-semibold text-ink">
+            Estás en el plan gratuito — puedes responder hasta 15 preguntas al día.
+          </p>
+          <Link
+            href="/premium"
+            className="mt-3 flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand hover:bg-brand-dark"
+          >
+            ¿Quieres acceso ilimitado? Hazte premium →
+          </Link>
+        </div>
+      )}
 
       <PushBanner />
       {/* <AndroidPushRegister /> deshabilitado temporalmente: falta google-services.json */}
@@ -145,7 +145,6 @@ export default function Inicio() {
         )}
       </section>
 
-      <BottomNav />
     </div>
   );
 }

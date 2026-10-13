@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import BottomNav from "../../components/BottomNav";
 import ResumenDiario from "../../components/ResumenDiario";
 import EspecialidadesStatsTable from "../../components/EspecialidadesStatsTable";
 import TemasPorEspecialidad from "../../components/TemasPorEspecialidad";
@@ -64,9 +63,9 @@ export default function Estadisticas() {
   }, []);
 
   return (
-    <div className="min-h-screen pb-28">
-      <header className="px-5 pt-safe">
-        <h1 className="text-2xl font-extrabold text-ink">Estadísticas</h1>
+    <div className="min-h-screen pb-nav">
+      <header className="px-5 pt-5">
+        <h1 className="text-2xl font-extrabold text-ink">Progreso</h1>
       </header>
 
       <div className="mt-5">
@@ -179,7 +178,6 @@ export default function Estadisticas() {
         )}
       </section>
 
-      <BottomNav />
     </div>
   );
 }

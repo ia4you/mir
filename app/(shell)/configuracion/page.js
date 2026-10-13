@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import BottomNav from "../../components/BottomNav";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
@@ -223,8 +222,8 @@ export default function Configuracion() {
   }
 
   return (
-    <div className="min-h-screen pb-28">
-      <header className="flex items-center gap-3 px-5 pt-safe">
+    <div className="min-h-screen pb-nav">
+      <header className="flex items-center gap-3 px-5 pt-5">
         <Link
           href="/inicio"
           className="flex h-10 w-10 items-center justify-center rounded-full bg-card shadow-sm"
@@ -423,7 +422,6 @@ export default function Configuracion() {
         </div>
       )}
 
-      <BottomNav />
     </div>
   );
 }
