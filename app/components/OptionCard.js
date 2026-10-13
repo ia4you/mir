@@ -36,11 +36,11 @@ export default function OptionCard({
   if (esCorrecta) {
     estilo = "border-success bg-success-bg";
     circulo = "bg-success text-on-status";
-    badge = <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-success-text">Correcta</span>;
+    badge = <span className="rounded-full bg-card px-3 py-1 text-xs font-bold text-success-text">Correcta</span>;
   } else if (esRespuestaUsuario) {
     estilo = "border-danger bg-danger-bg";
     circulo = "bg-danger text-on-status";
-    badge = <span className="rounded-full bg-white px-3 py-1 text-xs font-bold text-danger-text">Tu respuesta</span>;
+    badge = <span className="rounded-full bg-card px-3 py-1 text-xs font-bold text-danger-text">Tu respuesta</span>;
   }
 
   return (

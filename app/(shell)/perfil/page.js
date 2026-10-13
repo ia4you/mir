@@ -107,162 +107,171 @@ export default function Perfil() {
   }
 
   return (
-    <div className="min-h-screen pb-nav">
-      <header className="flex flex-col items-center px-5 pt-5 text-center">
+    <div className="ancho-app min-h-screen pb-nav lg:px-8">
+      <header className="flex flex-col items-center px-5 pt-5 text-center lg:flex-row lg:gap-5 lg:px-0 lg:pt-10 lg:text-left">
         <AvatarUploader />
-        <p className="mt-3 text-ink-muted">Hola,</p>
-        <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
+        <div>
+          <p className="mt-3 text-ink-muted lg:mt-0">Hola,</p>
+          <h1 className="text-3xl font-extrabold text-ink">{session?.user?.name || "…"}</h1>
+        </div>
       </header>
 
-      <div className="mt-5 flex flex-col gap-4 px-5">
-        <FieldCard label="Cuenta">
-          <p className="text-lg font-bold text-ink">{session?.user?.name}</p>
-          <p className="text-sm text-ink-muted">{session?.user?.email}</p>
+      {/* Escritorio: datos del usuario a la izquierda y ajustes a la derecha.
+          En móvil las dos columnas son `contents` y `order-1` devuelve
+          Fuentes, Ayuda y Eliminar cuenta al final, como antes. */}
+      <div className="mt-5 flex flex-col gap-4 px-5 lg:mt-8 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6 lg:px-0">
+        <div className="contents lg:flex lg:flex-col lg:gap-4">
+          <FieldCard label="Cuenta">
+            <p className="text-lg font-bold text-ink">{session?.user?.name}</p>
+            <p className="text-sm text-ink-muted">{session?.user?.email}</p>
 
-          <button
-            type="button"
-            onClick={() => signOut({ callbackUrl: "/login" })}
-            className="mt-4 h-11 w-full rounded-xl border border-track font-bold text-ink"
-          >
-            Cerrar sesión
-          </button>
-        </FieldCard>
-
-        <FieldCard label="Mi plan">
-          <div className="flex items-center gap-2">
-            <span
-              className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
-                session?.user?.plan === "premium"
-                  ? "bg-brand text-on-brand"
-                  : "bg-track text-ink-muted"
-              }`}
+            <button
+              type="button"
+              onClick={() => signOut({ callbackUrl: "/login" })}
+              className="mt-4 h-11 w-full rounded-xl border border-track font-bold text-ink"
             >
-              {session?.user?.plan === "premium" ? "PREMIUM" : "GRATUITO"}
-            </span>
-            <span className="text-sm text-ink-muted">
-              {session?.user?.plan === "premium" ? "Preguntas ilimitadas" : "15 preguntas/día"}
-            </span>
-          </div>
+              Cerrar sesión
+            </button>
+          </FieldCard>
 
-          {session?.user?.plan === "premium" ? (
-            <p className="mt-3 text-sm font-semibold text-ink">
-              Gracias por ser usuario premium ❤️
+          <FieldCard label="Mi plan">
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                  session?.user?.plan === "premium"
+                    ? "bg-brand text-on-brand"
+                    : "bg-track text-ink-muted"
+                }`}
+              >
+                {session?.user?.plan === "premium" ? "PREMIUM" : "GRATUITO"}
+              </span>
+              <span className="text-sm text-ink-muted">
+                {session?.user?.plan === "premium" ? "Preguntas ilimitadas" : "15 preguntas/día"}
+              </span>
+            </div>
+
+            {session?.user?.plan === "premium" ? (
+              <p className="mt-3 text-sm font-semibold text-ink">
+                Gracias por ser usuario premium ❤️
+              </p>
+            ) : (
+              <Link
+                href="/premium"
+                className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-on-brand"
+              >
+                Hazte Premium →
+              </Link>
+            )}
+          </FieldCard>
+
+          <FieldCard label="Fuentes del banco de preguntas" className="order-1 lg:order-none">
+            <p className="text-sm text-ink">
+              {totalBanco ? String(totalBanco).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "…"} preguntas de
+              los exámenes MIR oficiales de Medicina, convocatorias
+              2022-2026. Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
+              respuestas correctas de las plantillas definitivas del Ministerio de Sanidad
+              tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
             </p>
-          ) : (
-            <Link
-              href="/premium"
-              className="mt-3 flex h-11 w-full items-center justify-center rounded-xl bg-brand font-bold text-on-brand"
-            >
-              Hazte Premium →
-            </Link>
-          )}
-        </FieldCard>
-
-        <FieldCard label="Apariencia">
-          <ThemeToggle />
-        </FieldCard>
-
-        <FieldCard label="Meta diaria de preguntas">
-          <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => cambiarMeta(-5)}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-track text-xl font-bold text-ink"
-              aria-label="Reducir meta diaria"
-            >
-              −
-            </button>
-            <span className="text-2xl font-extrabold text-ink">{meta}</span>
-            <button
-              type="button"
-              onClick={() => cambiarMeta(5)}
-              className="flex h-11 w-11 items-center justify-center rounded-xl border border-track text-xl font-bold text-ink"
-              aria-label="Aumentar meta diaria"
-            >
-              +
-            </button>
-          </div>
-        </FieldCard>
-
-        <FieldCard label="Temporizador por defecto">
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-ink">
-              {temporizadorActivo ? `${segundos} segundos por pregunta` : "Sin límite de tiempo"}
-            </span>
-            <ToggleSwitch activo={temporizadorActivo} onChange={cambiarTemporizadorActivo} />
-          </div>
-          {temporizadorActivo && (
-            <div className="mt-3 flex gap-2">
-              {OPCIONES_SEGUNDOS.map((s) => (
-                <Chip key={s} activo={segundos === s} onClick={() => cambiarSegundos(s)}>
-                  {s}s
-                </Chip>
+            <div className="mt-3 flex flex-col divide-y divide-track">
+              {FUENTES.map((f) => (
+                <div key={f.anio} className="py-2">
+                  <p className="text-sm font-bold text-ink">
+                    MIR {f.anio} · {f.preguntas} preguntas
+                  </p>
+                  <p className="text-xs text-ink-muted">{f.nota}</p>
+                </div>
               ))}
             </div>
-          )}
-          <p className="mt-3 text-xs text-ink-muted">
-            Se usará como valor inicial al abrir la pantalla de Configuración — podrás
-            cambiarlo test a test si quieres.
-          </p>
-        </FieldCard>
+            <Link
+              href="/controversias"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 block text-sm font-bold text-accent"
+            >
+              Ver preguntas con respuesta oficial cuestionada →
+            </Link>
+          </FieldCard>
 
-        <FieldCard label="Historial">
-          {mensaje && <p className="mb-3 text-sm text-ink-muted">{mensaje}</p>}
-          <button
-            type="button"
-            onClick={() => setConfirmandoReset(true)}
-            className="h-12 w-full rounded-xl border-2 border-danger font-bold text-danger"
-          >
-            Resetear historial
-          </button>
-          <p className="mt-2 text-xs text-ink-muted">
-            Borra todas las sesiones y respuestas guardadas. No se puede deshacer.
-          </p>
-        </FieldCard>
+          <FieldCard label="Ayuda" className="order-1 lg:order-none">
+            <Link href="/contacto" className="block text-sm font-bold text-accent">
+              Contacto y soporte →
+            </Link>
+          </FieldCard>
 
-        <FieldCard label="Fuentes del banco de preguntas">
-          <p className="text-sm text-ink">
-            {totalBanco ? String(totalBanco).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "…"} preguntas de
-            los exámenes MIR oficiales de Medicina, convocatorias
-            2022-2026. Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
-            respuestas correctas de las plantillas definitivas del Ministerio de Sanidad
-            tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
-          </p>
-          <div className="mt-3 flex flex-col divide-y divide-track">
-            {FUENTES.map((f) => (
-              <div key={f.anio} className="py-2">
-                <p className="text-sm font-bold text-ink">
-                  MIR {f.anio} · {f.preguntas} preguntas
-                </p>
-                <p className="text-xs text-ink-muted">{f.nota}</p>
-              </div>
-            ))}
+          <div className="order-1 mt-2 flex flex-col items-center gap-2 lg:order-none lg:items-start">
+            {errorEliminar && <p className="text-xs text-danger-text">{errorEliminar}</p>}
+            <button
+              type="button"
+              onClick={() => setConfirmandoEliminar(true)}
+              className="text-xs font-semibold text-danger underline-offset-2 hover:underline"
+            >
+              Eliminar mi cuenta
+            </button>
           </div>
-          <Link
-            href="/controversias"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 block text-sm font-bold text-accent"
-          >
-            Ver preguntas con respuesta oficial cuestionada →
-          </Link>
-        </FieldCard>
+        </div>
 
-        <FieldCard label="Ayuda">
-          <Link href="/contacto" className="block text-sm font-bold text-accent">
-            Contacto y soporte →
-          </Link>
-        </FieldCard>
+        <div className="contents lg:flex lg:flex-col lg:gap-4">
+          <FieldCard label="Apariencia">
+            <ThemeToggle />
+          </FieldCard>
 
-        <div className="mt-2 flex flex-col items-center gap-2">
-          {errorEliminar && <p className="text-xs text-danger-text">{errorEliminar}</p>}
-          <button
-            type="button"
-            onClick={() => setConfirmandoEliminar(true)}
-            className="text-xs font-semibold text-danger underline-offset-2 hover:underline"
-          >
-            Eliminar mi cuenta
-          </button>
+          <FieldCard label="Meta diaria de preguntas">
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => cambiarMeta(-5)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-track text-xl font-bold text-ink"
+                aria-label="Reducir meta diaria"
+              >
+                −
+              </button>
+              <span className="text-2xl font-extrabold text-ink">{meta}</span>
+              <button
+                type="button"
+                onClick={() => cambiarMeta(5)}
+                className="flex h-11 w-11 items-center justify-center rounded-xl border border-track text-xl font-bold text-ink"
+                aria-label="Aumentar meta diaria"
+              >
+                +
+              </button>
+            </div>
+          </FieldCard>
+
+          <FieldCard label="Temporizador por defecto">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-ink">
+                {temporizadorActivo ? `${segundos} segundos por pregunta` : "Sin límite de tiempo"}
+              </span>
+              <ToggleSwitch activo={temporizadorActivo} onChange={cambiarTemporizadorActivo} />
+            </div>
+            {temporizadorActivo && (
+              <div className="mt-3 flex gap-2">
+                {OPCIONES_SEGUNDOS.map((s) => (
+                  <Chip key={s} activo={segundos === s} onClick={() => cambiarSegundos(s)}>
+                    {s}s
+                  </Chip>
+                ))}
+              </div>
+            )}
+            <p className="mt-3 text-xs text-ink-muted">
+              Se usará como valor inicial al abrir la pantalla de Configuración — podrás
+              cambiarlo test a test si quieres.
+            </p>
+          </FieldCard>
+
+          <FieldCard label="Historial">
+            {mensaje && <p className="mb-3 text-sm text-ink-muted">{mensaje}</p>}
+            <button
+              type="button"
+              onClick={() => setConfirmandoReset(true)}
+              className="h-12 w-full rounded-xl border-2 border-danger font-bold text-danger"
+            >
+              Resetear historial
+            </button>
+            <p className="mt-2 text-xs text-ink-muted">
+              Borra todas las sesiones y respuestas guardadas. No se puede deshacer.
+            </p>
+          </FieldCard>
         </div>
       </div>
 

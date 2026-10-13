@@ -5,12 +5,6 @@ import { query } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
-// Con al menos este número de preguntas falladas distintas en una misma
-// especialidad, se muestra el aviso de patrón ("Has fallado X preguntas
-// relacionadas con..."). Mismo umbral que "puntos débiles" en /estadisticas
-// para mantener el criterio consistente en toda la app.
-const MIN_PREGUNTAS_PATRON = 3;
-
 export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) {
@@ -54,7 +48,6 @@ export async function GET() {
         especialidad,
         total_preguntas: preguntas.length,
         total_fallos: preguntas.reduce((acc, p) => acc + p.veces_fallada, 0),
-        patron: preguntas.length >= MIN_PREGUNTAS_PATRON,
         preguntas,
       }))
       .sort(

@@ -71,8 +71,8 @@ export default function MisErrores() {
   const todosLosIds = datos ? datos.grupos.flatMap((g) => g.preguntas.map((p) => p.id)) : [];
 
   return (
-    <div className="min-h-screen pb-nav">
-      <header className="flex items-center gap-3 px-5 pt-5">
+    <div className="ancho-app min-h-screen pb-nav lg:px-8">
+      <header className="flex items-center gap-3 px-5 pt-5 lg:px-0 lg:pt-10">
         <Link
           href="/estadisticas"
           className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
@@ -85,7 +85,7 @@ export default function MisErrores() {
         <h1 className="text-2xl font-extrabold text-ink">Mis errores</h1>
       </header>
 
-      <div className="mt-5 px-5">
+      <div className="mt-5 px-5 lg:mt-8 lg:px-0">
         {error && (
           <p className="rounded-2xl bg-card p-4 text-sm text-ink-muted shadow-sm">
             No se han podido cargar tus errores.
@@ -108,7 +108,7 @@ export default function MisErrores() {
 
         {!error && datos && datos.total_preguntas_falladas > 0 && (
           <>
-            <div className="rounded-2xl bg-card p-4 shadow-sm">
+            <div className="rounded-2xl bg-card p-4 shadow-sm lg:flex lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-6 lg:p-5">
               <p className="text-sm text-ink-muted">
                 Has fallado{" "}
                 <span className="font-bold text-danger">{datos.total_preguntas_falladas}</span>{" "}
@@ -116,7 +116,7 @@ export default function MisErrores() {
                 en total.
               </p>
               {errorRepaso && (
-                <p className="mt-3 rounded-xl bg-danger-bg p-2 text-xs font-semibold text-danger-text">
+                <p className="mt-3 rounded-xl bg-danger-bg p-2 text-xs font-semibold text-danger-text lg:order-last lg:w-full">
                   {errorRepaso}
                 </p>
               )}
@@ -124,13 +124,13 @@ export default function MisErrores() {
                 type="button"
                 onClick={() => repasar(todosLosIds, null, "todos")}
                 disabled={repasando !== null}
-                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60"
+                className="mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand font-bold text-on-brand shadow-sm active:bg-brand-dark disabled:opacity-60 lg:mt-0 lg:w-auto lg:px-8"
               >
                 {repasando === "todos" ? "Preparando…" : "Repasar estos errores →"}
               </button>
             </div>
 
-            <div className="mt-6 flex flex-col gap-5">
+            <div className="mt-6 flex flex-col gap-5 lg:mt-8 lg:grid lg:grid-cols-2 lg:items-start lg:gap-6">
               {datos.grupos.map((g) => (
                 <section key={g.especialidad}>
                   <div className="mb-2 flex items-center justify-between">
@@ -141,12 +141,6 @@ export default function MisErrores() {
                       {g.total_preguntas} {g.total_preguntas === 1 ? "pregunta" : "preguntas"}
                     </span>
                   </div>
-
-                  {g.patron && (
-                    <div className="mb-3 rounded-xl bg-warning-bg p-3 text-xs font-semibold text-warning-text">
-                      ⚠️ Has fallado {g.total_preguntas} preguntas relacionadas con {g.especialidad}.
-                    </div>
-                  )}
 
                   <div className="flex flex-col gap-2 rounded-2xl bg-card p-4 shadow-sm">
                     {g.preguntas.map((p) => (
