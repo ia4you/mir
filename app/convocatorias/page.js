@@ -14,8 +14,8 @@ export const metadata = {
 export default async function ConvocatoriasPage() {
   const convocatorias = await getConvocatorias();
   return (
-    <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
-      <div className="mx-auto max-w-2xl">
+    <div className="min-h-screen bg-surface px-5 py-10 sm:py-14 lg:px-8">
+      <div className="mx-auto max-w-2xl lg:max-w-[1240px]">
         <Link href="/" className="text-sm font-semibold text-accent">
           ← Volver a inicio
         </Link>
@@ -25,7 +25,7 @@ export default async function ConvocatoriasPage() {
         <p className="mt-4 text-ink-muted">
           Preguntas y respuestas oficiales del Ministerio de Sanidad, desglosadas por convocatoria.
         </p>
-        <ul className="mt-6 grid gap-3">
+        <ul className="mt-6 grid gap-3 lg:mt-8 lg:grid-cols-5">
           {convocatorias.map((c) => (
             <li key={c.anio}>
               <Link

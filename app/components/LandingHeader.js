@@ -42,10 +42,11 @@ export default function LandingHeader() {
           <Logo className="flex min-h-[44px] items-center text-3xl sm:text-4xl" />
         </Link>
 
-        {/* Nav principal: a partir de md cabe entera junto al logo y los
-            botones de sesión. Por debajo de md se sustituye por el botón
-            de menú y el desplegable de aquí abajo. */}
-        <nav className="hidden items-center gap-6 md:flex">
+        {/* Nav principal: a partir de xl (1280 px) cabe entera junto al logo,
+            el interruptor y los botones de sesión (por debajo desbordaba la
+            pantalla). Por debajo de xl se sustituye por el botón de menú y el
+            desplegable de aquí abajo; Login/Registro siguen visibles desde md. */}
+        <nav className="hidden items-center gap-6 xl:flex">
           {ENLACES.map((enlace) => (
             <a
               key={enlace.href}
@@ -95,7 +96,7 @@ export default function LandingHeader() {
             aria-expanded={abierto}
             aria-controls="menu-landing-movil"
             aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
-            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-ink md:hidden"
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-ink xl:hidden"
           >
             {abierto ? (
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-6 w-6">
@@ -111,7 +112,7 @@ export default function LandingHeader() {
       </div>
 
       {abierto && (
-        <nav id="menu-landing-movil" className="mt-3 flex flex-col gap-1 border-t border-track pt-3 md:hidden">
+        <nav id="menu-landing-movil" className="mt-3 flex flex-col gap-1 border-t border-track pt-3 xl:hidden">
           {ENLACES.map((enlace) => (
             <a
               key={enlace.href}

@@ -19,26 +19,29 @@ export default async function ControversiasPage() {
   const controversias = await getControversias();
 
   return (
-    <div className="min-h-screen bg-surface px-5 py-10 sm:py-14">
-      <div className="mx-auto max-w-3xl">
-        <Link href="/" className="text-sm font-semibold text-accent">
-          ← Volver a inicio
-        </Link>
+    <div className="min-h-screen bg-surface px-5 py-10 sm:py-14 lg:px-8">
+      <div className="mx-auto max-w-3xl lg:max-w-[1240px]">
+        {/* Escritorio: cabecera a ancho de lectura y tarjetas en 2 columnas tipo
+            mosaico (son largas y de alto desigual). */}
+        <div className="lg:max-w-3xl">
+          <Link href="/" className="text-sm font-semibold text-accent">
+            ← Volver a inicio
+          </Link>
 
-        <h1 className="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
-          Preguntas MIR con respuesta oficial cuestionada
-        </h1>
+          <h1 className="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
+            Preguntas MIR con respuesta oficial cuestionada
+          </h1>
 
-        <p className="mt-4 text-ink-muted">
-          Las siguientes preguntas del examen MIR tienen una respuesta oficial verificada
-          contra las plantillas definitivas del Ministerio de Sanidad, pero han sido
-          identificadas como controvertidas por contradecir la práctica clínica estándar o
-          contener posibles errores conceptuales.
-        </p>
+          <p className="mt-4 text-ink-muted">
+            Las siguientes preguntas del examen MIR tienen una respuesta oficial verificada
+            contra las plantillas definitivas del Ministerio de Sanidad, pero han sido
+            identificadas como controvertidas por contradecir la práctica clínica estándar o
+            contener posibles errores conceptuales.
+          </p>
 
-        <div className="mt-5 rounded-2xl bg-panel p-4 text-sm text-ink-muted">
-          Las respuestas marcadas como correctas son las oficiales del Ministerio de Sanidad.
-          MIR Turel no modifica las respuestas oficiales en su banco de preguntas.
+          <div className="mt-5 rounded-2xl bg-panel p-4 text-sm text-ink-muted">
+            Las respuestas marcadas como correctas son las oficiales del Ministerio de Sanidad.
+            MIR Turel no modifica las respuestas oficiales en su banco de preguntas.
         </div>
 
         <div className="mt-4 rounded-2xl border border-warning-border bg-warning-bg p-4 text-sm text-warning-text">
@@ -50,10 +53,11 @@ export default async function ControversiasPage() {
         <p className="mt-5 text-sm font-semibold text-ink-muted">
           {controversias.length} preguntas documentadas
         </p>
+        </div>
 
-        <div className="mt-8 flex flex-col gap-6">
+        <div className="mt-8 flex flex-col gap-6 lg:block lg:columns-2 lg:gap-6">
           {controversias.map((c) => (
-            <article key={c.id} className="rounded-2xl bg-card p-5 shadow-sm">
+            <article key={c.id} className="rounded-2xl bg-card p-5 shadow-sm lg:mb-6 lg:break-inside-avoid">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-block rounded-full bg-badge-bg px-3 py-1 text-xs font-bold text-badge-text">
                   {c.especialidad}

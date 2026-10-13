@@ -30,6 +30,7 @@ export default async function sitemap() {
     { url: `${BASE_URL}/demo`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/controversias`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/convocatorias`, priority: 0.8, changeFrequency: "monthly" },
+    { url: `${BASE_URL}/especialidades`, priority: 0.8, changeFrequency: "monthly" },
     { url: `${BASE_URL}/temas`, priority: 0.7, changeFrequency: "monthly" },
     { url: `${BASE_URL}/blog`, priority: 0.7, changeFrequency: "weekly" },
     { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" },

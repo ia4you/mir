@@ -5,6 +5,7 @@ import { getConvocatorias, slugConvocatoria } from "./lib/convocatorias";
 import { getControversias, REFIERE_IMAGEN } from "./lib/controversias";
 import LandingHeader from "./components/LandingHeader";
 import SocialLinks from "./components/SocialLinks";
+import TarjetaEspecialidad from "./components/TarjetaEspecialidad";
 
 // Imagen del hero con "art direction" real (móvil vs escritorio) vía
 // getImageProps + <picture>, en vez de dos <Image priority> alternados con
@@ -393,28 +394,14 @@ export default async function LandingPage() {
         <h2 className={TITULO}>Especialidades</h2>
         <div className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-3 lg:max-w-[1240px] lg:grid-cols-4 xl:grid-cols-5">
           {especialidades.map((e) => (
-            <Link
-              key={e.slug}
-              href={`/especialidades/${e.slug}`}
-              className="flex flex-col justify-between rounded-xl border border-track bg-card p-4 active:bg-brand-light"
-            >
-              <span className="font-bold text-ink">{e.nombre}</span>
-              <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>
-              {/* Peso de la especialidad sobre el total del banco (solo escritorio). */}
-              <span className="mt-3 hidden items-center gap-3 lg:flex">
-                <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-track" aria-hidden="true">
-                  <span
-                    className="block h-full rounded-full bg-accent"
-                    style={{ width: `${(e.total / maxEspecialidad) * 100}%` }}
-                  />
-                </span>
-                <span className="font-mono text-xs text-ink-muted">
-                  {((e.total / totalPreguntas) * 100).toLocaleString("es-ES", { maximumFractionDigits: 1 })} %
-                </span>
-              </span>
-            </Link>
+            <TarjetaEspecialidad key={e.slug} especialidad={e} maximo={maxEspecialidad} total={totalPreguntas} />
           ))}
         </div>
+        <p className="mx-auto mt-6 max-w-5xl text-center lg:max-w-[1240px] lg:text-left">
+          <Link href="/especialidades" className="inline-flex min-h-[44px] items-center font-bold text-accent">
+            Ver todas las especialidades →
+          </Link>
+        </p>
       </section>
 
       <section className="border-t border-track px-5 py-16 text-center sm:py-20 lg:px-8 lg:text-left">
