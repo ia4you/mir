@@ -30,8 +30,8 @@ export default function LandingHeader() {
   const [abierto, setAbierto] = useState(false);
 
   return (
-    <header className="border-b border-track bg-card px-5 py-3 pt-safe">
-      <div className="flex items-center justify-between gap-3">
+    <header className="border-b border-track bg-card px-5 py-3 pt-safe lg:px-8">
+      <div className="flex items-center justify-between gap-3 lg:mx-auto lg:max-w-[1240px]">
         <Link
           href="/"
           aria-label="Ir al inicio"

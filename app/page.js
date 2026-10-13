@@ -24,7 +24,10 @@ import SocialLinks from "./components/SocialLinks";
 // Lighthouse: pedía w=828 para una caja de 348px de ancho renderizado).
 // 712px = 672px + 40px de margen: el punto exacto en el que el tope de
 // 672px pasa a ser la restricción en vez del ancho del viewport.
-const SIZES_HERO = "(min-width: 712px) 672px, calc(100vw - 40px)";
+// Desde lg (1024px) la imagen pasa a la columna derecha del hero: la mitad
+// del contenedor de 1240px menos márgenes (2×32px) y hueco central (56px).
+const SIZES_HERO =
+  "(min-width: 1304px) 592px, (min-width: 1024px) calc(50vw - 60px), (min-width: 712px) 672px, calc(100vw - 40px)";
 
 function imagenHero() {
   const alt =
@@ -152,12 +155,20 @@ const DIFERENCIALES = [
   },
 ];
 
+// Títulos de sección: como hasta ahora por debajo de lg; desde lg, Instrument
+// Serif y alineados a la izquierda.
+const TITULO =
+  "text-center text-2xl font-extrabold text-ink lg:mx-auto lg:max-w-[1240px] lg:text-left lg:font-serif lg:text-5xl lg:font-normal";
+
 export default async function LandingPage() {
   const { movilSrcSet, escritorioSrcSet, imgProps: heroImgProps, alt: heroAlt } = imagenHero();
 
   const especialidades = await getEspecialidadesConConteo();
   const { total: totalPreguntas, anioMin, anioMax } = resumenBanco(especialidades);
   const totalEspecialidades = especialidades.length;
+  // La barra se escala a la especialidad con más preguntas (= 100 %); el
+  // porcentaje mostrado sigue siendo el peso real sobre el total.
+  const maxEspecialidad = Math.max(...especialidades.map((e) => e.total));
   const convocatorias = await getConvocatorias();
 
   const todasControversias = await getControversias();
@@ -207,13 +218,16 @@ export default async function LandingPage() {
 
       <LandingHeader />
 
-      <section id="hero" className="px-5 pt-4 pb-14 sm:pt-6 sm:pb-20">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-bold uppercase tracking-widest text-accent">
+      <section id="hero" className="px-5 pt-4 pb-14 sm:pt-6 sm:pb-20 lg:px-8 lg:pt-16">
+        {/* Desde lg: rejilla de dos columnas. Todo el texto va a la columna 1 y
+            la imagen se coloca en la 2 ocupando sus cinco filas, sin cambiar el
+            orden del DOM (en móvil la imagen sigue entre el H1 y el párrafo). */}
+        <div className="mx-auto max-w-3xl text-center lg:grid lg:max-w-[1240px] lg:grid-cols-2 lg:gap-x-14 lg:text-left">
+          <p className="text-xs font-bold uppercase tracking-widest text-accent lg:col-start-1">
             Banco 100% oficial · Ministerio de Sanidad
           </p>
 
-          <h1 className="mx-auto mt-1 max-w-2xl font-serif text-5xl font-normal leading-tight text-ink sm:mt-1 sm:text-6xl">
+          <h1 className="mx-auto mt-1 max-w-2xl font-serif text-5xl font-normal leading-tight text-ink sm:mt-1 sm:text-6xl lg:col-start-1 lg:mx-0 lg:mt-4 lg:max-w-none lg:text-7xl lg:leading-[1.05]">
             Preparación MIR sin pagar mil euros
           </h1>
 
@@ -223,7 +237,7 @@ export default async function LandingPage() {
               visita (también tapa parte de la pantalla en escritorio, no
               solo en móvil). Márgenes recortados en ambos casos, cada uno
               con su propio ajuste. */}
-          <div className="mx-auto mt-2 h-60 max-w-2xl overflow-hidden rounded-2xl border border-track sm:mt-3 sm:h-80">
+          <div className="mx-auto mt-2 h-60 max-w-2xl overflow-hidden rounded-2xl border border-track sm:mt-3 sm:h-80 lg:col-start-2 lg:row-span-5 lg:row-start-1 lg:mt-0 lg:h-[460px] lg:max-w-none lg:self-center">
             <picture>
               <source media="(max-width: 640px)" srcSet={movilSrcSet} sizes={SIZES_HERO} />
               <source media="(min-width: 641px)" srcSet={escritorioSrcSet} sizes={SIZES_HERO} />
@@ -238,26 +252,26 @@ export default async function LandingPage() {
             </picture>
           </div>
 
-          <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-3 sm:text-lg">
+          <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-3 sm:text-lg lg:col-start-1 lg:mx-0 lg:mt-6">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias{" "}
             {anioMin}–{anioMax}, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
 
-          <div className="mx-auto mt-3 grid max-w-2xl gap-1.5 text-left sm:mt-4 sm:grid-cols-3">
-            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink">
+          <div className="mx-auto mt-3 grid max-w-2xl gap-1.5 text-left sm:mt-4 sm:grid-cols-3 lg:col-start-1 lg:mx-0 lg:mt-6 lg:gap-2">
+            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink lg:p-3">
               Gratis para empezar. Premium a bajo coste.
             </p>
-            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink">
+            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink lg:p-3">
               100% oficiales. Nunca mezcladas con IA.
             </p>
-            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink">
+            <p className="rounded-xl border border-track bg-card p-1.5 text-sm font-semibold text-ink lg:p-3">
               Controversias documentadas y explicadas.
             </p>
           </div>
 
-          <div className="mx-auto mt-3 flex max-w-xs flex-col gap-3 sm:mt-4 sm:max-w-none sm:flex-row sm:justify-center">
+          <div className="mx-auto mt-3 flex max-w-xs flex-col gap-3 sm:mt-4 sm:max-w-none sm:flex-row sm:justify-center lg:col-start-1 lg:mx-0 lg:mt-7 lg:justify-start">
             <Link
               href="/demo"
               className="flex h-14 items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
@@ -272,16 +286,16 @@ export default async function LandingPage() {
             </a>
           </div>
 
-          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted">
+          <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted lg:col-span-2 lg:mx-0 lg:mt-14 lg:max-w-none lg:border-t lg:border-track lg:pt-6">
             {formatearMiles(totalPreguntas)} preguntas oficiales · {totalEspecialidades}{" "}
             especialidades · Verificadas con cuadernillos oficiales
           </p>
         </div>
       </section>
 
-      <section id="diferencias" className="border-t border-track px-5 py-14 sm:py-16">
-        <h2 className="text-center text-2xl font-extrabold text-ink">Por qué es distinto</h2>
-        <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3">
+      <section id="diferencias" className="border-t border-track px-5 py-14 sm:py-16 lg:px-8 lg:py-20">
+        <h2 className={TITULO}>Por qué es distinto</h2>
+        <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3 lg:max-w-[1240px] lg:gap-8">
           {DIFERENCIALES.map((d) => (
             <div key={d.titulo} className="border-t-2 border-accent pt-4">
               <p className="text-xs font-bold uppercase tracking-wide text-accent">{d.etiqueta}</p>
@@ -293,18 +307,18 @@ export default async function LandingPage() {
       </section>
 
       {controversiasDestacadas.length > 0 && (
-        <section id="controversias" className="border-t border-track px-5 py-14 sm:py-16">
-          <div className="mx-auto max-w-3xl">
-            <h2 className="text-center text-2xl font-extrabold text-ink">
+        <section id="controversias" className="border-t border-track px-5 py-14 sm:py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-3xl lg:max-w-[1240px]">
+            <h2 className={TITULO}>
               Cuando la respuesta oficial no cuadra, lo decimos
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-ink-muted">
+            <p className="mx-auto mt-3 max-w-xl text-center text-sm text-ink-muted lg:mx-0 lg:max-w-2xl lg:text-left lg:text-base">
               Algunas preguntas oficiales del MIR tienen una respuesta que contradice la práctica
               clínica estándar. La marcamos, explicamos por qué y dejamos siempre clara cuál es la
               respuesta que hay que dar en el examen.
             </p>
 
-            <div className="mt-8 flex flex-col gap-4">
+            <div className="mt-8 flex flex-col gap-4 lg:grid lg:grid-cols-2 lg:gap-6">
               {controversiasDestacadas.map((c) => (
                 <article key={c.id} className="rounded-2xl border border-track bg-card p-5">
                   <div className="flex flex-wrap items-center gap-2">
@@ -339,7 +353,7 @@ export default async function LandingPage() {
               ))}
             </div>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center lg:text-left">
               <Link href="/controversias" className="text-sm font-bold text-accent">
                 Ver todas las controversias documentadas →
               </Link>
@@ -348,9 +362,9 @@ export default async function LandingPage() {
         </section>
       )}
 
-      <section id="como-funciona" className="border-t border-track px-5 py-14 sm:py-16">
-        <h2 className="text-center text-2xl font-extrabold text-ink">Cómo funciona</h2>
-        <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3">
+      <section id="como-funciona" className="border-t border-track px-5 py-14 sm:py-16 lg:px-8 lg:py-20">
+        <h2 className={TITULO}>Cómo funciona</h2>
+        <div className="mx-auto mt-9 grid max-w-4xl gap-6 sm:grid-cols-3 lg:max-w-[1240px] lg:gap-8">
           {PASOS.map((paso, i) => (
             <div key={paso.titulo} className="rounded-2xl border border-track bg-card p-5">
               <p className="text-2xl font-extrabold text-accent">{String(i + 1).padStart(2, "0")}</p>
@@ -361,9 +375,9 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section id="convocatorias" className="border-t border-track px-5 py-14 sm:py-16">
-        <h2 className="text-center text-2xl font-extrabold text-ink">Exámenes MIR por convocatoria</h2>
-        <div className="mx-auto mt-9 flex max-w-3xl flex-wrap justify-center gap-3">
+      <section id="convocatorias" className="border-t border-track px-5 py-14 sm:py-16 lg:px-8 lg:py-20">
+        <h2 className={TITULO}>Exámenes MIR por convocatoria</h2>
+        <div className="mx-auto mt-9 flex max-w-3xl flex-wrap justify-center gap-3 lg:max-w-[1240px] lg:justify-start">
           {convocatorias.map((c) => (
             <Link
               key={c.anio}
@@ -376,9 +390,9 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      <section id="especialidades" className="border-t border-track px-5 py-14 sm:py-16">
-        <h2 className="text-center text-2xl font-extrabold text-ink">Especialidades</h2>
-        <div className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      <section id="especialidades" className="border-t border-track px-5 py-14 sm:py-16 lg:px-8 lg:py-20">
+        <h2 className={TITULO}>Especialidades</h2>
+        <div className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-3 lg:max-w-[1240px] lg:grid-cols-4 xl:grid-cols-5">
           {especialidades.map((e) => (
             <Link
               key={e.slug}
@@ -387,24 +401,40 @@ export default async function LandingPage() {
             >
               <span className="font-bold text-ink">{e.nombre}</span>
               <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>
+              {/* Peso de la especialidad sobre el total del banco (solo escritorio). */}
+              <span className="mt-3 hidden items-center gap-3 lg:flex">
+                <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-track" aria-hidden="true">
+                  <span
+                    className="block h-full rounded-full bg-accent"
+                    style={{ width: `${(e.total / maxEspecialidad) * 100}%` }}
+                  />
+                </span>
+                <span className="font-mono text-xs text-ink-muted">
+                  {((e.total / totalPreguntas) * 100).toLocaleString("es-ES", { maximumFractionDigits: 1 })} %
+                </span>
+              </span>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="border-t border-track px-5 py-16 text-center sm:py-20">
-        <h2 className="text-2xl font-extrabold text-ink">Crea tu cuenta gratis</h2>
-        <p className="mt-2 text-ink-muted">Sin tarjeta de crédito.</p>
-        <Link
-          href="/registro"
-          className="mx-auto mt-6 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          Crear cuenta gratis
-        </Link>
+      <section className="border-t border-track px-5 py-16 text-center sm:py-20 lg:px-8 lg:text-left">
+        <div className="lg:mx-auto lg:max-w-[1240px]">
+          <h2 className="text-2xl font-extrabold text-ink lg:font-serif lg:text-5xl lg:font-normal">
+            Crea tu cuenta gratis
+          </h2>
+          <p className="mt-2 text-ink-muted">Sin tarjeta de crédito.</p>
+          <Link
+            href="/registro"
+            className="mx-auto mt-6 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-8 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark lg:mx-0"
+          >
+            Crear cuenta gratis
+          </Link>
+        </div>
       </section>
 
-      <section className="border-t border-track px-5 py-10 text-center">
-        <div className="mx-auto max-w-md rounded-2xl bg-panel p-5">
+      <section className="border-t border-track px-5 py-10 text-center lg:px-8 lg:text-left">
+        <div className="mx-auto max-w-md rounded-2xl bg-panel p-5 lg:max-w-[1240px] lg:p-8">
           <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
             También te puede interesar
           </p>
