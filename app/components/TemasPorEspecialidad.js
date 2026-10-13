@@ -9,17 +9,14 @@ import { entrenarConCriterios } from "../lib/entrenarPuntosDebiles";
 // "todas las disponibles" en los temas (la inmensa mayoría) que tienen menos.
 const TOTAL_PREGUNTAS_TEMA = 15;
 
-// Mismos umbrales que EspecialidadesStatsTable, para que el "nivel" de un
-// tema se lea igual que el de una especialidad en el resto de la pantalla.
+// Mismos umbrales que EspecialidadesStatsTable (80/65), para que el nivel de
+// un tema se lea igual que el de una especialidad en el resto de la pantalla.
 function nivel(porcentaje) {
-  if (porcentaje >= 75) return { emoji: "🟢", clase: "text-success" };
-  if (porcentaje >= 50) return { emoji: "🟡", clase: "text-warning" };
-  return { emoji: "🔴", clase: "text-danger" };
+  if (porcentaje >= 80) return "text-success-text";
+  if (porcentaje >= 65) return "text-warning-text";
+  return "text-danger-text";
 }
 
-// Agrupa manteniendo el orden de primera aparición: como `temas` ya llega
-// ordenado por porcentaje ascendente desde el endpoint, la primera
-// especialidad del grupo es la que contiene el tema más flojo de todas.
 function agruparPorEspecialidad(temas) {
   const grupos = new Map();
   for (const t of temas) {
@@ -32,7 +29,10 @@ function agruparPorEspecialidad(temas) {
   return Array.from(grupos.entries());
 }
 
-export default function TemasPorEspecialidad({ temas }) {
+// `especialidades` (de /api/estadisticas) da el % de cada fila resumen: el mismo
+// que la tabla de arriba. Antes la fila mostraba el % del peor tema, que con
+// temas de 1 o 2 respuestas salía casi siempre al 0 %.
+export default function TemasPorEspecialidad({ temas, especialidades = [] }) {
   const router = useRouter();
   const [abiertas, setAbiertas] = useState(() => new Set());
   // Nombre del tema cuyo test se está preparando ahora mismo, o null. Solo
@@ -42,7 +42,10 @@ export default function TemasPorEspecialidad({ temas }) {
 
   if (!temas || temas.length === 0) return null;
 
-  const grupos = agruparPorEspecialidad(temas);
+  const porcentajeEspecialidad = new Map(especialidades.map((e) => [e.especialidad, e.porcentaje]));
+  const grupos = agruparPorEspecialidad(temas).sort(
+    ([a], [b]) => (porcentajeEspecialidad.get(a) ?? 0) - (porcentajeEspecialidad.get(b) ?? 0)
+  );
 
   function toggle(especialidad) {
     setAbiertas((prev) => {
@@ -76,21 +79,27 @@ export default function TemasPorEspecialidad({ temas }) {
   }
 
   return (
-    <section className="mt-7 px-5">
+    <section className="mt-7 px-5 lg:mt-10 lg:px-0">
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
         Por tema
       </h2>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 lg:grid lg:grid-flow-row-dense lg:grid-cols-2 lg:items-start lg:gap-3 xl:grid-cols-3">
         {grupos.map(([especialidad, temasEspecialidad]) => {
           const abierta = abiertas.has(especialidad);
-          const peorTema = temasEspecialidad[0];
+          const porcentaje = porcentajeEspecialidad.get(especialidad);
 
           return (
-            <div key={especialidad} className="overflow-hidden rounded-2xl bg-card shadow-sm">
+            <div
+              key={especialidad}
+              // Abierta ocupa toda la fila (y reparte sus temas en columnas)
+              // para no dejar un hueco alto junto a las cerradas.
+              className={`overflow-hidden rounded-2xl bg-card shadow-sm ${abierta ? "lg:col-span-full" : ""}`}
+            >
               <button
                 type="button"
                 onClick={() => toggle(especialidad)}
+                aria-expanded={abierta}
                 className="flex w-full items-center justify-between px-4 py-3.5 text-left"
               >
                 <span className="font-semibold text-ink">{especialidad}</span>
@@ -98,10 +107,11 @@ export default function TemasPorEspecialidad({ temas }) {
                   <span className="text-xs text-ink-muted">
                     {temasEspecialidad.length} tema{temasEspecialidad.length !== 1 ? "s" : ""}
                   </span>
-                  <span className={`text-sm font-bold ${nivel(peorTema.porcentaje).clase}`}>
-                    {peorTema.porcentaje}%
-                  </span>
+                  {porcentaje !== undefined && (
+                    <span className={`text-sm font-bold ${nivel(porcentaje)}`}>{porcentaje}%</span>
+                  )}
                   <span
+                    aria-hidden="true"
                     className={`text-ink-muted transition-transform ${abierta ? "rotate-180" : ""}`}
                   >
                     ▾
@@ -110,14 +120,14 @@ export default function TemasPorEspecialidad({ temas }) {
               </button>
 
               {abierta && (
-                <ul className="flex flex-col divide-y divide-track border-t border-track">
+                <ul className="flex flex-col divide-y divide-track border-t border-track lg:grid lg:grid-cols-2 lg:gap-x-8 lg:divide-y-0 lg:px-4 lg:pb-2 xl:grid-cols-3">
                   {temasEspecialidad.map((t) => {
-                    const { emoji, clase } = nivel(t.porcentaje);
+                    const clase = nivel(t.porcentaje);
                     return (
-                      <li key={t.tema} className="flex flex-col gap-1.5 px-4 py-3">
+                      <li key={t.tema} className="flex flex-col gap-1.5 px-4 py-3 lg:px-0">
                         <div className="flex items-center justify-between gap-3">
                           <span className="min-w-0 flex-1 text-sm text-ink">
-                            {emoji} {t.tema}
+                            {t.tema}
                           </span>
                           <button
                             type="button"

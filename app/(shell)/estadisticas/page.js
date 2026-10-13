@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import ResumenDiario from "../../components/ResumenDiario";
 import EspecialidadesStatsTable from "../../components/EspecialidadesStatsTable";
 import TemasPorEspecialidad from "../../components/TemasPorEspecialidad";
 import PuntosDebiles from "../../components/PuntosDebiles";
@@ -23,6 +22,27 @@ const ETIQUETA_MODO = {
   simulacro: "Simulacro MIR",
 };
 
+// Punto de miles también con 4 cifras (toLocaleString("es-ES") no lo pone en 1025).
+function formatearMiles(n) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// Cifra de la fila superior: etiqueta, valor en mono, detalle y barra opcional.
+function Cifra({ etiqueta, valor, detalle, porcentaje }) {
+  return (
+    <div className="rounded-2xl border border-track bg-card p-4 lg:p-5">
+      <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">{etiqueta}</p>
+      <p className="mt-2 font-mono text-3xl text-ink">{valor ?? "—"}</p>
+      {porcentaje !== undefined && (
+        <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-track" aria-hidden="true">
+          <div className="h-full rounded-full bg-accent" style={{ width: `${porcentaje ?? 0}%` }} />
+        </div>
+      )}
+      <p className="mt-2 text-xs text-ink-muted">{detalle}</p>
+    </div>
+  );
+}
+
 function formatearFecha(iso) {
   const d = new Date(iso);
   const fecha = d.toLocaleDateString("es-ES", { day: "numeric", month: "short" });
@@ -35,6 +55,7 @@ export default function Estadisticas() {
   const [temas, setTemas] = useState(null);
   const [sesiones, setSesiones] = useState(null);
   const [sesionesEvolucion, setSesionesEvolucion] = useState(null);
+  const [notas, setNotas] = useState(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -42,6 +63,11 @@ export default function Estadisticas() {
       .then((r) => (r.ok ? r.json() : Promise.reject()))
       .then(setDatos)
       .catch(() => setError(true));
+
+    fetch("/api/estadisticas/notas")
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setNotas)
+      .catch(() => {});
 
     fetch("/api/estadisticas/temas")
       .then((r) => (r.ok ? r.json() : Promise.reject()))
@@ -62,26 +88,68 @@ export default function Estadisticas() {
       .catch(() => setSesionesEvolucion([]));
   }, []);
 
+  const nota = notas?.evolucion;
+  const banco = datos?.banco;
+  const hayEvolucion = sesionesEvolucion && sesionesEvolucion.length > 0;
+  const hayEspecialidades = !error && datos && datos.especialidades.length > 0;
+
   return (
-    <div className="min-h-screen pb-nav">
-      <header className="px-5 pt-5">
+    <div className="ancho-app min-h-screen pb-nav lg:px-8">
+      <header className="px-5 pt-5 lg:px-0 lg:pt-10">
         <h1 className="text-2xl font-extrabold text-ink">Estadísticas</h1>
       </header>
 
-      <div className="mt-5">
-        <ResumenDiario
-          racha={datos?.racha_dias}
-          metaDiariaPct={datos?.meta_diaria.porcentaje}
+      <section className="mt-5 grid grid-cols-2 gap-3 px-5 lg:mt-8 lg:grid-cols-4 lg:gap-6 lg:px-0">
+        <Cifra
+          etiqueta="Racha"
+          valor={datos?.racha_dias}
+          detalle={datos?.racha_dias === 1 ? "día seguido" : "días seguidos"}
         />
-      </div>
+        <Cifra
+          etiqueta="Meta diaria"
+          valor={datos && `${datos.meta_diaria.respondidas_hoy}/${datos.meta_diaria.objetivo}`}
+          porcentaje={datos?.meta_diaria.porcentaje}
+          detalle={datos ? `${datos.meta_diaria.porcentaje} % de hoy` : "…"}
+        />
+        <Cifra
+          etiqueta="Nota estimada"
+          valor={
+            nota?.nota != null
+              ? nota.nota.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+              : null
+          }
+          detalle={
+            !nota
+              ? "…"
+              : nota.nota != null
+                ? "sobre 200 netas"
+                : `Faltan ${nota.minimo - nota.respondidas} respuestas para estimarla`
+          }
+        />
+        <Cifra
+          etiqueta="Banco completado"
+          valor={banco && formatearMiles(banco.respondidas)}
+          porcentaje={banco ? (banco.respondidas / banco.total) * 100 : null}
+          detalle={banco ? `de ${formatearMiles(banco.total)} preguntas` : "…"}
+        />
+      </section>
 
-      {sesionesEvolucion && sesionesEvolucion.length > 0 && (
-        <div className="mt-7">
-          <EvolucionAciertosChart sesionesEvolucion={sesionesEvolucion} />
+      {(hayEvolucion || hayEspecialidades) && (
+        <div className="mt-7 grid gap-7 lg:mt-10 lg:grid-cols-3 lg:items-start lg:gap-6">
+          {hayEvolucion && (
+            <div className="lg:col-span-2">
+              <EvolucionAciertosChart sesionesEvolucion={sesionesEvolucion} />
+            </div>
+          )}
+          {hayEspecialidades && (
+            <div className={hayEvolucion ? "" : "lg:col-span-3"}>
+              <PuntosDebiles especialidades={datos.especialidades} />
+            </div>
+          )}
         </div>
       )}
 
-      <section className="mt-7 px-5">
+      <section className="mt-7 px-5 lg:mt-10 lg:px-0">
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
           Por especialidad
         </h2>
@@ -98,9 +166,7 @@ export default function Estadisticas() {
           </div>
         )}
 
-        {!error && datos && datos.especialidades.length > 0 && (
-          <EspecialidadesStatsTable especialidades={datos.especialidades} />
-        )}
+        {hayEspecialidades && <EspecialidadesStatsTable especialidades={datos.especialidades} />}
 
         {!error && !datos && (
           <div className="flex flex-col gap-3">
@@ -111,22 +177,20 @@ export default function Estadisticas() {
         )}
       </section>
 
-      {!error && datos && datos.especialidades.length > 0 && (
-        <PuntosDebiles especialidades={datos.especialidades} />
+      {temas && temas.length > 0 && (
+        <TemasPorEspecialidad temas={temas} especialidades={datos?.especialidades} />
       )}
 
-      {temas && temas.length > 0 && <TemasPorEspecialidad temas={temas} />}
-
-      <section className="mt-7 px-5">
+      <section className="mt-7 px-5 lg:mt-10 lg:px-0">
         <Link
           href="/errores"
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-accent font-bold text-accent"
+          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl border-2 border-accent font-bold text-accent lg:inline-flex lg:w-auto lg:px-10"
         >
           Mis errores →
         </Link>
       </section>
 
-      <section className="mt-7 px-5">
+      <section className="mt-7 px-5 lg:mt-10 lg:px-0">
         <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
           Historial de sesiones
         </h2>
@@ -139,7 +203,7 @@ export default function Estadisticas() {
         )}
 
         {sesiones && sesiones.length > 0 && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 lg:grid lg:grid-cols-3">
             {sesiones.map((s) => (
               <div key={s.id} className="rounded-2xl bg-card p-4 shadow-sm">
                 <div className="flex items-start justify-between">
@@ -170,7 +234,7 @@ export default function Estadisticas() {
         )}
 
         {!sesiones && (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 lg:grid lg:grid-cols-3">
             {[0, 1, 2].map((i) => (
               <div key={i} className="h-[70px] animate-pulse rounded-2xl bg-card shadow-sm" />
             ))}

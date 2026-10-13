@@ -7,15 +7,13 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock } from "lucide-react";
 import { getMetaDiaria, getTemporizadorDefecto, META_DIARIA_POR_DEFECTO } from "../../lib/preferencias";
-import { iniciarPractica, LIMITE_DIARIO_FREE } from "../../lib/iniciarTest";
+import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
 
 // Carga diferida: evita enviar @capacitor/core en el JS inicial de /inicio
 // para los visitantes web (el banner es solo para PWA/navegador, ver PushBanner.js).
 const PushBanner = dynamic(() => import("../../components/PushBanner"), { ssr: false });
 // import AndroidPushRegister from "../../components/AndroidPushRegister"; // deshabilitado temporalmente: falta google-services.json, causaba crash en Android tras login
 
-// Ritmo de referencia para estimar la duración de una sesión.
-const SEGUNDOS_POR_PREGUNTA = 77;
 // Con menos respuestas, el % de acierto de una especialidad no es fiable para
 // recomendarla.
 const MIN_RESPUESTAS_ESPECIALIDAD = 5;

@@ -1,6 +1,8 @@
 // Arranque de una sesión de práctica, compartido por /configuracion e /inicio.
 
 export const LIMITE_DIARIO_FREE = 15;
+// Ritmo de referencia para estimar la duración de una sesión sin temporizador.
+export const SEGUNDOS_POR_PREGUNTA = 77;
 
 // Pide las preguntas (una petición por lote: { especialidad?, anio?, cantidad }),
 // crea la sesión y deja el test en sessionStorage para /test/[id].

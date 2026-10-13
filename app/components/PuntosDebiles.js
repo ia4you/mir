@@ -41,9 +41,9 @@ export default function PuntosDebiles({ especialidades }) {
   }
 
   return (
-    <section className="mt-7 px-5">
+    <section className="px-5 lg:px-0">
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
-        Tus 5 puntos débiles
+        Dónde mejorar
       </h2>
 
       {debiles.length === 0 ? (

@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getPreguntaPublica, getSiguientePregunta } from "../../../lib/especialidades";
+import {
+  getPreguntaPublica,
+  getSiguientePregunta,
+  getEspecialidadesConConteo,
+  resumenBanco,
+  formatearMiles,
+} from "../../../lib/especialidades";
 import CtaPractica from "../../../components/CtaPractica";
 
 // Igual que /especialidades/[slug]: el build de Dokploy no tiene acceso a
@@ -52,6 +58,7 @@ export default async function PreguntaPublicaPage({ params }) {
   // (id ascendente), para repartir enlazado interno más allá de las que ya
   // aparecen en el listado de /especialidades/[slug].
   const siguiente = await getSiguientePregunta(pregunta.especialidad, pregunta.id);
+  const { total } = resumenBanco(await getEspecialidadesConConteo());
 
   const url = `https://mir.turel.es/preguntas/${pregunta.especialidadSlug}/${pregunta.id}`;
 
@@ -162,7 +169,7 @@ export default async function PreguntaPublicaPage({ params }) {
         )}
 
         <CtaPractica
-          texto="Practica con 1.004 preguntas oficiales → Crear cuenta gratis"
+          texto={`Practica con ${formatearMiles(total)} preguntas oficiales → Crear cuenta gratis`}
           etiqueta={`Practicar ${pregunta.especialidad}`}
           lote={{ especialidad: pregunta.especialidad }}
           className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"

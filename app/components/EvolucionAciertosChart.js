@@ -83,7 +83,7 @@ export default function EvolucionAciertosChart({ sesionesEvolucion }) {
   const colorActivo = COLORES[especialidades.indexOf(especialidadVisible) % COLORES.length];
 
   return (
-    <section className="px-5">
+    <section className="px-5 lg:px-0">
       <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-ink-muted">
         Evolución de aciertos
       </h2>

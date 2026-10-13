@@ -4,6 +4,7 @@ import Link from "next/link";
 import { marked } from "marked";
 import { query } from "@/lib/db";
 import { imagenDePost } from "@/lib/blog";
+import { getEspecialidadesConConteo, resumenBanco, formatearMiles } from "../../lib/especialidades";
 import BlogHeader from "../../components/BlogHeader";
 import BlogImagen from "../../components/BlogImagen";
 import { CabeceraConSesion } from "../../components/NavegacionSesion";
@@ -64,9 +65,10 @@ export default async function BlogPost({ params }) {
   const post = await getPost(params.slug);
   if (!post) notFound();
 
-  const [html, ultimos] = await Promise.all([
+  const [html, ultimos, especialidades] = await Promise.all([
     marked.parse(post.contenido),
     getUltimosPosts(params.slug),
+    getEspecialidadesConConteo(),
   ]);
   const imagenHero = post.imagen_portada;
   const imagen = imagenDePost(post);
@@ -152,7 +154,7 @@ export default async function BlogPost({ params }) {
           <div className="rounded-2xl bg-brand-light p-5 text-center">
             <p className="font-bold text-ink">Empieza gratis hoy</p>
             <p className="mt-1 text-sm text-ink-muted">
-              1.004 preguntas MIR oficiales verificadas.
+              {formatearMiles(resumenBanco(especialidades).total)} preguntas MIR oficiales verificadas.
             </p>
             <a
               href="https://play.google.com/store/apps/details?id=es.turel.mir"

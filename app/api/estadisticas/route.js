@@ -52,6 +52,16 @@ export async function GET(request) {
       Math.round((respondidasHoy / metaDiariaPreguntas) * 100)
     );
 
+    // Preguntas distintas del banco oficial respondidas alguna vez, sobre el total.
+    const bancoRes = await query(
+      `SELECT (SELECT COUNT(*)::int FROM preguntas WHERE origen = 'oficial' AND anulada = false) AS total,
+              (SELECT COUNT(DISTINCT rs.pregunta_id)::int
+               FROM respuestas_sesion rs
+               JOIN preguntas p ON p.id = rs.pregunta_id
+               WHERE rs.user_id = $1 AND p.origen = 'oficial' AND p.anulada = false) AS respondidas`,
+      [userId]
+    );
+
     // Partimos de TODAS las especialidades (no solo las ya practicadas) para
     // que el usuario vea el mapa completo desde el primer día, con 0% en las
     // que todavía no ha tocado. La tendencia compara la mitad más reciente de
@@ -99,6 +109,7 @@ export async function GET(request) {
         respondidas_hoy: respondidasHoy,
         porcentaje: metaDiariaPct,
       },
+      banco: bancoRes.rows[0],
       especialidades: especialidadesRes.rows.map((r) => {
         const total = r.total;
         const aciertos = r.aciertos;
