@@ -137,6 +137,9 @@ export function getObjecionParaPregunta(anio, numero) {
   return encontrada ? encontrada.objecion : null;
 }
 
+// Enunciados que remiten a una imagen que fuera del test no se muestra.
+export const REFIERE_IMAGEN = /\b(imagen|imágen|figura|radiografía)\b/i;
+
 export async function getControversias() {
   const entradasMd = getEntradasMdCacheadas();
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
-import { evolucion, notaSimulacro, comparar } from "@/lib/notas";
+import { evolucion, notaSimulacro, comparar, serieNotas } from "@/lib/notas";
 import { getPesosEspecialidad, getPrimerasRespuestas, getUltimosSimulacros } from "@/lib/notasDb";
 
 export const dynamic = "force-dynamic";
@@ -33,8 +33,17 @@ export async function GET() {
       simulacro = { nota, fecha: ultimo.fecha, anterior, ...comparar(nota, anterior) };
     }
 
+    // Nota al final de cada una de las últimas 10 sesiones; la variación va
+    // del primer al último punto con nota.
+    const serie = serieNotas(primeras, pesos, 10);
+    const conNota = serie.filter((p) => p.nota !== null);
+    const variacion =
+      conNota.length >= 2 ? comparar(conNota[conNota.length - 1].nota, conNota[0].nota).diferencia : null;
+
     return NextResponse.json({
       evolucion: evolucion(primeras, pesos),
+      serie,
+      variacion,
       simulacro,
       plan: usuario.rows[0]?.plan ?? session.user.plan,
     });

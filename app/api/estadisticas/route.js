@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
-import { calcularRacha, diaCanarias, HOY_CANARIAS } from "@/lib/racha";
+import { calcularRacha, diaCanarias, HOY_CANARIAS, semanaActual } from "@/lib/racha";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +80,9 @@ export async function GET(request) {
               COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos,
               t.pct_antigua,
               t.pct_reciente
-       FROM (SELECT DISTINCT especialidad FROM preguntas) esp
+       -- Solo especialidades del banco oficial: el banco IA (pausado) no debe
+       -- aparecer como especialidad "sin empezar".
+       FROM (SELECT DISTINCT especialidad FROM preguntas WHERE origen = 'oficial' AND anulada = false) esp
        LEFT JOIN preguntas p ON p.especialidad = esp.especialidad
        LEFT JOIN respuestas_sesion rs ON rs.pregunta_id = p.id AND rs.user_id = $1
        LEFT JOIN tendencia_especialidad t ON t.especialidad = esp.especialidad
@@ -91,6 +93,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       racha_dias: racha,
+      semana: semanaActual(diasRes.rows[0].dias, diasRes.rows[0].hoy),
       meta_diaria: {
         objetivo: metaDiariaPreguntas,
         respondidas_hoy: respondidasHoy,

@@ -8,11 +8,11 @@ import ToggleSwitch from "../../components/ToggleSwitch";
 import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
 import { getTemporizadorDefecto } from "../../lib/preferencias";
+import { iniciarPractica, LIMITE_DIARIO_FREE } from "../../lib/iniciarTest";
 
 const ANIOS = ["2022", "2023", "2024", "2025", "2026"];
-const LIMITE_DIARIO_FREE = 15;
-// Examen real: 4 horas para todo el simulacro (no por pregunta).
-const SEGUNDOS_SIMULACRO = 4 * 60 * 60;
+// Examen real (MIR 2027): 4 h 30 min para todo el simulacro (no por pregunta).
+const SEGUNDOS_SIMULACRO = 4.5 * 60 * 60;
 const OPCIONES_CANTIDAD = [
   { valor: "5", etiqueta: "5", numero: 5 },
   { valor: "10", etiqueta: "10", numero: 10 },
@@ -87,6 +87,13 @@ export default function Configuracion() {
       })
       .catch(() => setRestanteHoy(LIMITE_DIARIO_FREE));
   }, [session]);
+
+  // "Hacer simulacro" desde Inicio llega con ?modo=simulacro.
+  useEffect(() => {
+    if (esPremium && new URLSearchParams(window.location.search).get("modo") === "simulacro") {
+      setModoTest("simulacro");
+    }
+  }, [esPremium]);
 
   // si la opción seleccionada deja de caber en lo que queda del día, bajamos
   // automáticamente a la mayor que sí quepa
@@ -168,51 +175,23 @@ export default function Configuracion() {
     setError("");
     setEnviando(true);
     try {
-      const params = new URLSearchParams();
-      if (especialidad) params.set("especialidad", especialidad);
-      if (anio) params.set("anio", anio);
       const opcionCantidad = OPCIONES_CANTIDAD.find((o) => o.valor === cantidad);
-      params.set("cantidad", opcionCantidad ? String(opcionCantidad.numero) : cantidad);
+      const resultado = await iniciarPractica(
+        [{ especialidad, anio, cantidad: opcionCantidad ? opcionCantidad.numero : cantidad }],
+        { especialidad: especialidad || null, segundosPorPregunta: temporizadorActivo ? segundos : null }
+      );
 
-      const resPreguntas = await fetch(`/api/preguntas?${params.toString()}`);
-      if (!resPreguntas.ok) throw new Error("No se pudieron cargar las preguntas");
-      const preguntas = await resPreguntas.json();
-
-      if (preguntas.length === 0) {
+      if (resultado.error === "sin_preguntas") {
         setError("No hay preguntas disponibles con estos filtros. Prueba con otra combinación.");
         setEnviando(false);
         return;
       }
-
-      const resSesion = await fetch("/api/sesiones", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          modo: "practica",
-          especialidad: especialidad || null,
-          total_preguntas: preguntas.length,
-        }),
-      });
-
-      if (resSesion.status === 403) {
-        const data = await resSesion.json().catch(() => null);
-        if (data?.error === "limite_diario") {
-          setLimiteAlcanzado(true);
-          setEnviando(false);
-          return;
-        }
+      if (resultado.error === "limite_diario") {
+        setLimiteAlcanzado(true);
+        setEnviando(false);
+        return;
       }
-      if (!resSesion.ok) throw new Error("No se pudo crear la sesión");
-      const { id } = await resSesion.json();
-
-      sessionStorage.setItem(
-        `mir_test_${id}`,
-        JSON.stringify({
-          preguntas,
-          segundosPorPregunta: temporizadorActivo ? segundos : null,
-          modoExamen: "practica",
-        })
-      );
+      const { id } = resultado;
 
       router.push(`/test/${id}`);
     } catch (e) {
@@ -362,7 +341,7 @@ export default function Configuracion() {
                 repartidas por especialidad según su peso histórico real en las convocatorias
                 oficiales.
               </li>
-              <li>⏱️ Temporizador real de 4 horas (240 minutos) para todo el examen.</li>
+              <li>⏱️ Temporizador real de 4 h 30 min (270 minutos) para todo el examen.</li>
               <li>🚫 Sin corrección ni interrupciones durante el test — solo al terminar.</li>
               <li>🎯 Puntuación final con la fórmula oficial: aciertos − 1/3 de fallos.</li>
             </ul>

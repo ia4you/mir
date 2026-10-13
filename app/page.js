@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getImageProps } from "next/image";
 import { getEspecialidadesConConteo, formatearMiles, resumenBanco } from "./lib/especialidades";
 import { getConvocatorias, slugConvocatoria } from "./lib/convocatorias";
-import { getControversias } from "./lib/controversias";
+import { getControversias, REFIERE_IMAGEN } from "./lib/controversias";
 import LandingHeader from "./components/LandingHeader";
 import SocialLinks from "./components/SocialLinks";
 
@@ -175,8 +175,7 @@ export default async function LandingPage() {
   // Igual que getPreguntasMuestra/getPreguntasMuestraTema: fuera las que
   // referencian una imagen que aquí no se muestra (dejarían el enunciado
   // incomprensible en el preview).
-  const SIN_IMAGEN = /\b(imagen|imágen|figura|radiografía)\b/i;
-  const controversiasElegibles = todasControversias.filter((c) => !SIN_IMAGEN.test(c.pregunta));
+  const controversiasElegibles = todasControversias.filter((c) => !REFIERE_IMAGEN.test(c.pregunta));
   const controversiasDestacadas = (
     controversiasElegibles.filter((c) => c.recomendada).length >= 2
       ? controversiasElegibles.filter((c) => c.recomendada)

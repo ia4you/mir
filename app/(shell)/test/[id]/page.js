@@ -151,7 +151,7 @@ export default function TestPregunta({ params }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tiempoRestante]);
 
-  // Temporizador global del simulacro (240 min para todo el test, no por
+  // Temporizador global del simulacro (4 h 30 min para todo el test, no por
   // pregunta). Se basa en horaInicioRef en vez de restar 1 en cada tick para
   // no desincronizarse si el intervalo se pausa (pestaña en segundo plano).
   useEffect(() => {
