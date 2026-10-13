@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getPreguntaPublica, getSiguientePregunta } from "../../../lib/especialidades";
+import CtaPractica from "../../../components/CtaPractica";
 
 // Igual que /especialidades/[slug]: el build de Dokploy no tiene acceso a
 // mir-db, así que generateStaticParams no puede enumerar preguntas en build
@@ -160,12 +161,12 @@ export default async function PreguntaPublicaPage({ params }) {
           </div>
         )}
 
-        <Link
-          href="/registro"
+        <CtaPractica
+          texto="Practica con 1.004 preguntas oficiales → Crear cuenta gratis"
+          etiqueta={`Practicar ${pregunta.especialidad}`}
+          lote={{ especialidad: pregunta.especialidad }}
           className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          Practica con 1.004 preguntas oficiales → Crear cuenta gratis
-        </Link>
+        />
 
         <Link
           href={`/especialidades/${pregunta.especialidadSlug}`}

@@ -5,6 +5,7 @@ import {
   getPreguntasMuestraTema,
   calcularLimiteMuestraTema,
 } from "../../lib/temas";
+import CtaPractica from "../../components/CtaPractica";
 
 // Mismo motivo que en /especialidades/[slug]: el build de Dokploy no tiene
 // acceso a mir-db, así que generateStaticParams no puede enumerar slugs en
@@ -103,12 +104,12 @@ export default async function TemaPage({ params }) {
           </>
         )}
 
-        <Link
-          href="/registro"
+        <CtaPractica
+          texto="Practica gratis este tema → Crear cuenta gratis"
+          etiqueta={`Practicar ${tema.nombre}`}
+          lote={{ tema: tema.nombre }}
           className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          Practica gratis este tema → Crear cuenta gratis
-        </Link>
+        />
 
         <Link
           href="/"

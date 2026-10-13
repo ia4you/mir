@@ -32,7 +32,7 @@ const ICONOS = {
 const TABS = [
   { href: "/inicio", label: "Inicio", icono: "inicio" },
   { href: "/configuracion", label: "Práctica", icono: "practica" },
-  { href: "/estadisticas", label: "Progreso", icono: "estadisticas" },
+  { href: "/estadisticas", label: "Estadísticas", icono: "estadisticas" },
   { href: "/perfil", label: "Perfil", icono: "perfil" },
 ];
 
@@ -44,10 +44,11 @@ export function esRutaApp(pathname) {
   return RUTAS_APP.some((r) => pathname === r || pathname.startsWith(`${r}/`));
 }
 
-// Solo por debajo de lg; desde lg la navegación va en AppHeader.
-export default function BottomNav() {
+// Solo por debajo de lg; desde lg la navegación va en AppHeader. `forzar`:
+// ver AppHeader.
+export default function BottomNav({ forzar = false }) {
   const pathname = usePathname();
-  if (!esRutaApp(pathname)) return null;
+  if (!forzar && !esRutaApp(pathname)) return null;
 
   return (
     <nav aria-label="Principal" className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-md border-t border-track bg-card pb-safe lg:hidden">

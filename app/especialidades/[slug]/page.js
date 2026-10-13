@@ -10,6 +10,7 @@ import { getConvocatorias, slugConvocatoria } from "../../lib/convocatorias";
 import { breadcrumb } from "../../lib/jsonld";
 import ListaPreguntasEspecialidad from "../../components/ListaPreguntasEspecialidad";
 import PaginacionEspecialidad from "../../components/PaginacionEspecialidad";
+import CtaPractica from "../../components/CtaPractica";
 
 // El build de Dokploy no tiene acceso a mir-db, así que generateStaticParams
 // no puede enumerar slugs en build time (devuelve []). Next necesita esta
@@ -172,12 +173,12 @@ export default async function EspecialidadPage({ params }) {
           ))}
         </p>
 
-        <Link
-          href="/registro"
+        <CtaPractica
+          texto="Practica con todas las preguntas → Crear cuenta gratis"
+          etiqueta={`Practicar ${especialidad.nombre}`}
+          lote={{ especialidad: especialidad.nombre }}
           className="mt-8 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          Practica con todas las preguntas → Crear cuenta gratis
-        </Link>
+        />
 
         <Link
           href="/"

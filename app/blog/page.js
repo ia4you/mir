@@ -3,6 +3,7 @@ import { query } from "@/lib/db";
 import { imagenDePost } from "@/lib/blog";
 import BlogHeader from "../components/BlogHeader";
 import BlogImagen from "../components/BlogImagen";
+import { CabeceraConSesion } from "../components/NavegacionSesion";
 
 export const dynamic = "force-dynamic";
 
@@ -30,7 +31,9 @@ export default async function BlogIndex() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <BlogHeader />
+      <CabeceraConSesion>
+        <BlogHeader />
+      </CabeceraConSesion>
       <div className="mx-auto max-w-3xl px-5 py-10 sm:py-14">
         <h1 className="text-3xl font-extrabold text-ink">Blog de MIR Turel</h1>
         <p className="mt-2 text-ink-muted">

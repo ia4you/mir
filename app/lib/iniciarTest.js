@@ -38,3 +38,13 @@ export async function iniciarPractica(lotes, { especialidad = null, segundosPorP
   );
   return { id };
 }
+
+// Preguntas que caben en una sesión hoy: la meta diaria, recortada en el plan
+// gratuito a lo que queda del límite (0 = límite agotado).
+export async function cantidadParaHoy(esPremium, meta) {
+  if (esPremium) return meta;
+  const r = await fetch("/api/estadisticas");
+  if (!r.ok) throw new Error("No se pudo consultar el límite diario");
+  const datos = await r.json();
+  return Math.min(meta, Math.max(0, LIMITE_DIARIO_FREE - datos.meta_diaria.respondidas_hoy));
+}

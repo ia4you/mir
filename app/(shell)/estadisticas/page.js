@@ -65,7 +65,7 @@ export default function Estadisticas() {
   return (
     <div className="min-h-screen pb-nav">
       <header className="px-5 pt-5">
-        <h1 className="text-2xl font-extrabold text-ink">Progreso</h1>
+        <h1 className="text-2xl font-extrabold text-ink">Estadísticas</h1>
       </header>
 
       <div className="mt-5">

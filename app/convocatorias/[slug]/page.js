@@ -4,6 +4,7 @@ import { getConvocatoria, getConvocatorias, slugConvocatoria } from "../../lib/c
 import { getControversias } from "../../lib/controversias";
 import { breadcrumb } from "../../lib/jsonld";
 import { slugify } from "../../lib/especialidades";
+import CtaPractica from "../../components/CtaPractica";
 
 // Mismo patrón que /especialidades/[slug]: el build no ve la BD, así que no se
 // enumeran años en build; cada año se renderiza en su primera petición (ISR).
@@ -60,12 +61,12 @@ export default async function ConvocatoriaPage({ params }) {
           {conv.excluidas.length > 0 && ` (n.º ${conv.excluidas.join(", ")})`}.
         </p>
 
-        <Link
-          href="/registro"
+        <CtaPractica
+          texto="Practica gratis → Crear cuenta"
+          etiqueta={`Practicar MIR ${conv.anio}`}
+          lote={{ anio: conv.anio }}
           className="mt-6 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          Practica gratis → Crear cuenta
-        </Link>
+        />
 
         <h2 className="mt-10 text-xl font-extrabold text-ink">
           Preguntas del MIR {conv.anio} por especialidad

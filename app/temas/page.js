@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getTemasConConteo } from "../lib/temas";
+import CtaPractica from "../components/CtaPractica";
 
 // Página estática (no [slug]): mismo patrón que blog/page.js y
 // controversias/page.js, no el patrón ISR de especialidades/[slug]. El
@@ -88,12 +89,12 @@ export default async function TemasIndexPage() {
           ))}
         </div>
 
-        <Link
-          href="/registro"
+        <CtaPractica
+          texto="Practica gratis todos los temas → Crear cuenta gratis"
+          etiqueta={"Practicar todos los temas"}
+          lote={{}}
           className="mt-10 flex h-14 items-center justify-center rounded-2xl bg-brand px-6 text-center text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          Practica gratis todos los temas → Crear cuenta gratis
-        </Link>
+        />
 
         <Link href="/" className="mt-6 block text-center text-sm font-semibold text-ink-muted">
           ← Volver a la página principal

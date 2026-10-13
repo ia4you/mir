@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getControversias } from "../lib/controversias";
+import CtaPractica from "../components/CtaPractica";
 
 export const metadata = {
   title: "Preguntas MIR con respuesta oficial cuestionada | MIR Turel",
@@ -137,12 +138,12 @@ export default async function ControversiasPage() {
           <h2 className="text-xl font-extrabold text-ink">
             ¿Quieres practicar con el banco completo?
           </h2>
-          <Link
-            href="/registro"
-            className="mx-auto mt-4 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-          >
-            Crear cuenta gratis
-          </Link>
+          <CtaPractica
+          texto="Crear cuenta gratis"
+          etiqueta={"Practicar con el banco completo"}
+          lote={{}}
+          className="mx-auto mt-4 flex h-14 max-w-xs items-center justify-center rounded-2xl bg-brand px-6 text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
+        />
         </div>
       </div>
     </div>

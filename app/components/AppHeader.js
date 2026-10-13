@@ -12,7 +12,7 @@ const ENLACES = [
   { href: "/inicio", label: "Inicio" },
   { href: "/convocatorias", label: "Exámenes MIR" },
   { href: "/configuracion", label: "Práctica" },
-  { href: "/estadisticas", label: "Progreso" },
+  { href: "/estadisticas", label: "Estadísticas" },
   { href: "/controversias", label: "Controversias" },
 ];
 
@@ -41,14 +41,15 @@ function DiasMir() {
   );
 }
 
-// Cabecera de la app con sesión (rutas de esRutaApp). En móvil: logo, días al
+// Cabecera de la app con sesión (rutas de esRutaApp, o cualquiera con
+// `forzar`, que usan las páginas públicas cuando hay sesión). En móvil: logo, días al
 // MIR e interruptor de tema; la navegación va en BottomNav. Desde lg: además
 // la navegación principal, Premium (solo plan gratuito) y el avatar.
-export default function AppHeader() {
+export default function AppHeader({ forzar = false }) {
   const pathname = usePathname();
   const { data: session } = useSession();
 
-  if (!esRutaApp(pathname)) return null;
+  if (!forzar && !esRutaApp(pathname)) return null;
 
   const esGratis = session && session.user?.plan !== "premium";
   const inicial = (session?.user?.name || "").trim().charAt(0).toUpperCase() || "?";

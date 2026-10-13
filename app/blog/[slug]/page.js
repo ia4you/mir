@@ -6,6 +6,7 @@ import { query } from "@/lib/db";
 import { imagenDePost } from "@/lib/blog";
 import BlogHeader from "../../components/BlogHeader";
 import BlogImagen from "../../components/BlogImagen";
+import { CabeceraConSesion } from "../../components/NavegacionSesion";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +94,9 @@ export default async function BlogPost({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaArticulo) }}
       />
-      <BlogHeader />
+      <CabeceraConSesion>
+        <BlogHeader />
+      </CabeceraConSesion>
       <div className="mx-auto max-w-5xl px-5 py-8 sm:py-12 lg:grid lg:grid-cols-[1fr_300px] lg:items-start lg:gap-12">
         <article className="mx-auto w-full max-w-[700px] lg:mx-0">
           <Link href="/blog" className="text-sm font-bold text-accent">
