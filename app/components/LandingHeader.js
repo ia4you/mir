@@ -5,15 +5,23 @@ import Link from "next/link";
 import Logo from "./Logo";
 import ThemeSwitch from "./ThemeSwitch";
 
-// Exclusivo de la landing pública (app/page.js) — no lo importa ningún otro
-// sitio de la app. Necesita "use client" solo por el estado de
-// abierto/cerrado del menú móvil; el resto de la landing sigue siendo un
-// Server Component.
-const ENLACES = [
+// Cabecera pública: la de la portada (con anclas a sus secciones) y, sin
+// sesión, la de las páginas públicas (con ENLACES_PUBLICOS, vía
+// NavegacionSesion). Mide lo mismo que AppHeader (h-14, lg:h-16) para que al
+// llegar la sesión se cambie una por otra sin mover el contenido. Necesita
+// "use client" solo por el estado de abierto/cerrado del menú.
+const ENLACES_PORTADA = [
   { href: "#hero", label: "Inicio" },
   { href: "#diferencias", label: "Por qué es distinto" },
   { href: "#controversias", label: "Controversias" },
   { href: "#especialidades", label: "Especialidades" },
+];
+
+export const ENLACES_PUBLICOS = [
+  { href: "/", label: "Inicio" },
+  { href: "/convocatorias", label: "Exámenes MIR" },
+  { href: "/especialidades", label: "Especialidades" },
+  { href: "/controversias", label: "Controversias" },
 ];
 
 // Reemplaza la badge oficial de Google Play (pensada para el hero, no para
@@ -27,12 +35,12 @@ function IconoPlay({ className }) {
   );
 }
 
-export default function LandingHeader() {
+export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
   const [abierto, setAbierto] = useState(false);
 
   return (
-    <header className="border-b border-track bg-card px-5 py-3 pt-safe lg:px-8">
-      <div className="flex items-center justify-between gap-3 lg:mx-auto lg:max-w-[1240px]">
+    <header className="border-b border-track bg-card px-5 pt-safe lg:px-8">
+      <div className="flex h-14 items-center justify-between gap-3 lg:mx-auto lg:h-16 lg:max-w-[1240px]">
         <Link
           href="/"
           aria-label="Ir al inicio"
@@ -47,14 +55,14 @@ export default function LandingHeader() {
             pantalla). Por debajo de xl se sustituye por el botón de menú y el
             desplegable de aquí abajo; Login/Registro siguen visibles desde md. */}
         <nav className="hidden items-center gap-6 xl:flex">
-          {ENLACES.map((enlace) => (
-            <a
+          {enlaces.map((enlace) => (
+            <Link
               key={enlace.href}
               href={enlace.href}
               className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent"
             >
               {enlace.label}
-            </a>
+            </Link>
           ))}
           <Link href="/blog" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent">
             Blog
@@ -112,16 +120,16 @@ export default function LandingHeader() {
       </div>
 
       {abierto && (
-        <nav id="menu-landing-movil" className="mt-3 flex flex-col gap-1 border-t border-track pt-3 xl:hidden">
-          {ENLACES.map((enlace) => (
-            <a
+        <nav id="menu-landing-movil" className="flex flex-col gap-1 border-t border-track pb-3 pt-3 xl:hidden">
+          {enlaces.map((enlace) => (
+            <Link
               key={enlace.href}
               href={enlace.href}
               onClick={() => setAbierto(false)}
               className="rounded-lg px-2 py-2.5 text-sm font-semibold text-ink active:bg-panel"
             >
               {enlace.label}
-            </a>
+            </Link>
           ))}
           <Link
             href="/blog"

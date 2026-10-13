@@ -114,14 +114,17 @@ export default async function ConvocatoriaPage({ params }) {
               <h2 className="mt-10 text-xl font-extrabold text-ink">
                 Preguntas con respuesta oficial controvertida
               </h2>
-              <ul className="mt-3 list-disc pl-5 text-ink-muted">
+              {/* Escritorio: rejilla de 3 columnas (2 hasta xl) con tarjetas como las de
+                  especialidades. Móvil: la lista de siempre. */}
+              <ul className="mt-3 list-disc pl-5 text-ink-muted lg:grid lg:list-none lg:grid-cols-2 lg:gap-2 lg:pl-0 xl:grid-cols-3">
                 {controversias.map((c) => (
                   <li key={c.id}>
                     <Link
                       href={`/preguntas/${slugify(c.especialidad)}/${c.id}`}
-                      className="font-semibold text-accent"
+                      className="font-semibold text-accent lg:flex lg:justify-between lg:gap-3 lg:rounded-xl lg:border lg:border-track lg:bg-card lg:px-4 lg:py-3"
                     >
-                      Pregunta {c.numero} ({c.especialidad})
+                      Pregunta {c.numero}{" "}
+                      <span className="lg:font-normal lg:text-ink-muted">({c.especialidad})</span>
                     </Link>
                   </li>
                 ))}
