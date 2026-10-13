@@ -53,6 +53,25 @@ export function getTema() {
 export function setTema(valor) {
   localStorage.setItem(CLAVE_TEMA, valor);
   aplicarTema(valor);
+  window.dispatchEvent(new Event(EVENTO_TEMA));
+}
+
+// Aviso entre los controles de tema de la misma pestaña (ThemeSwitch de la
+// cabecera y ThemeToggle de Perfil); "storage" cubre las demás pestañas.
+const EVENTO_TEMA = "mir-tema";
+
+export function suscribirTema(callback) {
+  const alCambiar = (e) => {
+    if (e.type === "storage" && e.key !== CLAVE_TEMA) return;
+    if (e.type === "storage") aplicarTema(getTema());
+    callback(getTema());
+  };
+  window.addEventListener(EVENTO_TEMA, alCambiar);
+  window.addEventListener("storage", alCambiar);
+  return () => {
+    window.removeEventListener(EVENTO_TEMA, alCambiar);
+    window.removeEventListener("storage", alCambiar);
+  };
 }
 
 export function aplicarTema(valor) {

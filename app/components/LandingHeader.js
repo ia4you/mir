@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "./Logo";
+import ThemeSwitch from "./ThemeSwitch";
 
 // Exclusivo de la landing pública (app/page.js) — no lo importa ningún otro
 // sitio de la app. Necesita "use client" solo por el estado de
@@ -71,36 +72,42 @@ export default function LandingHeader() {
           </a>
         </nav>
 
-        <div className="hidden items-center gap-4 md:flex">
-          <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
-            Login
-          </Link>
-          <Link
-            href="/registro"
-            className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-on-brand active:bg-brand-dark"
-          >
-            Registro
-          </Link>
-        </div>
+        {/* Un solo ThemeSwitch: en escritorio queda a la izquierda de
+            Login/Registro y en móvil junto al botón de menú. */}
+        <div className="flex items-center gap-2 md:gap-4">
+          <ThemeSwitch />
 
-        <button
-          type="button"
-          onClick={() => setAbierto((v) => !v)}
-          aria-expanded={abierto}
-          aria-controls="menu-landing-movil"
-          aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-ink md:hidden"
-        >
-          {abierto ? (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-6 w-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-6 w-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
-            </svg>
-          )}
-        </button>
+          <div className="hidden items-center gap-4 md:flex">
+            <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
+              Login
+            </Link>
+            <Link
+              href="/registro"
+              className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-on-brand active:bg-brand-dark"
+            >
+              Registro
+            </Link>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setAbierto((v) => !v)}
+            aria-expanded={abierto}
+            aria-controls="menu-landing-movil"
+            aria-label={abierto ? "Cerrar menú" : "Abrir menú"}
+            className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg text-ink md:hidden"
+          >
+            {abierto ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-6 w-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-6 w-6">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
 
       {abierto && (

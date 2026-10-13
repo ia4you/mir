@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Chip from "./Chip";
-import { getTema, setTema, TEMA_POR_DEFECTO } from "../lib/preferencias";
+import { getTema, setTema, suscribirTema, TEMA_POR_DEFECTO } from "../lib/preferencias";
 
 const OPCIONES = [
   { valor: "oscuro", etiqueta: "Oscuro" },
@@ -14,6 +14,7 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     setTemaState(getTema());
+    return suscribirTema(setTemaState);
   }, []);
 
   function elegir(valor) {
