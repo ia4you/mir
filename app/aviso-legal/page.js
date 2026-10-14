@@ -84,6 +84,36 @@ export default function AvisoLegalPage() {
           </section>
 
           <section>
+            <h2 className="text-lg font-bold text-ink">Vídeos de YouTube</h2>
+            <p className="mt-2">
+              La sección de vídeos y las recomendaciones de vídeo que aparecen al fallar una pregunta
+              muestran vídeos publicados en YouTube por sus autores (academias MIR y médicos). Se
+              reproducen con el reproductor oficial de YouTube. Los vídeos pertenecen a sus autores,
+              que son responsables de su contenido. MIR Turel no descarga ni modifica los vídeos, y no
+              está afiliado a YouTube ni a las academias o autores citados.
+            </p>
+            <p className="mt-2">
+              Al reproducir un vídeo usas los servicios de YouTube y aceptas sus{" "}
+              <a
+                href="https://www.youtube.com/t/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-accent"
+              >
+                Condiciones del servicio
+              </a>
+              .
+            </p>
+            <p className="mt-2">
+              Si eres autor de un vídeo y quieres que lo retiremos, escríbenos desde el{" "}
+              <Link href="/contacto" className="font-semibold text-accent">
+                formulario de contacto
+              </Link>{" "}
+              y lo retiraremos en un plazo máximo de 48 horas.
+            </p>
+          </section>
+
+          <section>
             <h2 className="text-lg font-bold text-ink">Contacto</h2>
             <p className="mt-2">
               Para cualquier duda, consulta o solicitud relacionada con este aviso legal, puedes

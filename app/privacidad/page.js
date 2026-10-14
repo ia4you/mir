@@ -101,6 +101,23 @@ export default function PrivacidadPage() {
                 entender el uso agregado de la app de forma anónima.
               </li>
               <li>
+                <span className="font-semibold text-ink">YouTube (Google)</span> — reproduce los
+                vídeos de la sección de vídeos. MIR Turel usa los servicios de la API de YouTube.
+                Antes de que pulses play no se carga nada de YouTube: la imagen de cada vídeo la
+                sirve nuestro propio servidor. Al pulsar play se carga el reproductor de YouTube desde
+                youtube-nocookie.com; a partir de ese momento YouTube puede recibir tu dirección IP y
+                guardar datos en tu navegador, según la{" "}
+                <a
+                  href="https://policies.google.com/privacy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-accent"
+                >
+                  política de privacidad de Google
+                </a>
+                .
+              </li>
+              <li>
                 <span className="font-semibold text-ink">Nuestro proveedor de hosting</span> —
                 aloja la base de datos y el servidor de la aplicación.
               </li>
