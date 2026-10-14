@@ -38,8 +38,9 @@ function IconoPlay({ className }) {
 
 export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
   const [abierto, setAbierto] = useState(false);
-  // La portada muestra esta cabecera también con sesión: ahí, en móvil, la
-  // barra queda como antes (Login y Crear cuenta solo desde md).
+  // La portada muestra esta cabecera también con sesión: ahí, en vez de Login
+  // y Crear cuenta, "Ir a mi panel". Mientras se comprueba la sesión (y para
+  // los rastreadores) se pinta la versión sin sesión.
   const conSesion = useSession().status === "authenticated";
 
   return (
@@ -51,7 +52,7 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
           className="flex-shrink-0"
           onClick={() => setAbierto(false)}
         >
-          <Logo className="flex min-h-[44px] items-center text-3xl max-[359px]:text-[22px] sm:text-4xl" />
+          <Logo className="flex min-h-[44px] items-center text-3xl max-[389px]:text-[26px] max-[359px]:text-[22px] sm:text-4xl" />
         </Link>
 
         {/* Nav principal: a partir de xl (1280 px) cabe entera junto al logo,
@@ -87,23 +88,34 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
 
         {/* Un solo ThemeSwitch, a la izquierda de Login/Crear cuenta. */}
         <div className="flex items-center gap-1 md:gap-4">
-          <ThemeSwitch />
+          <ThemeSwitch compactoMovil />
 
           {/* Visibles en todos los anchos (también siguen en el menú); por
               debajo de md, compactos pero con 40 px de alto para pulsar. Por
-              debajo de 405 px no cabe Login (queda en el menú) y por debajo
-              de 360 px se reducen logo y márgenes para que quepa Crear cuenta. */}
-          <div className={`${conSesion ? "hidden md:flex" : "flex"} items-center gap-2 md:gap-4`}>
-            <Link href="/login" className="flex h-10 max-[404px]:hidden items-center whitespace-nowrap text-sm font-bold text-ink">
-              Login
-            </Link>
+              debajo de 405 px el interruptor pasa a botón redondo, por debajo
+              de 390 px el logo baja a 26 px y por debajo de 375 px no cabe
+              Login (queda en el menú); por debajo de 360 px se reducen logo y
+              márgenes para que quepa Crear cuenta. */}
+          {conSesion ? (
             <Link
-              href="/registro"
-              className="flex h-10 items-center whitespace-nowrap rounded-lg bg-brand px-2.5 text-[13px] max-[359px]:px-2 font-bold text-on-brand active:bg-brand-dark md:px-4 md:text-sm"
+              href="/inicio"
+              className="flex h-10 items-center whitespace-nowrap rounded-lg bg-brand px-2.5 text-[13px] font-bold text-on-brand active:bg-brand-dark md:px-4 md:text-sm"
             >
-              Crear cuenta
+              Ir a mi panel
             </Link>
-          </div>
+          ) : (
+            <div className="flex items-center gap-1.5 md:gap-4">
+              <Link href="/login" className="flex h-10 items-center whitespace-nowrap text-sm font-bold text-ink max-[374px]:hidden">
+                Login
+              </Link>
+              <Link
+                href="/registro"
+                className="flex h-10 items-center whitespace-nowrap rounded-lg bg-brand px-2 text-[13px] font-bold text-on-brand active:bg-brand-dark md:px-4 md:text-sm"
+              >
+                Crear cuenta
+              </Link>
+            </div>
+          )}
 
           <button
             type="button"
@@ -163,20 +175,32 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
             Google Play
           </a>
           <div className="mt-2 flex flex-col gap-2 border-t border-track pt-3">
-            <Link
-              href="/login"
-              onClick={() => setAbierto(false)}
-              className="rounded-lg px-2 py-2.5 text-sm font-bold text-ink active:bg-panel"
-            >
-              Login
-            </Link>
-            <Link
-              href="/registro"
-              onClick={() => setAbierto(false)}
-              className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand active:bg-brand-dark"
-            >
-              Crear cuenta
-            </Link>
+            {conSesion ? (
+              <Link
+                href="/inicio"
+                onClick={() => setAbierto(false)}
+                className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand active:bg-brand-dark"
+              >
+                Ir a mi panel
+              </Link>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setAbierto(false)}
+                  className="rounded-lg px-2 py-2.5 text-sm font-bold text-ink active:bg-panel"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/registro"
+                  onClick={() => setAbierto(false)}
+                  className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand active:bg-brand-dark"
+                >
+                  Crear cuenta
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       )}
