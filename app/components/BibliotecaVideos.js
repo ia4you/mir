@@ -111,18 +111,28 @@ export default function BibliotecaVideos({ grupos, especialidadInicial = "", tem
       </div>
 
       {!especialidad && !tema && (
-        <nav aria-label="Índice de especialidades" className="mt-8 rounded-2xl bg-panel p-4">
-          <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">Ir a una especialidad</p>
-          <ul className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
-            {grupos.map((g) => (
-              <li key={g.slug}>
-                <a href={`#${g.slug}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-accent">
-                  {g.especialidad} · {g.videos.length}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <>
+          {/* Móvil: plegado, para que el primer vídeo aparezca antes. Desde lg,
+              abierto. Son dos bloques (y no un <details> que se abra con JS)
+              para que no se mueva la página al cargar. */}
+          <details className="group mt-8 rounded-2xl bg-panel lg:hidden">
+            <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 text-xs font-bold uppercase tracking-wide text-ink-muted [&::-webkit-details-marker]:hidden">
+              Ir a una especialidad
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-5 w-5 transition-transform group-open:rotate-180" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m6 9 6 6 6-6" />
+              </svg>
+            </summary>
+            <nav aria-label="Índice de especialidades" className="px-4 pb-3">
+              <IndiceEspecialidades grupos={grupos} />
+            </nav>
+          </details>
+          <nav aria-label="Índice de especialidades" className="mt-8 hidden rounded-2xl bg-panel p-4 lg:block">
+            <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">Ir a una especialidad</p>
+            <div className="mt-2">
+              <IndiceEspecialidades grupos={grupos} />
+            </div>
+          </nav>
+        </>
       )}
 
       {visibles.map((g) => (
@@ -147,5 +157,19 @@ export default function BibliotecaVideos({ grupos, especialidadInicial = "", tem
         </p>
       )}
     </>
+  );
+}
+
+function IndiceEspecialidades({ grupos }) {
+  return (
+    <ul className="flex flex-wrap gap-x-4 gap-y-1">
+      {grupos.map((g) => (
+        <li key={g.slug}>
+          <a href={`#${g.slug}`} className="inline-flex min-h-11 items-center text-sm font-semibold text-accent">
+            {g.especialidad} · {g.videos.length}
+          </a>
+        </li>
+      ))}
+    </ul>
   );
 }

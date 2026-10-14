@@ -21,7 +21,14 @@ export const getBiblioteca = cache(async () => {
        WHERE vt.principal AND v.estado = 'activo' AND v.disponibilidad = 'disponible'
        ORDER BY preguntas DESC, v.titulo`
     ),
-    query(`SELECT nombre, url FROM video_canales WHERE activo ORDER BY nombre`),
+    // Solo los canales con al menos un vídeo visible en la biblioteca.
+    query(
+      `SELECT c.nombre, c.url FROM video_canales c
+       WHERE c.activo AND EXISTS (
+         SELECT 1 FROM videos v WHERE v.canal_id = c.id AND v.estado = 'activo' AND v.disponibilidad = 'disponible'
+       )
+       ORDER BY c.nombre`
+    ),
   ]);
 
   const grupos = new Map();

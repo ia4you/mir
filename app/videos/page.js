@@ -36,8 +36,8 @@ export default async function VideosPage({ searchParams }) {
         </p>
         <h1 className="mt-2 font-serif text-4xl leading-tight text-ink sm:text-5xl">Clases cortas, tema a tema</h1>
         <p className="mt-4 max-w-2xl text-ink-muted">
-          Vídeos de academias MIR y médicos acreditados, ordenados por especialidad y tema. Cada vídeo
-          enlaza al canal de su autor.
+          Vídeos de academias MIR y médicos, ordenados por especialidad y tema. Cada vídeo enlaza al
+          canal de su autor.
         </p>
 
         <BibliotecaVideos
