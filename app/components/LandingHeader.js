@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import Logo from "./Logo";
 import ThemeSwitch from "./ThemeSwitch";
 
@@ -37,23 +38,26 @@ function IconoPlay({ className }) {
 
 export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
   const [abierto, setAbierto] = useState(false);
+  // La portada muestra esta cabecera también con sesión: ahí, en móvil, la
+  // barra queda como antes (Login y Crear cuenta solo desde md).
+  const conSesion = useSession().status === "authenticated";
 
   return (
-    <header className="border-b border-track bg-card px-5 pt-safe lg:px-8">
-      <div className="flex h-14 items-center justify-between gap-3 lg:mx-auto lg:h-16 lg:max-w-[1240px]">
+    <header className="border-b border-track bg-card px-4 pt-safe max-[359px]:px-3 md:px-5 lg:px-8">
+      <div className="flex h-14 items-center justify-between gap-2 md:gap-3 lg:mx-auto lg:h-16 lg:max-w-[1240px]">
         <Link
           href="/"
           aria-label="Ir al inicio"
           className="flex-shrink-0"
           onClick={() => setAbierto(false)}
         >
-          <Logo className="flex min-h-[44px] items-center text-3xl sm:text-4xl" />
+          <Logo className="flex min-h-[44px] items-center text-3xl max-[359px]:text-[22px] sm:text-4xl" />
         </Link>
 
         {/* Nav principal: a partir de xl (1280 px) cabe entera junto al logo,
             el interruptor y los botones de sesión (por debajo desbordaba la
             pantalla). Por debajo de xl se sustituye por el botón de menú y el
-            desplegable de aquí abajo; Login/Registro siguen visibles desde md. */}
+            desplegable de aquí abajo; Login y Crear cuenta siguen visibles en la barra. */}
         <nav className="hidden items-center gap-6 xl:flex">
           {enlaces.map((enlace) => (
             <Link
@@ -81,20 +85,23 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
           </a>
         </nav>
 
-        {/* Un solo ThemeSwitch: en escritorio queda a la izquierda de
-            Login/Registro y en móvil junto al botón de menú. */}
-        <div className="flex items-center gap-2 md:gap-4">
+        {/* Un solo ThemeSwitch, a la izquierda de Login/Crear cuenta. */}
+        <div className="flex items-center gap-1 md:gap-4">
           <ThemeSwitch />
 
-          <div className="hidden items-center gap-4 md:flex">
-            <Link href="/login" className="whitespace-nowrap text-sm font-bold text-ink">
+          {/* Visibles en todos los anchos (también siguen en el menú); por
+              debajo de md, compactos pero con 40 px de alto para pulsar. Por
+              debajo de 405 px no cabe Login (queda en el menú) y por debajo
+              de 360 px se reducen logo y márgenes para que quepa Crear cuenta. */}
+          <div className={`${conSesion ? "hidden md:flex" : "flex"} items-center gap-2 md:gap-4`}>
+            <Link href="/login" className="flex h-10 max-[404px]:hidden items-center whitespace-nowrap text-sm font-bold text-ink">
               Login
             </Link>
             <Link
               href="/registro"
-              className="whitespace-nowrap rounded-lg bg-brand px-4 py-2 text-sm font-bold text-on-brand active:bg-brand-dark"
+              className="flex h-10 items-center whitespace-nowrap rounded-lg bg-brand px-2.5 text-[13px] max-[359px]:px-2 font-bold text-on-brand active:bg-brand-dark md:px-4 md:text-sm"
             >
-              Registro
+              Crear cuenta
             </Link>
           </div>
 
@@ -168,7 +175,7 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
               onClick={() => setAbierto(false)}
               className="flex h-11 items-center justify-center rounded-xl bg-brand px-4 text-sm font-bold text-on-brand active:bg-brand-dark"
             >
-              Registro
+              Crear cuenta
             </Link>
           </div>
         </nav>
