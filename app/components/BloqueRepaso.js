@@ -77,9 +77,14 @@ export default function BloqueRepaso() {
         )}
       </div>
 
-      <ul className="mt-5 grid grid-cols-5 gap-2 rounded-xl bg-panel px-3 py-3" aria-label="Preguntas en repaso por intervalo">
+      <p className="mt-5 text-xs text-ink-subtle">Tus preguntas según su etapa de repaso</p>
+      <ul className="mt-2 grid grid-cols-5 gap-2 rounded-xl bg-panel px-3 py-3" aria-label="Tus preguntas según su etapa de repaso">
         {INTERVALOS.map((dias, i) => (
-          <li key={dias} className="flex flex-col items-center gap-1">
+          <li
+            key={dias}
+            title={`${datos.porNivel[i]} ${datos.porNivel[i] === 1 ? "pregunta" : "preguntas"} en la etapa de ${dias} ${dias === 1 ? "día" : "días"}`}
+            className="flex flex-col items-center gap-1"
+          >
             <span className={`font-mono text-lg font-semibold ${datos.porNivel[i] ? "text-ink" : "text-ink-subtle"}`}>
               {datos.porNivel[i]}
             </span>
