@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getControversias } from "../lib/controversias";
 import CtaPractica from "../components/CtaPractica";
+import ImagenPregunta from "../components/ImagenPregunta";
 
 export const metadata = {
   title: "Preguntas MIR con respuesta oficial cuestionada | MIR Turel",
@@ -77,6 +78,7 @@ export default async function ControversiasPage() {
               </div>
 
               <h2 className="mt-3 text-base font-normal leading-relaxed text-ink">{c.pregunta}</h2>
+              {c.imagen_path && <ImagenPregunta src={c.imagen_path} className="mt-3" />}
 
               <ul className="mt-4 flex flex-col gap-2 text-sm">
                 {LETRAS.map((letra) => {
