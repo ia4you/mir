@@ -31,7 +31,6 @@ export default function TarjetaVideo({ video: v, fallos = 0, visto = false, onVi
           </p>
         )}
         <h3 className="mt-2 font-bold leading-snug text-ink">{v.titulo}</h3>
-        {onVisto && <BotonVisto visto={visto} onCambiar={onVisto} className="mt-3" />}
         <p className="mt-auto pt-3 text-sm text-ink-muted">
           Vídeo de{" "}
           <a href={v.canal_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-2 hover:underline">
@@ -51,6 +50,7 @@ export default function TarjetaVideo({ video: v, fallos = 0, visto = false, onVi
             Abrir en YouTube ↗
           </a>
         </p>
+        {onVisto && <BotonVisto visto={visto} onCambiar={onVisto} className="mt-3" />}
       </div>
     </article>
   );
