@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import ReproductorYouTube from "./ReproductorYouTube";
+import BotonVisto from "./BotonVisto";
 import { formatoDuracion } from "@/lib/videos";
 
 // Tarjeta de /videos: miniatura (el reproductor se carga en la propia
-// tarjeta al pulsar play), especialidad, tema, título, canal y año.
-export default function TarjetaVideo({ video: v }) {
+// tarjeta al pulsar play), especialidad, tema, título, canal y año. Con
+// sesión, `fallos` añade la marca "Has fallado…"; con Premium, `onVisto`
+// añade el botón "Marcar como visto".
+export default function TarjetaVideo({ video: v, fallos = 0, visto = false, onVisto }) {
   const [cargado, setCargado] = useState(false);
 
   return (
@@ -22,7 +25,13 @@ export default function TarjetaVideo({ video: v }) {
       <div className="flex flex-1 flex-col p-4">
         <p className="font-mono text-xs uppercase tracking-wide text-accent">{v.especialidad}</p>
         <p className="mt-1 text-sm text-ink-muted">{v.tema}</p>
+        {fallos > 0 && (
+          <p className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-danger-bg px-2.5 py-1 text-xs font-semibold text-danger-text">
+            <span aria-hidden="true">●</span> Has fallado {fallos} {fallos === 1 ? "pregunta" : "preguntas"} de este tema
+          </p>
+        )}
         <h3 className="mt-2 font-bold leading-snug text-ink">{v.titulo}</h3>
+        {onVisto && <BotonVisto visto={visto} onCambiar={onVisto} className="mt-3" />}
         <p className="mt-auto pt-3 text-sm text-ink-muted">
           Vídeo de{" "}
           <a href={v.canal_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-2 hover:underline">

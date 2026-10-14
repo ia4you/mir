@@ -46,6 +46,11 @@ export default function PrivacidadPage() {
                 estadísticas por especialidad.
               </li>
               <li>
+                <span className="font-semibold text-ink">Vídeos vistos:</span> si tienes Premium y
+                marcas vídeos como vistos, guardamos qué vídeos has marcado y cuándo, para mostrarte
+                tu progreso. Se borran al eliminar tu cuenta.
+              </li>
+              <li>
                 <span className="font-semibold text-ink">Foto de perfil:</span> si decides subir
                 un avatar, de forma opcional.
               </li>

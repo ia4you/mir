@@ -2,13 +2,16 @@
 
 import { useEffect, useState } from "react";
 import ReproductorYouTube from "./ReproductorYouTube";
+import BotonVisto from "./BotonVisto";
 import { formatoDuracion } from "@/lib/videos";
 
 // Bloque que aparece al fallar una pregunta (en /test y /demo): el vídeo del
 // tema de la pregunta o, si no hay, la búsqueda de YouTube. Los vídeos son
 // para todos los planes; `mostrarPremium` solo añade, para Free, una línea
-// sobre lo que aporta Premium. Si la petición falla, no se muestra nada.
-export default function VideoTrasFallo({ preguntaId, mostrarPremium = false }) {
+// sobre lo que aporta Premium, y `esPremium` el botón "Marcar como visto" (el
+// servidor vuelve a comprobar el plan en la BD). Si la petición falla, no se
+// muestra nada.
+export default function VideoTrasFallo({ preguntaId, mostrarPremium = false, esPremium = false }) {
   const [datos, setDatos] = useState(null);
 
   useEffect(() => {
@@ -26,7 +29,11 @@ export default function VideoTrasFallo({ preguntaId, mostrarPremium = false }) {
 
   return (
     <div className="mt-5">
-      {datos.video ? <VideoRecomendado video={datos.video} /> : <VideoBusqueda busqueda={datos.busqueda} />}
+      {datos.video ? (
+        <VideoRecomendado video={datos.video} esPremium={esPremium} />
+      ) : (
+        <VideoBusqueda busqueda={datos.busqueda} />
+      )}
       {mostrarPremium && (
         <p className="mt-3 text-xs text-ink-subtle">
           Con Premium guardamos tu lista de vídeos para repasar según tus fallos.
@@ -36,8 +43,25 @@ export default function VideoTrasFallo({ preguntaId, mostrarPremium = false }) {
   );
 }
 
-function VideoRecomendado({ video: v }) {
+function VideoRecomendado({ video: v, esPremium }) {
   const [cargado, setCargado] = useState(false);
+  // null = aún no se sabe (o no es Premium según la BD): sin botón.
+  const [visto, setVisto] = useState(null);
+
+  useEffect(() => {
+    if (!esPremium) return;
+    fetch(`/api/videos/vistos/${v.youtube_id}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setVisto(d.visto))
+      .catch(() => {});
+  }, [esPremium, v.youtube_id]);
+
+  async function cambiarVisto() {
+    const estaba = visto;
+    setVisto(!estaba);
+    const r = await fetch(`/api/videos/vistos/${v.youtube_id}`, { method: estaba ? "DELETE" : "POST" }).catch(() => null);
+    if (!r?.ok) setVisto(estaba);
+  }
   const urlYouTube = `https://www.youtube.com/watch?v=${v.youtube_id}`;
 
   return (
@@ -91,6 +115,7 @@ function VideoRecomendado({ video: v }) {
         >
           Abrir en YouTube
         </a>
+        {visto !== null && <BotonVisto visto={visto} onCambiar={cambiarVisto} />}
       </div>
       <p className="mt-3 text-xs leading-relaxed text-ink-subtle">
         El reproductor de YouTube solo se carga cuando pulsas play. El contenido del vídeo es

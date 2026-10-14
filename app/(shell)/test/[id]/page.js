@@ -593,7 +593,7 @@ export default function TestPregunta({ params }) {
                         </>
                       }
                       bloqueVideo={
-                        <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} mostrarPremium={!esPremium} />
+                        <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} mostrarPremium={!esPremium} esPremium={esPremium} />
                       }
                       onSiguiente={siguientePregunta}
                       siguienteLabel={indice + 1 < preguntas.length ? "Siguiente pregunta" : "Ver resultados"}
@@ -773,7 +773,7 @@ export default function TestPregunta({ params }) {
                         </div>
                       )}
 
-                      <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} mostrarPremium={!esPremium} />
+                      <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} mostrarPremium={!esPremium} esPremium={esPremium} />
                     </div>
                   )}
                 </>
