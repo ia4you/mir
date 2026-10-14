@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { getObjecionParaPregunta, extraerRespuestaRecomendada } from "@/app/lib/controversias";
+import { siguienteEstado } from "@/lib/repaso";
+import { HOY_CANARIAS } from "@/lib/racha";
 
 export const dynamic = "force-dynamic";
 
@@ -37,7 +39,7 @@ export async function POST(request, { params }) {
     }
 
     const { rows } = await query(
-      `SELECT correcta, explicacion, explicacion_calidad, año, numero,
+      `SELECT correcta, explicacion, explicacion_calidad, año, numero, origen, anulada,
               opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
        FROM preguntas WHERE id = $1`,
       [preguntaId]
@@ -55,6 +57,16 @@ export async function POST(request, { params }) {
        VALUES ($1, $2, $3, $4, $5)`,
       [sesionId, preguntaId, respuestaDada, esCorrecta, session.user.id]
     );
+
+    // Repaso espaciado (solo banco oficial). Va aparte y nunca impide guardar
+    // la respuesta: si falla (p. ej. la tabla aún no existe), se registra y sigue.
+    if (fila.origen === "oficial" && !fila.anulada) {
+      try {
+        await actualizarRepaso(session.user.id, preguntaId, esCorrecta);
+      } catch (err) {
+        console.error("Repaso espaciado no actualizado:", err.message);
+      }
+    }
 
     // Para preguntas tipo controversia, la tarjeta de corrección muestra las
     // 3 perspectivas (oficial / clínicamente recomendada / motivo) igual que
@@ -83,4 +95,36 @@ export async function POST(request, { params }) {
     console.error(err);
     return NextResponse.json({ error: "Error al registrar la respuesta" }, { status: 500 });
   }
+}
+
+async function actualizarRepaso(userId, preguntaId, correcta) {
+  const { rows } = await query(
+    `SELECT to_char(${HOY_CANARIAS}, 'YYYY-MM-DD') AS hoy,
+            r.nivel, to_char(r.proxima, 'YYYY-MM-DD') AS proxima, r.user_id IS NOT NULL AS existe
+     FROM (SELECT 1) x
+     LEFT JOIN repaso_espaciado r ON r.user_id = $1 AND r.pregunta_id = $2`,
+    [userId, preguntaId]
+  );
+  const { hoy, nivel, proxima, existe } = rows[0];
+  const nuevo = siguienteEstado(existe ? { nivel, proxima } : null, correcta, hoy);
+  if (!nuevo) return;
+
+  if (nuevo.dominada) {
+    await query(
+      `UPDATE repaso_espaciado
+       SET nivel = NULL, proxima = NULL, dominada_en = now(), ultimo_repaso = now()
+       WHERE user_id = $1 AND pregunta_id = $2`,
+      [userId, preguntaId]
+    );
+    return;
+  }
+  await query(
+    `INSERT INTO repaso_espaciado (user_id, pregunta_id, nivel, proxima, ultimo_repaso)
+     VALUES ($1, $2, $3, $4, now())
+     ON CONFLICT (user_id, pregunta_id) DO UPDATE
+       SET nivel = EXCLUDED.nivel, proxima = EXCLUDED.proxima, dominada_en = NULL,
+           ultimo_repaso = now(),
+           veces_fallada = repaso_espaciado.veces_fallada + $5`,
+    [userId, preguntaId, nuevo.nivel, nuevo.proxima, correcta ? 0 : 1]
+  );
 }
