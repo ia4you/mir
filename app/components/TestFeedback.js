@@ -55,6 +55,8 @@ export default function TestFeedback({
   bloqueVideo,
   onSiguiente,
   siguienteLabel = "Siguiente pregunta",
+  // Sustituye al botón de siguiente (la demo, en su última pregunta).
+  pie,
 }) {
   const accent = isCorrect
     ? {
@@ -85,19 +87,27 @@ export default function TestFeedback({
       {/* Comparación de respuestas — solo si falló */}
       {!isCorrect && (
         <div className="flex flex-col gap-2 px-6 pb-5">
-          <div className="flex items-center gap-3 rounded-lg bg-danger-bg px-3 py-2.5">
+          <div className="flex items-start gap-3 rounded-lg bg-danger-bg px-3 py-2.5 sm:items-center">
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-danger text-[13px] font-bold text-on-status">
               {userLetter}
             </span>
-            <span className="flex-1 text-sm text-danger-text">{userText}</span>
-            <span className="whitespace-nowrap text-xs text-danger-text">Tu respuesta</span>
+            {/* Móvil: etiqueta encima del texto, que usa todo el ancho.
+                Desde sm: texto a la izquierda y etiqueta a la derecha. */}
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row-reverse sm:items-center sm:gap-3">
+              <span className="whitespace-nowrap text-xs text-danger-text">Tu respuesta</span>
+              <span className="flex-1 text-sm text-danger-text">{userText}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-3 rounded-lg bg-success-bg px-3 py-2.5">
+          <div className="flex items-start gap-3 rounded-lg bg-success-bg px-3 py-2.5 sm:items-center">
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-success text-[13px] font-bold text-on-status">
               {correctLetter}
             </span>
-            <span className="flex-1 text-sm text-success-text">{correctText}</span>
-            <span className="whitespace-nowrap text-xs text-success-text">Respuesta correcta</span>
+            {/* Móvil: etiqueta encima del texto, que usa todo el ancho.
+                Desde sm: texto a la izquierda y etiqueta a la derecha. */}
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:flex-row-reverse sm:items-center sm:gap-3">
+              <span className="whitespace-nowrap text-xs text-success-text">Respuesta correcta</span>
+              <span className="flex-1 text-sm text-success-text">{correctText}</span>
+            </div>
           </div>
         </div>
       )}
@@ -135,14 +145,16 @@ export default function TestFeedback({
 
       {/* CTA principal */}
       <div className="border-t border-track px-6 py-4">
-        <button
-          type="button"
-          onClick={onSiguiente}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-        >
-          {siguienteLabel}
-          <IconArrowRight />
-        </button>
+        {pie || (
+          <button
+            type="button"
+            onClick={onSiguiente}
+            className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
+          >
+            {siguienteLabel}
+            <IconArrowRight />
+          </button>
+        )}
       </div>
     </div>
   );

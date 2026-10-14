@@ -59,7 +59,9 @@ function VideoRecomendado({ video: v }) {
           <p className="font-mono text-xs uppercase tracking-wide text-accent">
             {v.especialidad} · {v.tema}
           </p>
-          <h3 className="mt-1 font-serif text-xl leading-snug text-ink">{v.titulo}</h3>
+          {/* geometricPrecision: sin ella, Chrome redondea el avance de cada letra
+              de Instrument Serif a este tamaño y las separa de forma irregular. */}
+          <h3 className="mt-1 font-serif text-xl leading-snug text-ink [text-rendering:geometricPrecision]">{v.titulo}</h3>
           <p className="mt-1 text-sm text-ink-muted">
             Vídeo de{" "}
             <a href={v.canal_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-2 hover:underline">

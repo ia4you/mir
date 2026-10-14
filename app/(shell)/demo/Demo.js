@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import OptionCard from "../../components/OptionCard";
+import TestFeedback from "../../components/TestFeedback";
 import VideoTrasFallo from "../../components/VideoTrasFallo";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
@@ -97,6 +98,10 @@ export default function Demo({ totalBanco }) {
   })).filter((o) => o.texto);
 
   const progreso = ((estado === "corregido" ? indice + 1 : indice) / preguntas.length) * 100;
+
+  // Caso normal (con explicación y sin controversia): tarjeta de /test.
+  const usaTarjeta =
+    estado === "corregido" && resultado.explicacion && resultado.explicacion_calidad !== "controversia";
 
   const cta = (
     <div className="flex flex-col items-center gap-3 text-center">
@@ -247,138 +252,180 @@ export default function Demo({ totalBanco }) {
             }
           }}
         >
-          <div className="flex-1 overflow-y-auto px-5 pb-6 pt-safe">
-            <div className="flex items-center justify-between gap-3 pt-2">
-              <div className="flex items-center gap-3">
-                <span
-                  className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-on-status ${
-                    resultado.correcta ? "bg-success" : "bg-danger"
-                  }`}
-                >
-                  {resultado.correcta ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
-                    </svg>
-                  ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+          <div className="flex-1 overflow-y-auto px-5 pb-6 pt-safe lg:pt-8">
+            <div className="lg:mx-auto lg:max-w-[720px]">
+              {usaTarjeta ? (
+                // Caso normal: la misma tarjeta que /test (TestFeedback). Controversia
+                // y sin explicación siguen con su markup, como en /test.
+                <>
+                  {!esUltima && (
+                    <div className="flex justify-end pt-2">
+                      <button
+                        type="button"
+                        onClick={cerrarExplicacion}
+                        aria-label="Cerrar explicación"
+                        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
+                      >
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-ink">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                  <div className="mt-2 flex justify-center">
+                    <TestFeedback
+                      isCorrect={resultado.correcta}
+                      userLetter={seleccionada}
+                      userText={preguntaActual[`opcion_${seleccionada.toLowerCase()}`]}
+                      correctLetter={resultado.respuesta_correcta}
+                      correctText={preguntaActual[`opcion_${String(resultado.respuesta_correcta).toLowerCase()}`]}
+                      explicacion={resultado.explicacion}
+                      bloqueVideo={<VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} />}
+                      onSiguiente={siguientePregunta}
+                      pie={esUltima ? cta : undefined}
+                    />
+                  </div>
+                </>
+              ) : (
+                <>
+              <div className="flex items-center justify-between gap-3 pt-2">
+                <div className="flex items-center gap-3">
+                  <span
+                    className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full text-on-status ${
+                      resultado.correcta ? "bg-success" : "bg-danger"
+                    }`}
+                  >
+                    {resultado.correcta ? (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m5 13 4 4 10-10" />
+                      </svg>
+                    ) : (
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-6 w-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
+                      </svg>
+                    )}
+                  </span>
+                  <p
+                    className={`text-2xl font-extrabold ${
+                      resultado.correcta ? "text-success-text" : "text-danger-text"
+                    }`}
+                  >
+                    {resultado.correcta ? "CORRECTO" : "INCORRECTO"}
+                  </p>
+                </div>
+                {!esUltima && (
+                  <button
+                    type="button"
+                    onClick={cerrarExplicacion}
+                    aria-label="Cerrar explicación"
+                    className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-ink">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
                     </svg>
-                  )}
-                </span>
-                <p
-                  className={`text-2xl font-extrabold ${
-                    resultado.correcta ? "text-success-text" : "text-danger-text"
-                  }`}
-                >
-                  {resultado.correcta ? "CORRECTO" : "INCORRECTO"}
-                </p>
+                  </button>
+                )}
               </div>
-              {!esUltima && (
-                <button
-                  type="button"
-                  onClick={cerrarExplicacion}
-                  aria-label="Cerrar explicación"
-                  className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-card shadow-sm"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="h-4 w-4 text-ink">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 6l12 12M18 6 6 18" />
-                  </svg>
-                </button>
-              )}
-            </div>
 
-            <div className="mt-5 flex flex-col gap-2 text-ink">
-              <p>
-                <span className="font-bold">Respondiste: </span>
-                {seleccionada} — {preguntaActual[`opcion_${seleccionada.toLowerCase()}`]}
-              </p>
-              {!resultado.correcta && (
+              <div className="mt-5 flex flex-col gap-2 text-ink">
                 <p>
-                  <span className="font-bold">Respuesta correcta: </span>
-                  {resultado.respuesta_correcta} —{" "}
-                  {preguntaActual[`opcion_${String(resultado.respuesta_correcta).toLowerCase()}`]}
+                  <span className="font-bold">Respondiste: </span>
+                  {seleccionada} — {preguntaActual[`opcion_${seleccionada.toLowerCase()}`]}
                 </p>
-              )}
-            </div>
+                {!resultado.correcta && (
+                  <p>
+                    <span className="font-bold">Respuesta correcta: </span>
+                    {resultado.respuesta_correcta} —{" "}
+                    {preguntaActual[`opcion_${String(resultado.respuesta_correcta).toLowerCase()}`]}
+                  </p>
+                )}
+              </div>
 
-            <hr className="my-5 border-track" />
+              <hr className="my-5 border-track" />
 
-            <div>
-              <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
-                Explicación
-              </p>
-              {resultado.explicacion ? (
-                <div className="flex flex-col items-start gap-2">
-                  {resultado.explicacion_calidad === "controversia" && (
-                    <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
-                      ⚠️ Respuesta oficial cuestionada
+              <div>
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
+                  Explicación
+                </p>
+                {resultado.explicacion ? (
+                  <div className="flex flex-col items-start gap-2">
+                    {resultado.explicacion_calidad === "controversia" && (
+                      <span className="rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
+                        ⚠️ Respuesta oficial cuestionada
+                      </span>
+                    )}
+                    <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
+                    {resultado.explicacion_calidad === "controversia" && (
+                      <Link href="/controversias" target="_blank" className="text-sm font-bold text-accent">
+                        Ver /controversias →
+                      </Link>
+                    )}
+                  </div>
+                ) : resultado.explicacion_calidad === "sin_imagen" ? (
+                  <div className="flex flex-col items-start gap-2">
+                    <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
+                      🖼️ Sin imagen disponible
                     </span>
-                  )}
-                  <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
-                  {resultado.explicacion_calidad === "controversia" && (
-                    <Link href="/controversias" target="_blank" className="text-sm font-bold text-accent">
-                      Ver /controversias →
-                    </Link>
-                  )}
-                </div>
-              ) : resultado.explicacion_calidad === "sin_imagen" ? (
-                <div className="flex flex-col items-start gap-2">
-                  <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
-                    🖼️ Sin imagen disponible
-                  </span>
-                  <p className="text-sm leading-relaxed text-ink-muted">
-                    Esta pregunta hace referencia a una imagen clínica del examen original.
-                    Explicación no disponible.
-                  </p>
-                </div>
-              ) : resultado.explicacion_calidad === "controversia" ? (
-                <div className="flex flex-col items-start gap-2">
-                  <span className="flex items-center gap-1.5 rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
-                    ⚠️ Respuesta cuestionada
-                  </span>
-                  <p className="text-sm leading-relaxed text-ink-muted">
-                    La respuesta oficial de esta pregunta ha sido cuestionada.{" "}
-                    <Link href="/controversias" target="_blank" className="font-bold text-accent">
-                      Ver /controversias
-                    </Link>
-                    .
-                  </p>
-                </div>
-              ) : (
-                <div className="flex flex-col items-start gap-2">
-                  <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
-                    📚 No disponible
-                  </span>
-                  <p className="text-sm leading-relaxed text-ink-muted">
-                    Explicación no disponible para esta pregunta.
-                  </p>
-                </div>
+                    <p className="text-sm leading-relaxed text-ink-muted">
+                      Esta pregunta hace referencia a una imagen clínica del examen original.
+                      Explicación no disponible.
+                    </p>
+                  </div>
+                ) : resultado.explicacion_calidad === "controversia" ? (
+                  <div className="flex flex-col items-start gap-2">
+                    <span className="flex items-center gap-1.5 rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
+                      ⚠️ Respuesta cuestionada
+                    </span>
+                    <p className="text-sm leading-relaxed text-ink-muted">
+                      La respuesta oficial de esta pregunta ha sido cuestionada.{" "}
+                      <Link href="/controversias" target="_blank" className="font-bold text-accent">
+                        Ver /controversias
+                      </Link>
+                      .
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-start gap-2">
+                    <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
+                      📚 No disponible
+                    </span>
+                    <p className="text-sm leading-relaxed text-ink-muted">
+                      Explicación no disponible para esta pregunta.
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {!resultado.correcta && resultado.explicacion_calidad !== "controversia" && (
+                <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} />
+              )}
+
+              {esUltima && <hr className="my-5 border-track" />}
+                </>
               )}
             </div>
-
-            {!resultado.correcta && resultado.explicacion_calidad !== "controversia" && (
-              <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} />
-            )}
-
-            {esUltima && <hr className="my-5 border-track" />}
           </div>
 
-          <div className="border-t border-track px-5 py-4 pb-safe">
-            {esUltima ? (
-              cta
-            ) : (
-              <button
-                type="button"
-                onClick={siguientePregunta}
-                className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
-              >
-                Siguiente pregunta
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </button>
-            )}
-          </div>
+          {!usaTarjeta && (
+            <div className="border-t border-track px-5 py-4 pb-safe">
+              <div className="lg:mx-auto lg:max-w-[720px]">
+                {esUltima ? (
+                  cta
+                ) : (
+                  <button
+                    type="button"
+                    onClick={siguientePregunta}
+                    className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-brand text-lg font-bold text-on-brand shadow-sm active:bg-brand-dark"
+                  >
+                    Siguiente pregunta
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="h-5 w-5">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
