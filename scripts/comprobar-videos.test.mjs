@@ -1,6 +1,13 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { duracionASegundos, disponibilidadDe, limiteAnos, demasiadoAntiguo } from "./comprobar-videos.mjs";
+import {
+  duracionASegundos,
+  disponibilidadDe,
+  limiteAnos,
+  demasiadoAntiguo,
+  cruzaLimiteEntre,
+  hayQueAvisar,
+} from "./comprobar-videos.mjs";
 
 test("duración ISO 8601 a segundos", () => {
   assert.equal(duracionASegundos("PT5M44S"), 344);
@@ -30,4 +37,20 @@ test("demasiado antiguo", () => {
   assert.equal(demasiadoAntiguo("2022-01-01", 3, hoy), true);
   assert.equal(demasiadoAntiguo("2024-06-22", 3, hoy), false);
   assert.equal(demasiadoAntiguo("2001-01-01", null, hoy), false);
+});
+
+test("aviso de antigüedad nuevo solo si cruza el límite desde la comprobación anterior", () => {
+  // Publicado 2023-10-20, límite 3 años → cruza el 2026-10-20.
+  assert.equal(cruzaLimiteEntre("2023-10-20", 3, "2026-10-13", "2026-10-26"), true);
+  assert.equal(cruzaLimiteEntre("2023-10-20", 3, "2026-10-26", "2026-11-02"), false);
+  assert.equal(cruzaLimiteEntre("2020-01-01", null, "2026-10-13", "2026-10-26"), false);
+});
+
+test("correo solo si hay algo que mirar", () => {
+  assert.equal(hayQueAvisar({}), false);
+  assert.equal(hayQueAvisar({ ocultados: 0, borrados: 0, antiguedadNuevos: 0 }), false);
+  assert.equal(hayQueAvisar({ ocultados: 1 }), true);
+  assert.equal(hayQueAvisar({ borrados: 1 }), true);
+  assert.equal(hayQueAvisar({ antiguedadNuevos: 2 }), true);
+  assert.equal(hayQueAvisar({ error: new Error("x") }), true);
 });

@@ -13,11 +13,15 @@
 // - Pide videos.list en lotes de 50 (1 unidad de cuota por lote).
 // - Actualiza título, duración, si se puede insertar, disponibilidad y
 //   ultima_comprobacion (esta solo cuando YouTube devuelve el vídeo).
-// - Oculta los borrados, no públicos o no insertables. No reactiva nada
-//   solo: si uno oculto por la comprobación vuelve, lo avisa.
+// - Oculta los borrados, no públicos (privados o no listados) o no
+//   insertables. No reactiva nada solo: si uno oculto vuelve, lo avisa.
+// - Borra (fila de videos y, en cascada, sus video_temas) los vídeos cuyos
+//   datos llevan más de 30 días sin poder refrescarse, dejando en el log qué
+//   se borra y por qué.
 // - Avisa (sin tocar nada) de títulos cambiados, vídeos que superan la
-//   antigüedad de su tema, temas que ya no existen en `preguntas` y datos
-//   que llevan más de 30 días sin poder refrescarse.
+//   antigüedad de su tema y temas que ya no existen en `preguntas`.
+// - Manda un correo a SMTP_TO solo si hay algo que mirar: vídeos ocultados
+//   o borrados, avisos de antigüedad nuevos o un error de la API o la BD.
 //
 // Autocontenido (como enviar-recordatorio.mjs): el contenedor usa Node 18 y
 // no puede importar los módulos ESM de la app. La clave va en la cabecera
@@ -27,6 +31,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { dirname, join } from "node:path";
 import pg from "pg";
+import nodemailer from "nodemailer";
 
 const API = "https://www.googleapis.com/youtube/v3/videos";
 const DIAS_MAX_SIN_REFRESCAR = 30;
@@ -78,6 +83,46 @@ export function demasiadoAntiguo(fechaPublicacion, anos, ahora = new Date()) {
   return new Date(fechaPublicacion) < limite;
 }
 
+// Un vídeo cruza el límite de antigüedad en fecha + años. El aviso es
+// "nuevo" si ese momento cae entre la comprobación anterior y ahora, así no
+// hace falta guardar qué avisos se mandaron ya.
+export function cruzaLimiteEntre(fechaPublicacion, anos, desde, hasta) {
+  if (anos === null || anos === undefined) return false;
+  const cruce = new Date(fechaPublicacion);
+  cruce.setFullYear(cruce.getFullYear() + anos);
+  return cruce > new Date(desde ?? 0) && cruce <= new Date(hasta);
+}
+
+// ¿Merece correo? Solo si hay algo que mirar.
+export function hayQueAvisar({ ocultados = 0, borrados = 0, antiguedadNuevos = 0, error = null }) {
+  return Boolean(error) || ocultados > 0 || borrados > 0 || antiguedadNuevos > 0;
+}
+
+// ---------- correo ----------
+
+// Mismo transporte que lib/mailer.js (puerto sin TLS implícito). Si falta la
+// configuración SMTP, lo deja en el log y sigue: el correo es un extra.
+async function enviarCorreo(asunto, texto) {
+  const faltan = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM", "SMTP_TO"].filter((k) => !process.env[k]);
+  if (faltan.length) {
+    console.log(`  (correo no enviado: faltan ${faltan.join(", ")})`);
+    return;
+  }
+  try {
+    const transporte = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      secure: false,
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      connectionTimeout: 10000,
+    });
+    await transporte.sendMail({ from: process.env.SMTP_FROM, to: process.env.SMTP_TO, subject: asunto, text: texto });
+    console.log(`  (correo enviado a la dirección de avisos)`);
+  } catch (e) {
+    console.log(`  (correo no enviado: ${e.code || e.message})`);
+  }
+}
+
 // ---------- API de YouTube ----------
 
 async function pedirLote(ids) {
@@ -103,7 +148,7 @@ async function pedirLote(ids) {
 
 // ---------- programa ----------
 
-const ahoraISO = () => new Date().toISOString().slice(0, 19).replace("T", " ");
+const ahoraISO = () => `${new Date().toISOString().slice(0, 19).replace("T", " ")} UTC`;
 
 async function ocultar(client, youtubeId, motivo) {
   const { rows } = await client.query(
@@ -146,7 +191,7 @@ async function comprobar(client, seco) {
   }
 
   const avisos = [];
-  const cambios = { actualizados: 0, ocultados: 0 };
+  const cambios = { actualizados: 0, ocultados: 0, borrados: 0, antiguedadNuevos: 0 };
   const ahora = new Date();
   await client.query(seco ? "BEGIN READ ONLY" : "BEGIN");
   try {
@@ -155,6 +200,18 @@ async function comprobar(client, seco) {
       const disp = disponibilidadDe(it);
       const etiqueta = `${v.youtube_id} ("${v.titulo}")`;
 
+      // Datos que no se pueden refrescar desde hace más de 30 días: se borran.
+      const purgar =
+        !it && (!v.ultima_comprobacion || ahora - new Date(v.ultima_comprobacion) > DIAS_MAX_SIN_REFRESCAR * 86400000);
+      if (purgar) {
+        const desde = v.ultima_comprobacion ? new Date(v.ultima_comprobacion).toISOString().slice(0, 10) : "nunca";
+        avisos.push(
+          `${seco ? "SE BORRARÍA" : "BORRADO"} ${etiqueta}: datos sin poder refrescarse desde ${desde} (${disp}); política III.E.4`
+        );
+        cambios.borrados++;
+        if (!seco) await client.query(`DELETE FROM videos WHERE id = $1`, [v.id]);
+        continue;
+      }
       if (it && it.snippet.title !== v.titulo) {
         avisos.push(`Título cambiado en ${v.youtube_id}: "${v.titulo}" → "${it.snippet.title}"`);
       }
@@ -166,14 +223,13 @@ async function comprobar(client, seco) {
       if (disp === "disponible" && v.estado === "oculto" && (v.motivo_oculto || "").startsWith("comprobación")) {
         avisos.push(`${etiqueta} vuelve a estar disponible; sigue oculto. Para mostrarlo: --reactivar ${v.youtube_id}`);
       }
-      if (!it && v.ultima_comprobacion && ahora - new Date(v.ultima_comprobacion) > DIAS_MAX_SIN_REFRESCAR * 86400000) {
-        avisos.push(`${etiqueta} lleva más de ${DIAS_MAX_SIN_REFRESCAR} días sin poder refrescarse: hay que borrar sus datos.`);
-      }
       if (v.estado === "activo" && disp === "disponible" && !REGLAS.excepciones_youtube_id?.[v.youtube_id]) {
         for (const t of v.temas) {
           const anos = limiteAnos(t.especialidad, t.tema || "");
           if (demasiadoAntiguo(v.fecha_publicacion, anos, ahora)) {
-            avisos.push(`${etiqueta} supera la antigüedad de ${anos} años para ${t.especialidad} / ${t.tema}`);
+            const nuevo = cruzaLimiteEntre(v.fecha_publicacion, anos, v.ultima_comprobacion, ahora);
+            if (nuevo) cambios.antiguedadNuevos++;
+            avisos.push(`${nuevo ? "NUEVO: " : ""}${etiqueta} supera la antigüedad de ${anos} años para ${t.especialidad} / ${t.tema}`);
           }
         }
       }
@@ -211,12 +267,21 @@ async function comprobar(client, seco) {
     throw e;
   }
 
-  console.log(
+  const resumen =
     `${ahoraISO()} ${seco ? "[PRUEBA EN SECO, sin escribir] " : ""}Comprobados ${videos.length} vídeos ` +
-      `(${items.size} devueltos por YouTube, ${lotes} unidades de cuota). ` +
-      `Actualizados: ${cambios.actualizados}. Ocultados: ${cambios.ocultados}. Avisos: ${avisos.length}.`
-  );
+    `(${items.size} devueltos por YouTube, ${lotes} unidades de cuota). ` +
+    `Actualizados: ${cambios.actualizados}. Ocultados: ${cambios.ocultados}. Borrados: ${cambios.borrados}. ` +
+    `Antigüedad nuevos: ${cambios.antiguedadNuevos}. Avisos: ${avisos.length}.`;
+  console.log(resumen);
   for (const a of avisos) console.log(`  · ${a}`);
+
+  // En seco no se manda correo: es una prueba.
+  if (!seco && hayQueAvisar(cambios)) {
+    await enviarCorreo(
+      `MIR Turel · vídeos: ${cambios.ocultados} ocultados, ${cambios.borrados} borrados, ${cambios.antiguedadNuevos} por antigüedad`,
+      [resumen, "", ...avisos.map((a) => `· ${a}`), "", "Detalle en /var/log/mir/videos.log del servidor."].join("\n")
+    );
+  }
 }
 
 async function main() {
@@ -240,8 +305,13 @@ async function main() {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  main().catch((e) => {
+  main().catch(async (e) => {
     console.error(`${ahoraISO()} Error: ${e.message}`);
+    // Errores de la API o de la BD: correo (salvo en las órdenes manuales y en seco).
+    const manual = process.argv.some((a) => ["--seco", "--ocultar", "--reactivar"].includes(a));
+    if (!manual && hayQueAvisar({ error: e })) {
+      await enviarCorreo("MIR Turel · ERROR en la comprobación de vídeos", `${ahoraISO()} ${e.message}`);
+    }
     process.exit(1);
   });
 }
