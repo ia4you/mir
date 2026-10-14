@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { query } from "../../lib/db";
-import { temaCorto } from "../../lib/videos";
+import { temaCorto, tituloVisible } from "../../lib/videos";
 import { slugify } from "./especialidades";
 
 // Biblioteca de /videos: los vídeos principales activos y disponibles, uno
@@ -38,7 +38,7 @@ export const getBiblioteca = cache(async () => {
     }
     grupos.get(r.especialidad).videos.push({
       youtube_id: r.youtube_id,
-      titulo: r.titulo,
+      titulo: tituloVisible(r.titulo),
       anio: new Date(r.fecha_publicacion).getFullYear(),
       duracion_seg: r.duracion_seg,
       canal: r.canal,

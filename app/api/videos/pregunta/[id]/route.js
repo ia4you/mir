@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
-import { temaConVideo, temaCorto, elegirVideo, busquedaYouTube } from "@/lib/videos";
+import { temaConVideo, temaCorto, elegirVideo, busquedaYouTube, tituloVisible } from "@/lib/videos";
 import { slugify } from "@/app/lib/especialidades";
 
 export const dynamic = "force-dynamic";
@@ -41,7 +41,7 @@ export async function GET(_request, { params }) {
         ? {
             video: {
               youtube_id: v.youtube_id,
-              titulo: v.titulo,
+              titulo: tituloVisible(v.titulo),
               anio: new Date(v.fecha_publicacion).getFullYear(),
               duracion_seg: v.duracion_seg,
               canal: v.canal,

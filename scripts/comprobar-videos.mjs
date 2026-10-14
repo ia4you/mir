@@ -100,7 +100,8 @@ export function hayQueAvisar({ ocultados = 0, borrados = 0, antiguedadNuevos = 0
 
 // ---------- correo ----------
 
-// Mismo transporte que lib/mailer.js (puerto sin TLS implícito). Si falta la
+// Mismo transporte que lib/mailer.js (STARTTLS aceptando el certificado
+// autofirmado de mail.turel.es; ver el comentario allí). Si falta la
 // configuración SMTP, lo deja en el log y sigue: el correo es un extra.
 async function enviarCorreo(asunto, texto) {
   const faltan = ["SMTP_HOST", "SMTP_PORT", "SMTP_USER", "SMTP_PASS", "SMTP_FROM", "SMTP_TO"].filter((k) => !process.env[k]);
@@ -114,6 +115,7 @@ async function enviarCorreo(asunto, texto) {
       port: Number(process.env.SMTP_PORT),
       secure: false,
       auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      tls: { rejectUnauthorized: false },
       connectionTimeout: 10000,
     });
     await transporte.sendMail({ from: process.env.SMTP_FROM, to: process.env.SMTP_TO, subject: asunto, text: texto });
