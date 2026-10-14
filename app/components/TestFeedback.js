@@ -52,6 +52,7 @@ export default function TestFeedback({
   explicacion,
   onPorQueFalle,
   porQueFalleExtra,
+  bloqueVideo,
   onSiguiente,
   siguienteLabel = "Siguiente pregunta",
 }) {
@@ -128,6 +129,9 @@ export default function TestFeedback({
           {porQueFalleExtra}
         </div>
       )}
+
+      {/* Vídeo del tema (o búsqueda), justo debajo de "por qué he fallado". */}
+      {!isCorrect && bloqueVideo && <div className="-mt-5 px-6 pb-6 empty:hidden">{bloqueVideo}</div>}
 
       {/* CTA principal */}
       <div className="border-t border-track px-6 py-4">

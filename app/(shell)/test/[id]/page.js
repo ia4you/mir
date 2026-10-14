@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 import TestFeedback from "../../../components/TestFeedback";
+import VideoTrasFallo from "../../../components/VideoTrasFallo";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
 
@@ -591,6 +592,9 @@ export default function TestPregunta({ params }) {
                           )}
                         </>
                       }
+                      bloqueVideo={
+                        <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} mostrarPremium={!esPremium} />
+                      }
                       onSiguiente={siguientePregunta}
                       siguienteLabel={indice + 1 < preguntas.length ? "Siguiente pregunta" : "Ver resultados"}
                     />
@@ -768,6 +772,8 @@ export default function TestPregunta({ params }) {
                           <p className="text-sm leading-relaxed text-ink">{tutorFallo}</p>
                         </div>
                       )}
+
+                      <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} mostrarPremium={!esPremium} />
                     </div>
                   )}
                 </>

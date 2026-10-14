@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import OptionCard from "../../components/OptionCard";
+import VideoTrasFallo from "../../components/VideoTrasFallo";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
 
@@ -354,6 +355,10 @@ export default function Demo({ totalBanco }) {
                 </div>
               )}
             </div>
+
+            {!resultado.correcta && resultado.explicacion_calidad !== "controversia" && (
+              <VideoTrasFallo key={preguntaActual.id} preguntaId={preguntaActual.id} />
+            )}
 
             {esUltima && <hr className="my-5 border-track" />}
           </div>
