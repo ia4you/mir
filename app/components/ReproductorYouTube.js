@@ -9,7 +9,14 @@ import { formatoDuracion } from "@/lib/videos";
 // Después: el iframe oficial de youtube-nocookie.com, sin nada encima.
 // `cargado`/`onCargar` vienen de fuera para que otros botones ("Ver ahora")
 // puedan cargarlo también.
-export default function ReproductorYouTube({ youtubeId, titulo, duracionSeg, cargado, onCargar }) {
+export default function ReproductorYouTube({
+  youtubeId,
+  titulo,
+  duracionSeg,
+  cargado,
+  onCargar,
+  sizes = "(min-width: 1024px) 720px, 100vw",
+}) {
   if (cargado) {
     return (
       <div className="aspect-video w-full overflow-hidden rounded-xl bg-panel">
@@ -36,7 +43,7 @@ export default function ReproductorYouTube({ youtubeId, titulo, duracionSeg, car
         src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
         alt=""
         fill
-        sizes="(min-width: 1024px) 720px, 100vw"
+        sizes={sizes}
         className="object-cover"
       />
       <span className="absolute inset-0 flex items-center justify-center">

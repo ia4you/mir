@@ -96,6 +96,13 @@ function VideoRecomendado({ video: v }) {
         El reproductor de YouTube solo se carga cuando pulsas play. El contenido del vídeo es
         responsabilidad de su autor.
       </p>
+      <a
+        href={`/videos#${v.especialidad_slug}`}
+        target="_blank"
+        className="mt-1 inline-flex min-h-11 items-center text-sm font-bold text-accent"
+      >
+        Ver más vídeos de {v.especialidad} →
+      </a>
     </section>
   );
 }

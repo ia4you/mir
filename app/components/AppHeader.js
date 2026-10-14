@@ -15,6 +15,7 @@ const ENLACES = [
   { href: "/configuracion", label: "Práctica" },
   { href: "/estadisticas", label: "Estadísticas" },
   { href: "/controversias", label: "Controversias" },
+  { href: "/videos", label: "Vídeos" },
 ];
 
 // MIR 2027: 23/01/2027. Los días se cuentan en el calendario local del

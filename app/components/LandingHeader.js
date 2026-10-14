@@ -69,6 +69,9 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
               {enlace.label}
             </Link>
           ))}
+          <Link href="/videos" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent">
+            Vídeos
+          </Link>
           <Link href="/blog" className="whitespace-nowrap text-sm font-semibold text-ink hover:text-accent">
             Blog
           </Link>
@@ -153,6 +156,13 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
               {enlace.label}
             </Link>
           ))}
+          <Link
+            href="/videos"
+            onClick={() => setAbierto(false)}
+            className="rounded-lg px-2 py-2.5 text-sm font-semibold text-ink active:bg-panel"
+          >
+            Vídeos
+          </Link>
           <Link
             href="/blog"
             onClick={() => setAbierto(false)}

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { temaConVideo, temaCorto, elegirVideo, busquedaYouTube } from "@/lib/videos";
+import { slugify } from "@/app/lib/especialidades";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +47,7 @@ export async function GET(_request, { params }) {
               canal: v.canal,
               canal_url: v.canal_url,
               especialidad: pregunta.especialidad,
+              especialidad_slug: slugify(pregunta.especialidad),
               tema: temaCorto(tema),
             },
           }
