@@ -36,6 +36,7 @@ export default async function sitemap() {
     { url: `${BASE_URL}/blog`, priority: 0.7, changeFrequency: "weekly" },
     { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE_URL}/privacidad`, priority: 0.2, changeFrequency: "yearly" },
+    { url: `${BASE_URL}/cookies`, priority: 0.2, changeFrequency: "yearly" },
   ];
 
   const blogUrls = postsBlog.map((p) => ({

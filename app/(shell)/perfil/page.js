@@ -8,6 +8,7 @@ import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import ThemeToggle from "../../components/ThemeToggle";
+import EnlaceConfigurarCookies from "../../components/EnlaceConfigurarCookies";
 import {
   getMetaDiaria,
   setMetaDiaria,
@@ -196,6 +197,9 @@ export default function Perfil() {
             <Link href="/contacto" className="block text-sm font-bold text-accent">
               Contacto y soporte →
             </Link>
+            <EnlaceConfigurarCookies className="mt-3 block text-left text-sm font-bold text-accent">
+              Configurar cookies →
+            </EnlaceConfigurarCookies>
           </FieldCard>
 
           <div className="order-1 mt-2 flex flex-col items-center gap-2 lg:order-none lg:items-start">

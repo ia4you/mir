@@ -6,6 +6,7 @@ import { getControversias, REFIERE_IMAGEN } from "./lib/controversias";
 import LandingHeader from "./components/LandingHeader";
 import SocialLinks from "./components/SocialLinks";
 import TarjetaEspecialidad from "./components/TarjetaEspecialidad";
+import EnlaceConfigurarCookies from "./components/EnlaceConfigurarCookies";
 
 // Imagen del hero con "art direction" real (móvil vs escritorio) vía
 // getImageProps + <picture>, en vez de dos <Image priority> alternados con
@@ -465,6 +466,8 @@ export default async function LandingPage() {
         <nav className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-1 font-semibold text-accent">
           <Link href="/aviso-legal">Aviso legal</Link>
           <Link href="/privacidad">Privacidad</Link>
+          <Link href="/cookies">Cookies</Link>
+          <EnlaceConfigurarCookies />
         </nav>
         <p className="mx-auto mt-3 max-w-2xl">
           Preguntas y respuestas 100% oficiales del{" "}

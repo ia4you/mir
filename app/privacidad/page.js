@@ -1,4 +1,5 @@
 import Link from "next/link";
+import EnlaceConfigurarCookies from "../components/EnlaceConfigurarCookies";
 
 export const metadata = {
   title: "Política de Privacidad — MIR Turel",
@@ -18,7 +19,7 @@ export default function PrivacidadPage() {
         <h1 className="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
           Política de Privacidad
         </h1>
-        <p className="mt-3 text-sm text-ink-muted">Última actualización: 17 de agosto de 2026</p>
+        <p className="mt-3 text-sm text-ink-muted">Última actualización: 14 de octubre de 2026</p>
 
         <div className="mt-8 flex flex-col gap-8 text-ink-muted">
           <section>
@@ -103,7 +104,13 @@ export default function PrivacidadPage() {
               </li>
               <li>
                 <span className="font-semibold text-ink">Google Analytics</span> — nos ayuda a
-                entender el uso agregado de la app de forma anónima.
+                entender el uso agregado de la app de forma anónima, solo si aceptas las cookies de
+                análisis; ver la{" "}
+                <Link href="/cookies" className="font-semibold text-accent">
+                  política de cookies
+                </Link>
+                . Puedes cambiar tu elección en{" "}
+                <EnlaceConfigurarCookies className="font-semibold text-accent underline underline-offset-2" />.
               </li>
               <li>
                 <span className="font-semibold text-ink">YouTube (Google)</span> — reproduce los
