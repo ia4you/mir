@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { leerConsentimiento, EVENTO_CAMBIO } from "../lib/consentimiento";
 
 const STORAGE_KEY = "mir_disclaimer_aceptado";
 
@@ -8,14 +9,21 @@ export default function DisclaimerBanner() {
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
 
+  // Espera a que haya elección de cookies: así este aviso y el de cookies
+  // nunca se apilan en la parte de abajo de la pantalla.
   useEffect(() => {
-    try {
-      if (localStorage.getItem(STORAGE_KEY) !== "1") {
-        setVisible(true);
+    function comprobar() {
+      try {
+        if (leerConsentimiento() && localStorage.getItem(STORAGE_KEY) !== "1") {
+          setVisible(true);
+        }
+      } catch {
+        // localStorage no disponible (modo privado, etc.) — no mostramos el banner
       }
-    } catch {
-      // localStorage no disponible (modo privado, etc.) — no mostramos el banner
     }
+    comprobar();
+    window.addEventListener(EVENTO_CAMBIO, comprobar);
+    return () => window.removeEventListener(EVENTO_CAMBIO, comprobar);
   }, []);
 
   // El banner es "fixed" y puede tapar botones al fondo de páginas cortas

@@ -1,10 +1,11 @@
 import { Instrument_Serif } from "next/font/google";
 import localFont from "next/font/local";
-import Script from "next/script";
 import "./globals.css";
 import ServiceWorkerRegister from "./components/ServiceWorkerRegister";
 import DisclaimerBanner from "./components/DisclaimerBanner";
 import VisitaTracker from "./components/VisitaTracker";
+import ConsentimientoCookies from "./components/ConsentimientoCookies";
+import AnaliticaGA from "./components/AnaliticaGA";
 import Providers from "./providers";
 
 // Geist no está en el next/font/google de Next 14.2: woff2 variables (subset
@@ -97,34 +98,16 @@ export default function RootLayout({ children }) {
         <Providers>
           <main>{children}</main>
           <ServiceWorkerRegister />
+          <ConsentimientoCookies />
           <DisclaimerBanner />
           <VisitaTracker />
         </Providers>
-        {/* Mismo gtag.js/GA4 que antes (equivalente manual del componente
-            <GoogleAnalytics> de @next/third-parties/google), pero con
-            strategy="lazyOnload" en vez de su "afterInteractive" por
-            defecto: se carga en tiempo muerto del navegador (requestIdleCallback)
-            en vez de justo tras la hidratación, donde competía por el hilo
-            principal con todo lo demás. No cambia qué se mide (mismo
-            pageview automático + Enhanced Measurement de GA4), solo cuándo
-            se ejecuta — verificado con Lighthouse antes/después (ver
-            commit). */}
-        {GA_ENABLED && (
-          <>
-            <Script id="ga-init" strategy="lazyOnload">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${GA_MEASUREMENT_ID}'${GA_DEBUG ? ", { debug_mode: true }" : ""});
-              `}
-            </Script>
-            <Script
-              strategy="lazyOnload"
-              src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-            />
-          </>
-        )}
+        {/* GA4 solo con consentimiento de cookies de análisis (guía de la
+            AEPD): AnaliticaGA no inserta gtag.js ni contacta con Google hasta
+            que el usuario acepta en ConsentimientoCookies. Los eventos de la
+            app comprueban typeof window.gtag, así que sin consentimiento no se
+            envían ni dan error. */}
+        {GA_ENABLED && <AnaliticaGA id={GA_MEASUREMENT_ID} debug={GA_DEBUG} />}
       </body>
     </html>
   );
