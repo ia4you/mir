@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { iniciarConIds } from "../../lib/iniciarTest";
+import { etiquetaRepaso } from "@/lib/repaso";
 
 async function iniciarRepaso({ router, ids, especialidad, onError }) {
   try {
@@ -138,6 +139,7 @@ export default function MisErrores() {
                           <span className="whitespace-nowrap rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-bold text-danger-text">
                             Fallada {p.veces_fallada}×
                           </span>
+                          <EtiquetaRepaso repaso={p.repaso} />
                           {p.recurrente && (
                             <span className="whitespace-nowrap rounded-full bg-track px-2.5 py-0.5 text-xs font-bold text-ink-muted">
                               🔁 Recurrente
@@ -168,5 +170,23 @@ export default function MisErrores() {
       </div>
 
     </div>
+  );
+}
+
+// Estado de la pregunta en el repaso espaciado (el mismo que usa "Repaso de
+// hoy" en /inicio): toca hoy, en N días o dominada.
+function EtiquetaRepaso({ repaso }) {
+  const e = etiquetaRepaso(repaso);
+  if (!e) return null;
+  const clases = {
+    hoy: "bg-brand text-on-brand",
+    futuro: "bg-track text-ink-muted",
+    dominada: "bg-success-bg text-success-text",
+  };
+  return (
+    <span className={`whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-bold ${clases[e.tono]}`}>
+      {e.tono === "dominada" ? "✓ " : ""}
+      {e.texto}
+    </span>
   );
 }

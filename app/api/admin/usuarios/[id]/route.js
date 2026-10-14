@@ -22,7 +22,7 @@ export async function GET(request, { params }) {
   }
   const usuario = rows[0];
 
-  const [sesiones, respuestas, push, vistos, listaPremium, lista, contacto, solicitudes] =
+  const [sesiones, respuestas, push, vistos, repaso, listaPremium, lista, contacto, solicitudes] =
     await Promise.all([
       query(`SELECT COUNT(*)::int AS n FROM sesiones WHERE user_id = $1`, [id]),
       // Mismo criterio que eliminarUsuarioComoAdmin: por user_id directo O
@@ -35,6 +35,7 @@ export async function GET(request, { params }) {
       ),
       query(`SELECT COUNT(*)::int AS n FROM push_subscriptions WHERE user_id = $1`, [id]),
       query(`SELECT COUNT(*)::int AS n FROM video_vistos WHERE user_id = $1`, [id]),
+      query(`SELECT COUNT(*)::int AS n FROM repaso_espaciado WHERE user_id = $1`, [id]),
       query(`SELECT COUNT(*)::int AS n FROM lista_espera_premium WHERE user_id = $1`, [id]),
       query(`SELECT COUNT(*)::int AS n FROM lista_espera WHERE email = $1`, [usuario.email]),
       query(`SELECT COUNT(*)::int AS n FROM contacto WHERE email = $1`, [usuario.email]),
@@ -50,6 +51,7 @@ export async function GET(request, { params }) {
       respuestas_sesion: respuestas.rows[0].n,
       push_subscriptions: push.rows[0].n,
       video_vistos: vistos.rows[0].n,
+      repaso_espaciado: repaso.rows[0].n,
       lista_espera_premium: listaPremium.rows[0].n,
       lista_espera: lista.rows[0].n,
       contacto: contacto.rows[0].n,

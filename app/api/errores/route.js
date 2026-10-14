@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { HOY_CANARIAS } from "@/lib/racha";
 
 export const dynamic = "force-dynamic";
 
@@ -17,11 +18,16 @@ export async function GET() {
     // veces que se ha fallado (puede haberse respondido en varias sesiones).
     const { rows } = await query(
       `SELECT p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen,
-              COUNT(*)::int AS veces_fallada
+              COUNT(*)::int AS veces_fallada,
+              -- Estado en el repaso espaciado: días hasta que toca (0 o menos = hoy)
+              -- o dominada. NULL si no está en repaso (p. ej. banco IA).
+              (r.proxima - ${HOY_CANARIAS}) AS repaso_dias,
+              (r.dominada_en IS NOT NULL) AS repaso_dominada
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
+       LEFT JOIN repaso_espaciado r ON r.user_id = rs.user_id AND r.pregunta_id = p.id
        WHERE rs.user_id = $1 AND rs.correcta = false
-       GROUP BY p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen
+       GROUP BY p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen, r.proxima, r.dominada_en
        ORDER BY p.especialidad ASC NULLS LAST, veces_fallada DESC, p.id ASC`,
       [userId]
     );
@@ -40,6 +46,7 @@ export async function GET() {
         origen: r.origen,
         veces_fallada: r.veces_fallada,
         recurrente: r.veces_fallada >= 2,
+        repaso: r.repaso_dominada ? { dominada: true } : r.repaso_dias === null ? null : { dias: r.repaso_dias },
       });
     }
 
