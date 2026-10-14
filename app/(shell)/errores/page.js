@@ -3,37 +3,17 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { iniciarConIds } from "../../lib/iniciarTest";
 
 async function iniciarRepaso({ router, ids, especialidad, onError }) {
   try {
-    const resPreguntas = await fetch(`/api/preguntas?ids=${ids.join(",")}`);
-    if (!resPreguntas.ok) throw new Error("preguntas");
-    const preguntas = await resPreguntas.json();
-    if (preguntas.length === 0) throw new Error("sin_preguntas");
-
-    const resSesion = await fetch("/api/sesiones", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        modo: "repaso_errores",
-        especialidad: especialidad || null,
-        total_preguntas: preguntas.length,
-      }),
-    });
-
-    if (resSesion.status === 403) {
-      const data = await resSesion.json().catch(() => null);
-      onError(data?.message || "Has alcanzado tu límite diario de preguntas.");
+    const r = await iniciarConIds(ids, { modo: "repaso_errores", especialidad: especialidad || null });
+    if (r.error === "limite_diario") {
+      onError(r.message || "Has alcanzado tu límite diario de preguntas.");
       return;
     }
-    if (!resSesion.ok) throw new Error("sesion");
-    const { id } = await resSesion.json();
-
-    sessionStorage.setItem(
-      `mir_test_${id}`,
-      JSON.stringify({ preguntas, segundosPorPregunta: null })
-    );
-    router.push(`/test/${id}`);
+    if (r.error) throw new Error(r.error);
+    router.push(`/test/${r.id}`);
   } catch (e) {
     onError("No se ha podido preparar el repaso. Inténtalo de nuevo.");
   }

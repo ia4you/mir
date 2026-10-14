@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock } from "lucide-react";
+import BloqueRepaso from "../../components/BloqueRepaso";
 import { getMetaDiaria, getTemporizadorDefecto, META_DIARIA_POR_DEFECTO } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
 
@@ -375,6 +376,11 @@ export default function Inicio() {
           No se ha podido cargar tu progreso. Inténtalo de nuevo más tarde.
         </p>
       )}
+
+      {/* Repaso espaciado: solo aparece si el usuario tiene preguntas en repaso. */}
+      <div className="mx-5 mt-5 empty:hidden lg:mx-0 lg:mt-8">
+        <BloqueRepaso />
+      </div>
 
       <div className="mt-5 grid gap-4 px-5 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-6 lg:px-0">
         <div className="flex flex-col gap-4 lg:gap-6">

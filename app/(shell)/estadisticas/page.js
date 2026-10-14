@@ -19,6 +19,7 @@ const ETIQUETA_MODO = {
   repaso: "Repaso de fallos",
   puntos_debiles: "Puntos débiles",
   repaso_errores: "Repaso de errores",
+  repaso_espaciado: "Repaso espaciado",
   simulacro: "Simulacro MIR",
 };
 

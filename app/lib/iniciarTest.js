@@ -50,3 +50,30 @@ export async function cantidadParaHoy(esPremium, meta) {
   const datos = await r.json();
   return Math.min(meta, Math.max(0, LIMITE_DIARIO_FREE - datos.meta_diaria.respondidas_hoy));
 }
+
+// Test con una lista exacta de preguntas (repaso de /errores y repaso
+// espaciado): mismas preguntas en el mismo orden, sin temporizador.
+// Devuelve { id } o { error: "sin_preguntas" | "limite_diario", message };
+// lanza si falla la red o la API.
+export async function iniciarConIds(ids, { modo, especialidad = null }) {
+  const resPreguntas = await fetch(`/api/preguntas?ids=${ids.join(",")}`);
+  if (!resPreguntas.ok) throw new Error("No se pudieron cargar las preguntas");
+  const porId = new Map((await resPreguntas.json()).map((p) => [p.id, p]));
+  const preguntas = ids.map((id) => porId.get(id)).filter(Boolean);
+  if (preguntas.length === 0) return { error: "sin_preguntas" };
+
+  const resSesion = await fetch("/api/sesiones", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ modo, especialidad, total_preguntas: preguntas.length }),
+  });
+  if (resSesion.status === 403) {
+    const data = await resSesion.json().catch(() => null);
+    return { error: "limite_diario", message: data?.message };
+  }
+  if (!resSesion.ok) throw new Error("No se pudo crear la sesión");
+  const { id } = await resSesion.json();
+
+  sessionStorage.setItem(`mir_test_${id}`, JSON.stringify({ preguntas, segundosPorPregunta: null }));
+  return { id };
+}
