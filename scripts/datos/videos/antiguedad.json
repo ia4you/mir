@@ -1,0 +1,50 @@
+{
+  "_comentario": "Límites de antigüedad por tipo de tema (copiados de /root/videos/config.json). Solo generan avisos en la comprobación semanal.",
+  "por_defecto_anos": 7,
+  "tratamiento_anos": 3,
+  "temas_tratamiento": {
+    "especialidades": [
+      "Oncología"
+    ],
+    "palabras_en_tema": [
+      "tratamiento",
+      "farmacolog",
+      "terapia",
+      "antibioter",
+      "vacuna",
+      "anticoagula",
+      "anticoncepcion",
+      "insuficiencia cardiaca",
+      "diabetes",
+      "epoc",
+      "asma",
+      "factores de riesgo",
+      "cardiopatia isquemica",
+      "arritmia",
+      "vih",
+      "sepsis",
+      "renal cronica",
+      "obesidad",
+      "esclerosis multiple",
+      "hepatopatia",
+      "inflamatoria intestinal",
+      "biologico",
+      "cancer"
+    ]
+  },
+  "temas_basicos": {
+    "especialidades": [
+      "Bioestadística"
+    ],
+    "palabras_en_tema": [
+      "fisiolog",
+      "basica",
+      "ecg",
+      "genetica",
+      "anatom"
+    ]
+  },
+  "excepciones_youtube_id": {
+    "rwL6Nk32ABo": "Diabetes mellitus (AMIR, marzo de 2023): excepción aprobada"
+  }
+}

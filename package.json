@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test lib/notas.test.js lib/racha.test.js lib/videos.test.js"
+    "test": "node --test lib/notas.test.js lib/racha.test.js lib/videos.test.js scripts/comprobar-videos.test.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.2",
