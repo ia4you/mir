@@ -4,11 +4,12 @@ import Link from "next/link";
 // preguntas y barra de peso (relativa a la especialidad con más preguntas;
 // el % mostrado es el peso real sobre el total del banco). En la portada la
 // barra solo se ve en escritorio; en /especialidades, siempre (`barraSiempre`).
-export default function TarjetaEspecialidad({ especialidad: e, maximo, total, barraSiempre = false }) {
+// `soloEscritorio` la oculta con CSS por debajo de lg sin sacarla del HTML.
+export default function TarjetaEspecialidad({ especialidad: e, maximo, total, barraSiempre = false, soloEscritorio = false }) {
   return (
     <Link
       href={`/especialidades/${e.slug}`}
-      className="flex flex-col justify-between rounded-xl border border-track bg-card p-4 active:bg-brand-light"
+      className={`${soloEscritorio ? "hidden lg:flex" : "flex"} flex-col justify-between rounded-xl border border-track bg-card p-4 active:bg-brand-light`}
     >
       <span className="font-bold text-ink">{e.nombre}</span>
       <span className="mt-1 text-sm text-ink-muted">{e.total} preguntas</span>

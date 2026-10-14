@@ -392,12 +392,26 @@ export default async function LandingPage() {
 
       <section id="especialidades" className="border-t border-track px-5 py-14 sm:py-16 lg:px-8 lg:py-20">
         <h2 className={TITULO}>Especialidades</h2>
-        <div className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-3 lg:max-w-[1240px] lg:grid-cols-4 xl:grid-cols-5">
-          {especialidades.map((e) => (
-            <TarjetaEspecialidad key={e.slug} especialidad={e} maximo={maxEspecialidad} total={totalPreguntas} />
+        {/* En móvil, solo las 8 con más preguntas; el resto sigue en el HTML
+            (enlaces internos) pero oculto hasta lg. */}
+        <div className="mx-auto mt-9 grid max-w-5xl grid-cols-2 gap-3 lg:max-w-[1240px] lg:grid-cols-4 xl:grid-cols-5">
+          {especialidades.map((e, i) => (
+            <TarjetaEspecialidad
+              key={e.slug}
+              especialidad={e}
+              maximo={maxEspecialidad}
+              total={totalPreguntas}
+              soloEscritorio={i >= 8}
+            />
           ))}
         </div>
-        <p className="mx-auto mt-6 max-w-5xl text-center lg:max-w-[1240px] lg:text-left">
+        <Link
+          href="/especialidades"
+          className="mx-auto mt-6 flex h-14 max-w-5xl items-center justify-center rounded-2xl border-2 border-accent px-6 font-bold text-accent lg:hidden"
+        >
+          Ver las {totalEspecialidades} especialidades →
+        </Link>
+        <p className="mx-auto mt-6 hidden max-w-5xl lg:block lg:max-w-[1240px]">
           <Link href="/especialidades" className="inline-flex min-h-[44px] items-center font-bold text-accent">
             Ver todas las especialidades →
           </Link>
