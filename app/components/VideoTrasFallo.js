@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import ReproductorYouTube from "./ReproductorYouTube";
+import MiniaturaVideo from "./MiniaturaVideo";
+import ModalVideo from "./ModalVideo";
 import BotonVisto from "./BotonVisto";
 import { formatoDuracion } from "@/lib/videos";
 
@@ -44,7 +45,7 @@ export default function VideoTrasFallo({ preguntaId, mostrarPremium = false, esP
 }
 
 function VideoRecomendado({ video: v, esPremium }) {
-  const [cargado, setCargado] = useState(false);
+  const [abierto, setAbierto] = useState(false);
   // null = aún no se sabe (o no es Premium según la BD): sin botón.
   const [visto, setVisto] = useState(null);
 
@@ -71,12 +72,11 @@ function VideoRecomendado({ video: v, esPremium }) {
       </p>
       <div className="flex flex-col gap-4 sm:flex-row">
         <div className="sm:w-1/2 sm:max-w-[320px] sm:flex-shrink-0">
-          <ReproductorYouTube
+          <MiniaturaVideo
             youtubeId={v.youtube_id}
             titulo={v.titulo}
             duracionSeg={v.duracion_seg}
-            cargado={cargado}
-            onCargar={() => setCargado(true)}
+            onAbrir={() => setAbierto(true)}
           />
         </div>
         <div className="min-w-0">
@@ -98,15 +98,14 @@ function VideoRecomendado({ video: v, esPremium }) {
         </div>
       </div>
       <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-        {!cargado && (
-          <button
-            type="button"
-            onClick={() => setCargado(true)}
-            className="flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-bold text-on-brand active:bg-brand-dark"
-          >
-            Ver ahora
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={() => setAbierto(true)}
+          aria-haspopup="dialog"
+          className="flex h-11 items-center justify-center rounded-xl bg-brand px-5 text-sm font-bold text-on-brand active:bg-brand-dark"
+        >
+          Ver ahora
+        </button>
         <a
           href={urlYouTube}
           target="_blank"
@@ -128,6 +127,13 @@ function VideoRecomendado({ video: v, esPremium }) {
       >
         Ver más vídeos de {v.especialidad} →
       </a>
+      {abierto && (
+        <ModalVideo
+          video={v}
+          onCerrar={() => setAbierto(false)}
+          accion={visto !== null ? <BotonVisto visto={visto} onCambiar={cambiarVisto} /> : null}
+        />
+      )}
     </section>
   );
 }

@@ -1,27 +1,34 @@
 "use client";
 
 import { useState } from "react";
-import ReproductorYouTube from "./ReproductorYouTube";
+import MiniaturaVideo from "./MiniaturaVideo";
+import ModalVideo from "./ModalVideo";
 import BotonVisto from "./BotonVisto";
 import { formatoDuracion } from "@/lib/videos";
 
-// Tarjeta de /videos: miniatura (el reproductor se carga en la propia
-// tarjeta al pulsar play), especialidad, tema, título, canal y año. Con
+// Tarjeta de /videos: miniatura (al pulsar play el vídeo se abre en grande,
+// en ModalVideo), especialidad, tema, título, canal y año. Con
 // sesión, `fallos` añade la marca "Has fallado…"; con Premium, `onVisto`
 // añade el botón "Marcar como visto".
 export default function TarjetaVideo({ video: v, fallos = 0, visto = false, onVisto }) {
-  const [cargado, setCargado] = useState(false);
+  const [abierto, setAbierto] = useState(false);
 
   return (
     <article className="flex flex-col overflow-hidden rounded-2xl border border-track bg-card">
-      <ReproductorYouTube
+      <MiniaturaVideo
         youtubeId={v.youtube_id}
         titulo={v.titulo}
         duracionSeg={v.duracion_seg}
-        cargado={cargado}
-        onCargar={() => setCargado(true)}
+        onAbrir={() => setAbierto(true)}
         sizes="(min-width: 1280px) 400px, (min-width: 640px) 50vw, 100vw"
       />
+      {abierto && (
+        <ModalVideo
+          video={v}
+          onCerrar={() => setAbierto(false)}
+          accion={onVisto ? <BotonVisto visto={visto} onCambiar={onVisto} /> : null}
+        />
+      )}
       <div className="flex flex-1 flex-col p-4">
         <p className="font-mono text-xs uppercase tracking-wide text-accent">{v.especialidad}</p>
         <p className="mt-1 text-sm text-ink-muted">{v.tema}</p>

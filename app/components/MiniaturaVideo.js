@@ -3,40 +3,23 @@
 import Image from "next/image";
 import { formatoDuracion } from "@/lib/videos";
 
-// Reproductor de YouTube que no carga nada de YouTube hasta pulsar play.
-// Antes: miniatura servida por nuestro servidor (next/image la pide a
-// i.ytimg.com, así el navegador no contacta con Google) y botón de play.
-// Después: el iframe oficial de youtube-nocookie.com, sin nada encima.
-// `cargado`/`onCargar` vienen de fuera para que otros botones ("Ver ahora")
-// puedan cargarlo también.
-export default function ReproductorYouTube({
+// Miniatura de un vídeo con botón de play. Pulsarla abre el vídeo en
+// ModalVideo (quien la usa decide). La imagen la sirve nuestro servidor
+// (next/image la pide a i.ytimg.com), así el navegador no contacta con
+// Google hasta que se pulsa play.
+export default function MiniaturaVideo({
   youtubeId,
   titulo,
   duracionSeg,
-  cargado,
-  onCargar,
+  onAbrir,
   sizes = "(min-width: 1024px) 720px, 100vw",
 }) {
-  if (cargado) {
-    return (
-      <div className="aspect-video w-full overflow-hidden rounded-xl bg-panel">
-        <iframe
-          src={`https://www.youtube-nocookie.com/embed/${youtubeId}?autoplay=1&rel=0`}
-          title={titulo}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-          className="h-full w-full"
-        />
-      </div>
-    );
-  }
-
   return (
     <button
       type="button"
-      onClick={onCargar}
+      onClick={onAbrir}
       aria-label={`Reproducir: ${titulo}`}
+      aria-haspopup="dialog"
       className="group relative block aspect-video w-full overflow-hidden rounded-xl bg-panel"
     >
       <Image
