@@ -86,10 +86,9 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
           </a>
         </nav>
 
-        {/* Un solo ThemeSwitch, a la izquierda de Login/Crear cuenta. */}
+        {/* Un solo ThemeSwitch: con botón de menú (por debajo de xl), justo a
+            su izquierda; desde xl, a la izquierda de Login/Crear cuenta. */}
         <div className="flex items-center gap-1 md:gap-4">
-          <ThemeSwitch compactoMovil />
-
           {/* Visibles en todos los anchos (también siguen en el menú); por
               debajo de md, compactos pero con 40 px de alto para pulsar. Por
               debajo de 405 px el interruptor pasa a botón redondo, por debajo
@@ -116,6 +115,10 @@ export default function LandingHeader({ enlaces = ENLACES_PORTADA }) {
               </Link>
             </div>
           )}
+
+          <div className="flex xl:order-first">
+            <ThemeSwitch compactoMovil />
+          </div>
 
           <button
             type="button"
