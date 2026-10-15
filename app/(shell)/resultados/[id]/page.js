@@ -229,33 +229,41 @@ export default function Resultados({ params }) {
           <section className="order-2 mt-6 px-5 lg:order-none lg:mt-0 lg:px-0">
             <div className="rounded-2xl bg-card p-4 shadow-sm">
               <p className="text-sm font-bold uppercase tracking-wide text-ink-muted">
-                Resultado del Simulacro MIR
+                Netas (corrección del MIR)
               </p>
-              <p className="mt-2 text-3xl font-extrabold text-ink">
-                {datos.simulacro.puntuacion.toFixed(2)}{" "}
-                <span className="text-base font-semibold text-ink-muted">puntos</span>
-              </p>
-              <p className="text-sm text-ink-muted">
-                {datos.simulacro.porcentaje_estimado}% estimado de aciertos — fórmula oficial
-                (aciertos − 1/3 de fallos)
-              </p>
+              <p className="mt-1 text-4xl font-extrabold text-ink">{decimales(datos.simulacro.netas, 2)}</p>
+              {datos.simulacro.nota !== null && (
+                <p className="text-sm text-ink-muted">
+                  Nota sobre 200:{" "}
+                  <span className="font-bold text-ink">{decimales(datos.simulacro.nota, 1)}</span>
+                </p>
+              )}
 
-              <div className="mt-3 grid grid-cols-3 divide-x divide-track border-t border-track pt-3">
+              <div className="mt-3 grid grid-cols-4 divide-x divide-track border-t border-track pt-3">
                 <div className="text-center">
-                  <p className="text-lg font-extrabold text-success">{datos.aciertos}</p>
+                  <p className="text-lg font-extrabold text-success">{datos.simulacro.aciertos}</p>
                   <p className="text-xs text-ink-muted">Aciertos</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-extrabold text-danger">
-                    {datos.simulacro.fallos_respondidos}
-                  </p>
+                  <p className="text-lg font-extrabold text-danger">{datos.simulacro.fallos}</p>
                   <p className="text-xs text-ink-muted">Fallos</p>
                 </div>
                 <div className="text-center">
                   <p className="text-lg font-extrabold text-ink-muted">{datos.simulacro.en_blanco}</p>
                   <p className="text-xs text-ink-muted">En blanco</p>
                 </div>
+                <div className="text-center">
+                  <p className="text-lg font-extrabold text-ink">{decimales(datos.simulacro.netas, 2)}</p>
+                  <p className="text-xs text-ink-muted">Netas</p>
+                </div>
               </div>
+
+              <p className="mt-3 rounded-xl bg-panel p-3 font-mono text-xs text-ink-muted">
+                {datos.simulacro.aciertos} − {datos.simulacro.fallos} ÷ 3 ={" "}
+                {decimales(datos.simulacro.netas, 2)} netas
+                <br />
+                <span className="font-sans">Cada fallo resta ⅓ de acierto. En blanco: 0.</span>
+              </p>
 
               {datos.simulacro.comparativa.length > 0 && (
                 <div className="mt-4 border-t border-track pt-3">
@@ -269,7 +277,8 @@ export default function Resultados({ params }) {
                           {new Date(c.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })}
                         </span>
                         <span className="font-bold text-ink">
-                          {c.puntuacion.toFixed(2)} pts · {c.porcentaje_estimado}%
+                          {decimales(c.netas, 2)} netas
+                          {c.nota !== null && <> · {decimales(c.nota, 1)}/200</>}
                         </span>
                       </div>
                     ))}
@@ -279,7 +288,6 @@ export default function Resultados({ params }) {
             </div>
           </section>
         )}
-
         {!esPremium && (
           <section className="order-1 mt-6 px-5 lg:order-none lg:mt-0 lg:px-0">
             <div className="rounded-2xl border border-warning-border bg-warning-bg p-4">
@@ -339,4 +347,9 @@ export default function Resultados({ params }) {
       </section>
     </div>
   );
+}
+
+// Número con coma decimal y los decimales fijos (121,67).
+function decimales(n, d) {
+  return n.toLocaleString("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d });
 }

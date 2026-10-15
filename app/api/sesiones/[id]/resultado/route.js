@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
-import { netas } from "@/lib/notas";
+import { netas, notaSimulacro } from "@/lib/notas";
+import { getSimulacros } from "@/lib/notasDb";
+
+const redondear2 = (n) => Math.round(n * 100) / 100;
 
 export const dynamic = "force-dynamic";
 
@@ -50,74 +53,44 @@ export async function GET(request, { params }) {
       [sesionId]
     );
 
-    const porcentajeAciertos =
-      sesion.total_preguntas > 0
-        ? Math.round((sesion.aciertos / sesion.total_preguntas) * 1000) / 10
-        : 0;
-
+    // Simulacro: corrección del MIR (cada fallo resta 1/3 de acierto, los
+    // blancos no restan) y la nota sobre 200 de /estadisticas, con el mismo
+    // conteo (getSimulacros) para que las dos pantallas coincidan. Se compara
+    // con los 5 simulacros anteriores; un simulacro mezcla convocatorias, así
+    // que no tiene "año" propio.
     let simulacro = null;
+    let aciertos = sesion.aciertos;
+    let fallos = sesion.total_preguntas - sesion.aciertos;
     if (sesion.modo === "simulacro") {
-      // fallos_respondidos excluye las dejadas en blanco (respuesta_dada
-      // NULL): la fórmula oficial del MIR solo penaliza fallos "reales".
-      const conteoRes = await query(
-        `SELECT COUNT(*) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos,
-                COUNT(*) FILTER (WHERE rs.respuesta_dada IS NULL)::int AS en_blanco
-         FROM respuestas_sesion rs
-         WHERE rs.sesion_id = $1`,
-        [sesionId]
-      );
-      const { fallos_respondidos, en_blanco } = conteoRes.rows[0];
-      const puntuacion = Math.round(netas(sesion.aciertos, fallos_respondidos) * 100) / 100;
-      const porcentajeEstimado =
-        sesion.total_preguntas > 0
-          ? Math.round((puntuacion / sesion.total_preguntas) * 1000) / 10
-          : 0;
-
-      // Comparativa con los simulacros anteriores del usuario, por fecha.
-      // Un simulacro mezcla preguntas de todas las convocatorias
-      // (generarSimulacro en api/preguntas), así que no tiene "año" propio.
-      const historicoRes = await query(
-        `SELECT s.id, s.fecha, s.aciertos, s.total_preguntas,
-                COUNT(rs.id) FILTER (WHERE rs.correcta = false AND rs.respuesta_dada IS NOT NULL)::int AS fallos_respondidos
-         FROM sesiones s
-         LEFT JOIN respuestas_sesion rs ON rs.sesion_id = s.id
-         WHERE s.user_id = $1 AND s.modo = 'simulacro' AND s.duracion_segundos IS NOT NULL
-           AND s.id <> $2 AND s.fecha <= (SELECT fecha FROM sesiones WHERE id = $2)
-         GROUP BY s.id
-         ORDER BY s.fecha DESC
-         LIMIT 5`,
-        [sesion.user_id, sesion.id]
-      );
-
-      const comparativa = historicoRes.rows.map((r) => {
-        const puntuacionPrevia = Math.round(netas(r.aciertos, r.fallos_respondidos) * 100) / 100;
-        return {
-          id: r.id,
-          fecha: r.fecha,
-          puntuacion: puntuacionPrevia,
-          porcentaje_estimado:
-            r.total_preguntas > 0
-              ? Math.round((puntuacionPrevia / r.total_preguntas) * 1000) / 10
-              : 0,
-        };
+      const filas = await getSimulacros(sesion.user_id, { limite: 7, hastaSesion: sesion.id });
+      const i = filas.findIndex((r) => r.id === sesion.id);
+      const resumen = (r) => ({
+        aciertos: r.aciertos,
+        fallos: r.errores,
+        en_blanco: r.en_blanco,
+        netas: redondear2(netas(r.aciertos, r.errores)),
+        nota: notaSimulacro(r.aciertos, r.errores, r.total_preguntas),
       });
-
-      simulacro = {
-        fallos_respondidos,
-        en_blanco,
-        puntuacion,
-        porcentaje_estimado: porcentajeEstimado,
-        comparativa,
-      };
+      if (i !== -1) {
+        simulacro = {
+          ...resumen(filas[i]),
+          comparativa: filas.slice(i + 1, i + 6).map((r) => ({ id: r.id, fecha: r.fecha, ...resumen(r) })),
+        };
+        aciertos = filas[i].aciertos;
+        fallos = filas[i].errores;
+      }
     }
+
+    const porcentajeAciertos =
+      sesion.total_preguntas > 0 ? Math.round((aciertos / sesion.total_preguntas) * 1000) / 10 : 0;
 
     return NextResponse.json({
       sesion_id: sesion.id,
       modo: sesion.modo,
       especialidad: sesion.especialidad,
       total_preguntas: sesion.total_preguntas,
-      aciertos: sesion.aciertos,
-      fallos: sesion.total_preguntas - sesion.aciertos,
+      aciertos,
+      fallos,
       porcentaje_aciertos: porcentajeAciertos,
       duracion_segundos: sesion.duracion_segundos,
       desglose_especialidad: desgloseRes.rows.map((r) => ({
