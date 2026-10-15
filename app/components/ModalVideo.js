@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef } from "react";
 import { createPortal } from "react-dom";
-import { formatoDuracion } from "@/lib/videos";
+import { formatoDuracion, avisoVigencia } from "@/lib/videos";
 
 // Ventana grande para ver un vídeo (tarjeta tras fallar, /videos). El iframe
 // oficial de youtube-nocookie.com solo existe mientras el modal está abierto:
@@ -109,6 +109,7 @@ export default function ModalVideo({ video: v, onCerrar, accion = null }) {
             <h2 id={idTitulo} className="font-serif text-xl leading-snug text-ink [text-rendering:geometricPrecision] lg:text-2xl">
               {v.titulo}
             </h2>
+            {avisoVigencia(v) && <p className="mt-1 text-xs leading-snug text-ink-muted">{avisoVigencia(v)}</p>}
             <p className="mt-1 text-sm text-ink-muted">
               Vídeo de{" "}
               <a href={v.canal_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-2 hover:underline">

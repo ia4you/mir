@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import MiniaturaVideo from "./MiniaturaVideo";
 import ModalVideo from "./ModalVideo";
 import BotonVisto from "./BotonVisto";
-import { formatoDuracion } from "@/lib/videos";
+import { formatoDuracion, avisoVigencia } from "@/lib/videos";
 
 // Bloque que aparece al fallar una pregunta (en /test y /demo): el vídeo del
 // tema de la pregunta o, si no hay, la búsqueda de YouTube. Los vídeos son
@@ -86,6 +86,7 @@ function VideoRecomendado({ video: v, esPremium }) {
           {/* geometricPrecision: sin ella, Chrome redondea el avance de cada letra
               de Instrument Serif a este tamaño y las separa de forma irregular. */}
           <h3 className="mt-1 font-serif text-xl leading-snug text-ink [text-rendering:geometricPrecision]">{v.titulo}</h3>
+          {avisoVigencia(v) && <p className="mt-1 text-xs leading-snug text-ink-muted">{avisoVigencia(v)}</p>}
           <p className="mt-1 text-sm text-ink-muted">
             Vídeo de{" "}
             <a href={v.canal_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-2 hover:underline">

@@ -4,7 +4,7 @@ import { useState } from "react";
 import MiniaturaVideo from "./MiniaturaVideo";
 import ModalVideo from "./ModalVideo";
 import BotonVisto from "./BotonVisto";
-import { formatoDuracion } from "@/lib/videos";
+import { formatoDuracion, avisoVigencia } from "@/lib/videos";
 
 // Tarjeta de /videos: miniatura (al pulsar play el vídeo se abre en grande,
 // en ModalVideo), especialidad, tema, título, canal y año. Con
@@ -38,6 +38,7 @@ export default function TarjetaVideo({ video: v, fallos = 0, visto = false, onVi
           </p>
         )}
         <h3 className="mt-2 font-bold leading-snug text-ink">{v.titulo}</h3>
+        {avisoVigencia(v) && <p className="mt-1 text-xs leading-snug text-ink-muted">{avisoVigencia(v)}</p>}
         <p className="mt-auto pt-3 text-sm text-ink-muted">
           Vídeo de{" "}
           <a href={v.canal_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent underline-offset-2 hover:underline">
