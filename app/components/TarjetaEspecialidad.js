@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { fmtPorcentaje } from "@/lib/formato";
 
 // Tarjeta de especialidad de la portada y de /especialidades: nombre, nº de
 // preguntas y barra de peso (relativa a la especialidad con más preguntas;
@@ -18,7 +19,7 @@ export default function TarjetaEspecialidad({ especialidad: e, maximo, total, ba
           <span className="block h-full rounded-full bg-accent" style={{ width: `${(e.total / maximo) * 100}%` }} />
         </span>
         <span className="font-mono text-xs text-ink-muted">
-          {((e.total / total) * 100).toLocaleString("es-ES", { maximumFractionDigits: 1 })} %
+          {fmtPorcentaje((e.total / total) * 100)}
         </span>
       </span>
     </Link>

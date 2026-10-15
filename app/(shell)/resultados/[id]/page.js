@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import SpecialtyProgressRow from "../../../components/SpecialtyProgressRow";
+import { fmtNumero, fmtPorcentaje } from "@/lib/formato";
 
 export default function Resultados({ params }) {
   const router = useRouter();
@@ -113,7 +114,7 @@ export default function Resultados({ params }) {
           <p className="mt-2 text-5xl font-extrabold">
             {datos.aciertos}/{datos.total_preguntas}
           </p>
-          <p className="mt-2 text-lg">{datos.porcentaje_aciertos}% de aciertos</p>
+          <p className="mt-2 text-lg">{fmtPorcentaje(datos.porcentaje_aciertos)} de aciertos</p>
         </header>
 
         <section className="mt-4 px-5 lg:px-0">
@@ -231,11 +232,11 @@ export default function Resultados({ params }) {
               <p className="text-sm font-bold uppercase tracking-wide text-ink-muted">
                 Netas (corrección del MIR)
               </p>
-              <p className="mt-1 text-4xl font-extrabold text-ink">{decimales(datos.simulacro.netas, 2)}</p>
+              <p className="mt-1 text-4xl font-extrabold text-ink">{fmtNumero(datos.simulacro.netas, { decimales: 2, fijos: true })}</p>
               {datos.simulacro.nota !== null && (
                 <p className="text-sm text-ink-muted">
                   Nota sobre 200:{" "}
-                  <span className="font-bold text-ink">{decimales(datos.simulacro.nota, 1)}</span>
+                  <span className="font-bold text-ink">{fmtNumero(datos.simulacro.nota, { decimales: 1, fijos: true })}</span>
                 </p>
               )}
 
@@ -253,14 +254,14 @@ export default function Resultados({ params }) {
                   <p className="text-xs text-ink-muted">En blanco</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-lg font-extrabold text-ink">{decimales(datos.simulacro.netas, 2)}</p>
+                  <p className="text-lg font-extrabold text-ink">{fmtNumero(datos.simulacro.netas, { decimales: 2, fijos: true })}</p>
                   <p className="text-xs text-ink-muted">Netas</p>
                 </div>
               </div>
 
               <p className="mt-3 rounded-xl bg-panel p-3 font-mono text-xs text-ink-muted">
                 {datos.simulacro.aciertos} − {datos.simulacro.fallos} ÷ 3 ={" "}
-                {decimales(datos.simulacro.netas, 2)} netas
+                {fmtNumero(datos.simulacro.netas, { decimales: 2, fijos: true })} netas
                 <br />
                 <span className="font-sans">Cada fallo resta ⅓ de acierto. En blanco: 0.</span>
               </p>
@@ -277,8 +278,8 @@ export default function Resultados({ params }) {
                           {new Date(c.fecha).toLocaleDateString("es-ES", { day: "numeric", month: "short", year: "numeric" })}
                         </span>
                         <span className="font-bold text-ink">
-                          {decimales(c.netas, 2)} netas
-                          {c.nota !== null && <> · {decimales(c.nota, 1)}/200</>}
+                          {fmtNumero(c.netas, { decimales: 2, fijos: true })} netas
+                          {c.nota !== null && <> · {fmtNumero(c.nota, { decimales: 1, fijos: true })}/200</>}
                         </span>
                       </div>
                     ))}
@@ -349,7 +350,3 @@ export default function Resultados({ params }) {
   );
 }
 
-// Número con coma decimal y los decimales fijos (121,67).
-function decimales(n, d) {
-  return n.toLocaleString("es-ES", { minimumFractionDigits: d, maximumFractionDigits: d });
-}

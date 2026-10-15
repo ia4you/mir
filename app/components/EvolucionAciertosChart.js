@@ -10,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { fmtPorcentaje } from "@/lib/formato";
 
 // Variables del tema (app/globals.css), para que las series cambien con
 // claro/oscuro — nada de colores inventados fuera de la paleta de la app.
@@ -36,7 +37,7 @@ function TooltipPersonalizado({ active, payload }) {
     <div className="rounded-xl bg-[#0E171E] px-3 py-2 text-xs font-semibold text-white shadow-lg">
       <p>{punto.payload.fechaCompleta}</p>
       <p className="mt-0.5" style={{ color: punto.color }}>
-        {punto.value}%
+        {fmtPorcentaje(punto.value)}
       </p>
     </div>
   );
@@ -131,7 +132,7 @@ export default function EvolucionAciertosChart({ sesionesEvolucion }) {
               <YAxis
                 domain={[0, 100]}
                 ticks={[0, 25, 50, 75, 100]}
-                tickFormatter={(v) => `${v}%`}
+                tickFormatter={(v) => fmtPorcentaje(v)}
                 tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
                 tickLine={false}
                 axisLine={false}

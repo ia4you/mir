@@ -1,4 +1,5 @@
 import { TrendingUp, TrendingDown, Minus } from "lucide-react";
+import { fmtPorcentaje } from "@/lib/formato";
 
 // Con menos respuestas la API no calcula tendencia (MIN_RESPUESTAS_TENDENCIA).
 const MIN_RESPUESTAS_TENDENCIA = 4;
@@ -54,7 +55,7 @@ export default function EspecialidadesStatsTable({ especialidades }) {
                       <div className="hidden h-1.5 flex-1 overflow-hidden rounded-full bg-track sm:block" aria-hidden="true">
                         <div className={`h-full rounded-full ${n.barra}`} style={{ width: `${e.porcentaje}%` }} />
                       </div>
-                      <span className="whitespace-nowrap text-right font-mono text-ink sm:w-12">{e.porcentaje} %</span>
+                      <span className="whitespace-nowrap text-right font-mono text-ink sm:w-12">{fmtPorcentaje(e.porcentaje)}</span>
                     </div>
                   ) : (
                     <span className="text-ink-muted">—</span>

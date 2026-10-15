@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { entrenarConCriterios } from "../lib/entrenarPuntosDebiles";
+import { fmtPorcentaje } from "@/lib/formato";
 
 // Menor que las 20 del test combinado de especialidades: es un repaso
 // focalizado en un solo tema. Con LIMIT en la query, se autolimita solo a
@@ -108,7 +109,7 @@ export default function TemasPorEspecialidad({ temas, especialidades = [] }) {
                     {temasEspecialidad.length} tema{temasEspecialidad.length !== 1 ? "s" : ""}
                   </span>
                   {porcentaje !== undefined && (
-                    <span className={`text-sm font-bold ${nivel(porcentaje)}`}>{porcentaje}%</span>
+                    <span className={`text-sm font-bold ${nivel(porcentaje)}`}>{fmtPorcentaje(porcentaje)}</span>
                   )}
                   <span
                     aria-hidden="true"
@@ -157,7 +158,7 @@ export default function TemasPorEspecialidad({ temas, especialidades = [] }) {
                               {t.aciertos}/{t.total} respondidas
                             </span>
                           </div>
-                          <span className={`font-bold ${clase}`}>{t.porcentaje}%</span>
+                          <span className={`font-bold ${clase}`}>{fmtPorcentaje(t.porcentaje)}</span>
                         </div>
                         {errorTema?.tema === t.tema && (
                           <p className="rounded-xl bg-danger-bg p-2 text-xs font-semibold text-danger-text">

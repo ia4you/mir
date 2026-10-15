@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { entrenarConCriterios } from "../lib/entrenarPuntosDebiles";
+import { fmtPorcentaje } from "@/lib/formato";
 
 // Umbral unificado con el `fiable` de /api/estadisticas/temas (antes 3).
 const MIN_RESPUESTAS_PARA_CONTAR = 5;
@@ -59,7 +60,7 @@ export default function PuntosDebiles({ especialidades }) {
                 <span className="font-semibold text-ink">
                   {i + 1}. {e.especialidad}
                 </span>
-                <span className="font-bold text-danger">{e.porcentaje}%</span>
+                <span className="font-bold text-danger">{fmtPorcentaje(e.porcentaje)}</span>
               </li>
             ))}
           </ul>

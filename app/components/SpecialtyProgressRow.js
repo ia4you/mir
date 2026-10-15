@@ -1,3 +1,5 @@
+import { fmtPorcentaje } from "@/lib/formato";
+
 // Umbrales: >70% éxito, 40-70% aviso, <40% peligro.
 function colorPorPorcentaje(pct) {
   if (pct > 70) return { dot: "bg-success", bar: "bg-success", text: "text-success" };
@@ -12,7 +14,7 @@ export default function SpecialtyProgressRow({ nombre, porcentaje, total, varian
   const color = sinEmpezar
     ? { dot: "bg-track", bar: "bg-track", text: "text-ink-muted" }
     : colorPorPorcentaje(porcentaje);
-  const etiqueta = sinEmpezar ? "Sin empezar" : `${porcentaje}%`;
+  const etiqueta = sinEmpezar ? "Sin empezar" : fmtPorcentaje(porcentaje);
 
   if (variante === "plain") {
     return (

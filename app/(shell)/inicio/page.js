@@ -9,6 +9,7 @@ import { Lock } from "lucide-react";
 import BloqueRepaso from "../../components/BloqueRepaso";
 import { getMetaDiaria, getTemporizadorDefecto, META_DIARIA_POR_DEFECTO } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
+import { fmtNumero, fmtPorcentaje } from "@/lib/formato";
 
 // Carga diferida: evita enviar @capacitor/core en el JS inicial de /inicio
 // para los visitantes web (el banner es solo para PWA/navegador, ver PushBanner.js).
@@ -54,11 +55,9 @@ function AvisoDesdeUrl() {
   );
 }
 
-// Coma decimal y signo menos real (−), no guion.
+// Una cifra decimal fija; con signo, "+" en los positivos (el menos es −).
 function fmt1(n, conSigno = false) {
-  const txt = Math.abs(n).toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
-  if (n < 0) return `−${txt}`;
-  return conSigno && n > 0 ? `+${txt}` : txt;
+  return fmtNumero(n, { fijos: true, signo: conSigno });
 }
 
 function Tarjeta({ titulo, children, className = "" }) {
@@ -490,7 +489,7 @@ export default function Inicio() {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-3">
                           <span className="truncate font-semibold text-ink">{e.especialidad}</span>
-                          <span className="font-mono text-sm text-danger-text">{e.porcentaje} %</span>
+                          <span className="font-mono text-sm text-danger-text">{fmtPorcentaje(e.porcentaje)}</span>
                         </div>
                         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-track" aria-hidden="true">
                           <div className="h-full rounded-full bg-danger-bar" style={{ width: `${e.porcentaje}%` }} />

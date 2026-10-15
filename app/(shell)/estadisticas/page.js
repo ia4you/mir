@@ -7,6 +7,7 @@ import EspecialidadesStatsTable from "../../components/EspecialidadesStatsTable"
 import TemasPorEspecialidad from "../../components/TemasPorEspecialidad";
 import PuntosDebiles from "../../components/PuntosDebiles";
 import { getMetaDiaria } from "../../lib/preferencias";
+import { fmtNumero, fmtPorcentaje } from "@/lib/formato";
 
 // Carga diferida: recharts es pesado y solo hace falta cuando esta pestaña
 // de evolución está visible, no en el JS inicial de /estadisticas.
@@ -110,13 +111,13 @@ export default function Estadisticas() {
           etiqueta="Meta diaria"
           valor={datos && `${datos.meta_diaria.respondidas_hoy}/${datos.meta_diaria.objetivo}`}
           porcentaje={datos?.meta_diaria.porcentaje}
-          detalle={datos ? `${datos.meta_diaria.porcentaje} % de hoy` : "…"}
+          detalle={datos ? `${fmtPorcentaje(datos.meta_diaria.porcentaje)} de hoy` : "…"}
         />
         <Cifra
           etiqueta="Nota estimada"
           valor={
             nota?.nota != null
-              ? nota.nota.toLocaleString("es-ES", { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+              ? fmtNumero(nota.nota, { fijos: true })
               : null
           }
           detalle={
@@ -223,7 +224,7 @@ export default function Estadisticas() {
                         : "text-danger"
                     }`}
                   >
-                    {s.porcentaje}%
+                    {fmtPorcentaje(s.porcentaje)}
                   </span>
                 </div>
                 <p className="mt-1 text-sm text-ink-muted">
