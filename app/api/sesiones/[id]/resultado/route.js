@@ -71,9 +71,27 @@ export async function GET(request, { params }) {
         netas: redondear2(netas(r.aciertos, r.errores)),
         nota: notaSimulacro(r.aciertos, r.errores, r.total_preguntas),
       });
+      // Dudosas marcadas durante el simulacro: cómo salieron (anuladas fuera,
+      // como en la nota) y sus ids para repasarlas.
+      const { rows: dudosasRes } = await query(
+        `SELECT rs.pregunta_id AS id, rs.correcta, rs.respuesta_dada IS NULL AS en_blanco
+         FROM respuestas_sesion rs
+         JOIN preguntas p ON p.id = rs.pregunta_id
+         WHERE rs.sesion_id = $1 AND rs.dudosa AND p.anulada = false
+         ORDER BY rs.id`,
+        [sesionId]
+      );
+      const dudosas = {
+        total: dudosasRes.length,
+        aciertos: dudosasRes.filter((d) => d.correcta).length,
+        fallos: dudosasRes.filter((d) => !d.correcta && !d.en_blanco).length,
+        en_blanco: dudosasRes.filter((d) => d.en_blanco).length,
+        ids: dudosasRes.map((d) => d.id),
+      };
       if (i !== -1) {
         simulacro = {
           ...resumen(filas[i]),
+          dudosas,
           comparativa: filas.slice(i + 1, i + 6).map((r) => ({ id: r.id, fecha: r.fecha, ...resumen(r) })),
         };
         aciertos = filas[i].aciertos;

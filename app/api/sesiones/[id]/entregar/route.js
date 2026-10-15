@@ -70,16 +70,18 @@ export async function POST(request, { params }) {
     ({ filas, aciertos } = corregir(
       entrega.respuestas,
       new Map(preguntas.map((p) => [p.id, p])),
-      entrega.vistas
+      entrega.vistas,
+      entrega.dudosas
     ));
 
     // Por si un cliente antiguo llegó a guardar respuestas sueltas de esta
     // sesión antes de entregarla: la entrega es la versión definitiva.
     await client.query(`DELETE FROM respuestas_sesion WHERE sesion_id = $1`, [sesionId]);
     await client.query(
-      `INSERT INTO respuestas_sesion (sesion_id, pregunta_id, respuesta_dada, correcta, user_id, vista)
-       SELECT $1, f.pregunta_id, f.respuesta_dada, f.correcta, $2, f.vista
-       FROM jsonb_to_recordset($3::jsonb) AS f(pregunta_id int, respuesta_dada text, correcta boolean, vista boolean)`,
+      `INSERT INTO respuestas_sesion (sesion_id, pregunta_id, respuesta_dada, correcta, user_id, vista, dudosa)
+       SELECT $1, f.pregunta_id, f.respuesta_dada, f.correcta, $2, f.vista, f.dudosa
+       FROM jsonb_to_recordset($3::jsonb)
+         AS f(pregunta_id int, respuesta_dada text, correcta boolean, vista boolean, dudosa boolean)`,
       [sesionId, userId, JSON.stringify(filas)]
     );
     await client.query(

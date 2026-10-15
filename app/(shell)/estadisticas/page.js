@@ -22,6 +22,7 @@ const ETIQUETA_MODO = {
   repaso_errores: "Repaso de errores",
   repaso_espaciado: "Repaso espaciado",
   simulacro: "Simulacro MIR",
+  dudosas: "Repaso de dudosas",
 };
 
 // Punto de miles también con 4 cifras (toLocaleString("es-ES") no lo pone en 1025).

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import SpecialtyProgressRow from "../../../components/SpecialtyProgressRow";
 import { fmtNumero, fmtPorcentaje } from "@/lib/formato";
+import { iniciarConIds } from "../../../lib/iniciarTest";
 
 export default function Resultados({ params }) {
   const router = useRouter();
@@ -287,6 +288,7 @@ export default function Resultados({ params }) {
                 </div>
               )}
             </div>
+            {datos.simulacro.dudosas?.total > 0 && <TusDudosas dudosas={datos.simulacro.dudosas} />}
           </section>
         )}
         {!esPremium && (
@@ -350,3 +352,62 @@ export default function Resultados({ params }) {
   );
 }
 
+// Simulacro: cómo salieron las preguntas marcadas como dudosas y un test con
+// ellas (modo "dudosas", con corrección y explicación como en la práctica).
+function TusDudosas({ dudosas: d }) {
+  const router = useRouter();
+  const [preparando, setPreparando] = useState(false);
+  const [aviso, setAviso] = useState("");
+
+  async function repasar() {
+    setPreparando(true);
+    setAviso("");
+    try {
+      const r = await iniciarConIds(d.ids, { modo: "dudosas" });
+      if (!r.error) return router.push(`/test/${r.id}`);
+      setAviso(r.message || "No se ha podido preparar el repaso. Inténtalo de nuevo.");
+    } catch {
+      setAviso("No se ha podido preparar el repaso. Inténtalo de nuevo.");
+    }
+    setPreparando(false);
+  }
+
+  const partes = [
+    `acertaste ${d.aciertos}`,
+    `fallaste ${d.fallos}`,
+    d.en_blanco > 0 && `dejaste ${d.en_blanco} en blanco`,
+  ].filter(Boolean);
+  const texto = partes.length > 2 ? `${partes.slice(0, -1).join(", ")} y ${partes.at(-1)}` : partes.join(" y ");
+
+  return (
+    <div className="mt-4 rounded-2xl bg-card p-4 shadow-sm">
+      <p className="text-sm font-bold uppercase tracking-wide text-ink-muted">Tus dudosas</p>
+      <p className="mt-2 text-sm text-ink">
+        Marcaste <span className="font-bold">{d.total}</span>: {texto}.
+      </p>
+      <div className="mt-3 grid grid-cols-3 divide-x divide-track border-t border-track pt-3 text-center">
+        <div>
+          <p className="text-lg font-extrabold text-success">{d.aciertos}</p>
+          <p className="text-xs text-ink-muted">Acertadas</p>
+        </div>
+        <div>
+          <p className="text-lg font-extrabold text-danger">{d.fallos}</p>
+          <p className="text-xs text-ink-muted">Falladas</p>
+        </div>
+        <div>
+          <p className="text-lg font-extrabold text-ink-muted">{d.en_blanco}</p>
+          <p className="text-xs text-ink-muted">En blanco</p>
+        </div>
+      </div>
+      {aviso && <p className="mt-3 rounded-xl bg-danger-bg p-2 text-xs font-semibold text-danger-text">{aviso}</p>}
+      <button
+        type="button"
+        onClick={repasar}
+        disabled={preparando}
+        className="mt-3 h-11 w-full rounded-xl border-2 border-accent text-sm font-bold text-accent disabled:opacity-60"
+      >
+        {preparando ? "Preparando…" : `Repasar ${d.total === 1 ? "la dudosa" : `las ${d.total} dudosas`} →`}
+      </button>
+    </div>
+  );
+}

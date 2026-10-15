@@ -114,6 +114,8 @@ export default function Simulacro({ sesionId, datos, persistente }) {
   // Entrega en un solo envío. Lo guardado en el dispositivo solo se borra si
   // la entrega se ha guardado (o ya lo estaba: 409); si falla, se reintenta
   // sin perder nada.
+  const dudosasRef = useRef(dudosas);
+  dudosasRef.current = dudosas;
   async function entregar() {
     if (entregandoRef.current || entregadoRef.current) return;
     entregandoRef.current = true;
@@ -129,6 +131,7 @@ export default function Simulacro({ sesionId, datos, persistente }) {
         body: JSON.stringify({
           respuestas: preguntas.map((p) => ({ pregunta_id: p.id, respuesta_dada: respuestasRef.current[p.id] || null })),
           vistas: [...vistasRef.current],
+          dudosas: [...dudosasRef.current],
           duracion_segundos: duracionSegundos,
         }),
       });
