@@ -21,7 +21,7 @@ export async function GET() {
         `SELECT p.especialidad, p.tema, COUNT(DISTINCT p.id)::int AS fallos
          FROM respuestas_sesion rs
          JOIN preguntas p ON p.id = rs.pregunta_id
-         WHERE rs.user_id = $1 AND rs.correcta = false
+         WHERE rs.user_id = $1 AND rs.correcta = false AND rs.vista
            AND p.origen = 'oficial' AND p.anulada = false AND NULLIF(p.tema, '') IS NOT NULL
            AND EXISTS (SELECT 1 FROM video_temas vt WHERE vt.especialidad = p.especialidad AND vt.tema = p.tema)
          GROUP BY p.especialidad, p.tema`,

@@ -74,6 +74,10 @@ export default function TestPregunta({ params }) {
   // (pregunta → letra, o null si se dejó en blanco). `localRef` es lo guardado
   // en localStorage (app/lib/simulacroLocal.js); null si no se pudo guardar.
   const respuestasRef = useRef({});
+  // Preguntas que llegaron a mostrarse: solo sus blancos van al repaso y a
+  // /errores. (Con "Saltar pregunta" el orden cambia, por eso son ids y no
+  // "hasta la última mostrada".)
+  const vistasRef = useRef(new Set());
   const localRef = useRef(null);
   const entregandoRef = useRef(false);
   const entregadoRef = useRef(false);
@@ -108,6 +112,7 @@ export default function TestPregunta({ params }) {
     if (local) {
       localRef.current = local;
       respuestasRef.current = local.respuestas || {};
+      vistasRef.current = new Set(local.vistas || []);
       setIndice(Math.min(local.indice || 0, local.preguntas.length - 1));
       setRespondidas(Object.fromEntries(Object.keys(respuestasRef.current).map((id) => [id, false])));
     }
@@ -146,6 +151,13 @@ export default function TestPregunta({ params }) {
   }
 
   const preguntaActual = preguntas ? preguntas[indice] : null;
+
+  useEffect(() => {
+    if (modoExamen !== "simulacro" || !preguntaActual || vistasRef.current.has(preguntaActual.id)) return;
+    vistasRef.current.add(preguntaActual.id);
+    persistir({ vistas: [...vistasRef.current] });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modoExamen, preguntaActual]);
 
   // Sin useCallback a propósito: en modo simulacro esta función llama a
   // siguientePregunta() más abajo, y ambas necesitan cerrar siempre sobre el
@@ -283,6 +295,7 @@ export default function TestPregunta({ params }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           respuestas: preguntas.map((p) => ({ pregunta_id: p.id, respuesta_dada: respuestasRef.current[p.id] ?? null })),
+          vistas: [...vistasRef.current],
           duracion_segundos: duracionSegundos,
         }),
       });

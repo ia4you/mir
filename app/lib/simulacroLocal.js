@@ -1,7 +1,7 @@
 // Simulacro en curso guardado en este dispositivo (localStorage), para no
 // perder 4 h 30 min de examen si se cierra la pestaña. Clave por sesión:
 // mir_simulacro_{id} → { userId, preguntas, segundosTotales, inicio (ms),
-// respuestas: { preguntaId: letra | null }, indice }. Se borra solo cuando la
+// respuestas: { preguntaId: letra | null }, vistas: [ids], indice }. Se borra solo cuando la
 // entrega se ha guardado en el servidor.
 const PREFIJO = "mir_simulacro_";
 

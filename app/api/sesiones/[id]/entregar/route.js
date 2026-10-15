@@ -67,15 +67,19 @@ export async function POST(request, { params }) {
       await client.query("ROLLBACK");
       return NextResponse.json({ error: "Pregunta no encontrada" }, { status: 400 });
     }
-    ({ filas, aciertos } = corregir(entrega.respuestas, new Map(preguntas.map((p) => [p.id, p]))));
+    ({ filas, aciertos } = corregir(
+      entrega.respuestas,
+      new Map(preguntas.map((p) => [p.id, p])),
+      entrega.vistas
+    ));
 
     // Por si un cliente antiguo llegó a guardar respuestas sueltas de esta
     // sesión antes de entregarla: la entrega es la versión definitiva.
     await client.query(`DELETE FROM respuestas_sesion WHERE sesion_id = $1`, [sesionId]);
     await client.query(
-      `INSERT INTO respuestas_sesion (sesion_id, pregunta_id, respuesta_dada, correcta, user_id)
-       SELECT $1, f.pregunta_id, f.respuesta_dada, f.correcta, $2
-       FROM jsonb_to_recordset($3::jsonb) AS f(pregunta_id int, respuesta_dada text, correcta boolean)`,
+      `INSERT INTO respuestas_sesion (sesion_id, pregunta_id, respuesta_dada, correcta, user_id, vista)
+       SELECT $1, f.pregunta_id, f.respuesta_dada, f.correcta, $2, f.vista
+       FROM jsonb_to_recordset($3::jsonb) AS f(pregunta_id int, respuesta_dada text, correcta boolean, vista boolean)`,
       [sesionId, userId, JSON.stringify(filas)]
     );
     await client.query(
@@ -92,7 +96,8 @@ export async function POST(request, { params }) {
   }
 
   // Repaso espaciado, fuera de la transacción y sin impedir la entrega (igual
-  // que al responder en /test). Los blancos cuentan como fallo.
+  // que al responder en /test). Los blancos de preguntas vistas cuentan como
+  // fallo; las que nunca se abrieron no entran.
   for (const f of filas) {
     if (!f.repaso) continue;
     try {

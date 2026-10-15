@@ -49,7 +49,7 @@ export async function GET(request, { params }) {
     const falladasRes = await query(
       `SELECT rs.pregunta_id AS id
        FROM respuestas_sesion rs
-       WHERE rs.sesion_id = $1 AND rs.correcta = false`,
+       WHERE rs.sesion_id = $1 AND rs.correcta = false AND rs.vista`,
       [sesionId]
     );
 

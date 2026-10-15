@@ -26,7 +26,7 @@ export async function GET() {
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
        LEFT JOIN repaso_espaciado r ON r.user_id = rs.user_id AND r.pregunta_id = p.id
-       WHERE rs.user_id = $1 AND rs.correcta = false
+       WHERE rs.user_id = $1 AND rs.correcta = false AND rs.vista -- no vista: simulacro sin abrir
        GROUP BY p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen, r.proxima, r.dominada_en
        ORDER BY p.especialidad ASC NULLS LAST, veces_fallada DESC, p.id ASC`,
       [userId]

@@ -187,6 +187,7 @@ export default function Configuracion() {
         userId: session.user.id,
         inicio: Date.now(),
         respuestas: {},
+        vistas: [],
         indice: 0,
       });
       if (!guardado) sessionStorage.setItem(`mir_test_${id}`, JSON.stringify(datos));
