@@ -136,9 +136,15 @@ export default function MisErrores() {
                               ✨ Generada con IA
                             </span>
                           )}
-                          <span className="whitespace-nowrap rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-bold text-danger-text">
-                            Fallada {p.veces_fallada}×
-                          </span>
+                          {p.solo_en_blanco ? (
+                            <span className="whitespace-nowrap rounded-full bg-track px-2.5 py-0.5 text-xs font-bold text-ink-muted">
+                              En blanco{p.veces_fallada > 1 ? ` ${p.veces_fallada}×` : ""}
+                            </span>
+                          ) : (
+                            <span className="whitespace-nowrap rounded-full bg-danger-bg px-2.5 py-0.5 text-xs font-bold text-danger-text">
+                              Fallada {p.veces_fallada}×
+                            </span>
+                          )}
                           <EtiquetaRepaso repaso={p.repaso} />
                           {p.recurrente && (
                             <span className="whitespace-nowrap rounded-full bg-track px-2.5 py-0.5 text-xs font-bold text-ink-muted">

@@ -19,6 +19,9 @@ export async function GET() {
     const { rows } = await query(
       `SELECT p.id, p.especialidad, p.pregunta, p.año, p.numero, p.origen,
               COUNT(*)::int AS veces_fallada,
+              -- Cuántas de esas veces fue en blanco (no contestada): si todas,
+              -- /errores la muestra como "En blanco" en vez de "Fallada".
+              COUNT(*) FILTER (WHERE rs.respuesta_dada IS NULL)::int AS veces_en_blanco,
               -- Estado en el repaso espaciado: días hasta que toca (0 o menos = hoy)
               -- o dominada. NULL si no está en repaso (p. ej. banco IA).
               (r.proxima - ${HOY_CANARIAS}) AS repaso_dias,
@@ -45,6 +48,7 @@ export async function GET() {
         numero: r.numero,
         origen: r.origen,
         veces_fallada: r.veces_fallada,
+        solo_en_blanco: r.veces_en_blanco === r.veces_fallada,
         recurrente: r.veces_fallada >= 2,
         repaso: r.repaso_dominada ? { dominada: true } : r.repaso_dias === null ? null : { dias: r.repaso_dias },
       });

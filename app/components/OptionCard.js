@@ -12,6 +12,7 @@ export default function OptionCard({
       <button
         type="button"
         onClick={onClick}
+        aria-pressed={Boolean(seleccionada)}
         className={`flex w-full items-start gap-3 rounded-2xl border-2 p-4 text-left transition-colors ${
           seleccionada ? "border-accent bg-brand-light" : "border-track bg-card"
         }`}
