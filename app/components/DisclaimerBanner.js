@@ -77,7 +77,7 @@ export default function DisclaimerBanner() {
           Desde sm se mantiene el diseño original sin cambios (ver abajo). */}
       <div className="mx-auto flex max-w-4xl items-center gap-3 sm:hidden">
         <p className="flex-1 text-xs leading-snug text-ink-muted">
-          Preguntas y respuestas 100% oficiales. Las explicaciones las genera una IA, pueden
+          Preguntas y respuestas 100% oficiales. Sus explicaciones las genera una IA, pueden
           contener errores y no sustituyen el material oficial. Consulta nuestro{" "}
           <a
             href="/aviso-legal"
@@ -101,7 +101,7 @@ export default function DisclaimerBanner() {
       {/* Diseño original, sin cambios, a partir de sm. */}
       <div className="mx-auto hidden max-w-4xl items-center gap-3 sm:flex">
         <p className="flex-1 text-xs leading-snug text-ink-muted">
-          Preguntas y respuestas 100% oficiales. Las explicaciones las genera una IA, pueden
+          Preguntas y respuestas 100% oficiales. Sus explicaciones las genera una IA, pueden
           contener errores y no sustituyen el material oficial. Consulta nuestro aviso legal.
         </p>
         <div className="flex flex-shrink-0 flex-col gap-2">
