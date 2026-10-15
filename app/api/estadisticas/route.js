@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { calcularRacha, diaCanarias, HOY_CANARIAS, semanaActual } from "@/lib/racha";
+import { getAciertosPorEspecialidad } from "@/lib/estadisticasDb";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export async function GET(request) {
       `SELECT COUNT(*)::int AS total
        FROM respuestas_sesion rs
        JOIN sesiones s ON s.id = rs.sesion_id
-       WHERE ${diaCanarias("s.fecha")} = ${HOY_CANARIAS} AND rs.user_id = $1`,
+       WHERE ${diaCanarias("s.fecha")} = ${HOY_CANARIAS} AND rs.user_id = $1 AND rs.vista`,
       [userId]
     );
     const respondidasHoy = hoyRes.rows[0].total;
@@ -58,48 +59,15 @@ export async function GET(request) {
               (SELECT COUNT(DISTINCT rs.pregunta_id)::int
                FROM respuestas_sesion rs
                JOIN preguntas p ON p.id = rs.pregunta_id
-               WHERE rs.user_id = $1 AND p.origen = 'oficial' AND p.anulada = false) AS respondidas`,
+               WHERE rs.user_id = $1 AND rs.vista AND p.origen = 'oficial' AND p.anulada = false) AS respondidas`,
       [userId]
     );
 
     // Partimos de TODAS las especialidades (no solo las ya practicadas) para
     // que el usuario vea el mapa completo desde el primer día, con 0% en las
     // que todavía no ha tocado. La tendencia compara la mitad más reciente de
-    // respuestas de cada especialidad (por fecha de sesión) contra la mitad
-    // más antigua.
-    const especialidadesRes = await query(
-      `WITH respuestas_ordenadas AS (
-         SELECT p.especialidad,
-                rs.correcta,
-                ROW_NUMBER() OVER (PARTITION BY p.especialidad ORDER BY s.fecha ASC, rs.id ASC) AS orden,
-                COUNT(*) OVER (PARTITION BY p.especialidad) AS total_respuestas
-         FROM respuestas_sesion rs
-         JOIN sesiones s ON s.id = rs.sesion_id
-         JOIN preguntas p ON p.id = rs.pregunta_id
-         WHERE rs.user_id = $1
-       ),
-       tendencia_especialidad AS (
-         SELECT especialidad,
-                AVG(CASE WHEN orden <= total_respuestas / 2.0 THEN correcta::int END) AS pct_antigua,
-                AVG(CASE WHEN orden > total_respuestas / 2.0 THEN correcta::int END) AS pct_reciente
-         FROM respuestas_ordenadas
-         GROUP BY especialidad
-       )
-       SELECT esp.especialidad,
-              COUNT(rs.id)::int AS total,
-              COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos,
-              t.pct_antigua,
-              t.pct_reciente
-       -- Solo especialidades del banco oficial: el banco IA (pausado) no debe
-       -- aparecer como especialidad "sin empezar".
-       FROM (SELECT DISTINCT especialidad FROM preguntas WHERE origen = 'oficial' AND anulada = false) esp
-       LEFT JOIN preguntas p ON p.especialidad = esp.especialidad
-       LEFT JOIN respuestas_sesion rs ON rs.pregunta_id = p.id AND rs.user_id = $1
-       LEFT JOIN tendencia_especialidad t ON t.especialidad = esp.especialidad
-       GROUP BY esp.especialidad, t.pct_antigua, t.pct_reciente
-       ORDER BY total DESC, esp.especialidad ASC`,
-      [userId]
-    );
+    // respuestas de cada especialidad contra la mitad más antigua.
+    const especialidades = await getAciertosPorEspecialidad(userId);
 
     return NextResponse.json({
       racha_dias: racha,
@@ -110,7 +78,7 @@ export async function GET(request) {
         porcentaje: metaDiariaPct,
       },
       banco: bancoRes.rows[0],
-      especialidades: especialidadesRes.rows.map((r) => {
+      especialidades: especialidades.map((r) => {
         const total = r.total;
         const aciertos = r.aciertos;
         let tendencia = "flat";

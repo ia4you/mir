@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
-import { query } from "@/lib/db";
+import { getAciertosPorTema } from "@/lib/estadisticasDb";
 
 export const dynamic = "force-dynamic";
 
@@ -17,21 +17,10 @@ export async function GET() {
   const userId = session.user.id;
 
   try {
-    const temasRes = await query(
-      `SELECT p.especialidad,
-              p.tema,
-              COUNT(*)::int AS total,
-              COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
-       FROM respuestas_sesion rs
-       JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.user_id = $1 AND p.tema IS NOT NULL
-       GROUP BY p.especialidad, p.tema
-       ORDER BY (COUNT(*) FILTER (WHERE rs.correcta))::float / COUNT(*) ASC`,
-      [userId]
-    );
+    const temas = await getAciertosPorTema(userId);
 
     return NextResponse.json({
-      temas: temasRes.rows.map((r) => ({
+      temas: temas.map((r) => ({
         especialidad: r.especialidad,
         tema: r.tema,
         total: r.total,
