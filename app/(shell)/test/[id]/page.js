@@ -8,6 +8,7 @@ import Link from "next/link";
 import OptionCard from "../../../components/OptionCard";
 import TestFeedback from "../../../components/TestFeedback";
 import VideoTrasFallo from "../../../components/VideoTrasFallo";
+import { leerSimulacro, guardarSimulacro, borrarSimulacro } from "../../../lib/simulacroLocal";
 
 const LETRAS = ["A", "B", "C", "D", "E"];
 
@@ -60,13 +61,23 @@ export default function TestPregunta({ params }) {
     mostrarSalirRef.current = mostrarSalir;
   }, [mostrarSalir]);
 
-  // Contador de aciertos en un ref (no en estado): en modo simulacro se
-  // necesita su valor actualizado en la misma pasada async en la que se
-  // registra la última respuesta, antes de que React vuelva a renderizar.
+  // Contador de aciertos en un ref (no en estado): se necesita su valor
+  // actualizado en la misma pasada async en la que se registra la última
+  // respuesta, antes de que React vuelva a renderizar. (El simulacro no lo
+  // usa: lo corrige el servidor al entregar.)
   const aciertosRef = useRef(0);
   // Evita que el aviso de "se acabó el tiempo" se dispare dos veces si el
   // intervalo llega a 0 justo cuando ya se estaba confirmando una respuesta.
   const finalizandoPorTiempoRef = useRef(false);
+
+  // Simulacro: las respuestas se quedan en el navegador hasta entregar
+  // (pregunta → letra, o null si se dejó en blanco). `localRef` es lo guardado
+  // en localStorage (app/lib/simulacroLocal.js); null si no se pudo guardar.
+  const respuestasRef = useRef({});
+  const localRef = useRef(null);
+  const entregandoRef = useRef(false);
+  const entregadoRef = useRef(false);
+  const [entrega, setEntrega] = useState(null); // null | "enviando" | "fallida"
 
   useEffect(() => {
     if (!imagenAmpliada) return;
@@ -78,18 +89,29 @@ export default function TestPregunta({ params }) {
   }, [imagenAmpliada]);
 
   useEffect(() => {
-    const guardado = sessionStorage.getItem(`mir_test_${sesionId}`);
-    if (!guardado) {
+    // Un simulacro se recupera de localStorage (aunque se cerrara la pestaña):
+    // respuestas, pregunta actual y hora de inicio, así que el tiempo sigue
+    // contando desde que empezó. Lo demás, de sessionStorage como siempre.
+    const local = leerSimulacro(sesionId);
+    const guardado = local ? null : sessionStorage.getItem(`mir_test_${sesionId}`);
+    if (!local && !guardado) {
       router.replace("/configuracion");
       return;
     }
-    const datos = JSON.parse(guardado);
+    const datos = local || JSON.parse(guardado);
     setPreguntas(datos.preguntas);
     setSegundosPorPregunta(datos.segundosPorPregunta);
     setModoExamen(datos.modoExamen || "practica");
     setSegundosTotales(datos.segundosTotales || null);
-    horaInicioRef.current = Date.now();
-    if (typeof window.gtag === "function") {
+    horaInicioRef.current = local ? local.inicio : Date.now();
+    const retomado = local && (local.indice > 0 || Object.keys(local.respuestas || {}).length > 0);
+    if (local) {
+      localRef.current = local;
+      respuestasRef.current = local.respuestas || {};
+      setIndice(Math.min(local.indice || 0, local.preguntas.length - 1));
+      setRespondidas(Object.fromEntries(Object.keys(respuestasRef.current).map((id) => [id, false])));
+    }
+    if (!retomado && typeof window.gtag === "function") {
       window.gtag("event", "test_start", {
         modo: datos.modoExamen || "practica",
         num_preguntas: datos.preguntas.length,
@@ -97,6 +119,31 @@ export default function TestPregunta({ params }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sesionId]);
+
+  // Un simulacro guardado en este dispositivo por otra cuenta no se abre.
+  useEffect(() => {
+    const local = localRef.current;
+    if (local && session?.user?.id && String(local.userId) !== String(session.user.id)) router.replace("/inicio");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+
+  // Aviso del navegador al cerrar o recargar con el simulacro sin entregar.
+  useEffect(() => {
+    if (modoExamen !== "simulacro") return;
+    function avisar(e) {
+      if (entregadoRef.current) return;
+      e.preventDefault();
+      e.returnValue = "";
+    }
+    window.addEventListener("beforeunload", avisar);
+    return () => window.removeEventListener("beforeunload", avisar);
+  }, [modoExamen]);
+
+  function persistir(cambios) {
+    if (!localRef.current) return;
+    localRef.current = { ...localRef.current, ...cambios };
+    guardarSimulacro(sesionId, localRef.current);
+  }
 
   const preguntaActual = preguntas ? preguntas[indice] : null;
 
@@ -106,8 +153,20 @@ export default function TestPregunta({ params }) {
   // parciales arriesgaría capturar un indice desactualizado).
   async function confirmarRespuesta(respuestaForzada) {
     if (!preguntaActual || enviando) return;
-    setEnviando(true);
     const respuestaFinal = respuestaForzada !== undefined ? respuestaForzada : seleccionada;
+
+    // Simulacro: sin corrección ni interrupciones durante el test. La
+    // respuesta se guarda en este dispositivo y se pasa a la siguiente (en la
+    // última, se entrega todo).
+    if (modoExamen === "simulacro") {
+      respuestasRef.current = { ...respuestasRef.current, [preguntaActual.id]: respuestaFinal ?? null };
+      setRespondidas((r) => ({ ...r, [preguntaActual.id]: false }));
+      persistir({ respuestas: respuestasRef.current, indice: Math.min(indice + 1, preguntas.length - 1) });
+      await siguientePregunta();
+      return;
+    }
+
+    setEnviando(true);
     let data;
     try {
       const res = await fetch(`/api/sesiones/${sesionId}/respuestas`, {
@@ -122,13 +181,6 @@ export default function TestPregunta({ params }) {
     if (data.correcta) aciertosRef.current += 1;
     setRespondidas((r) => ({ ...r, [preguntaActual.id]: !!data.correcta }));
     setEnviando(false);
-
-    // Simulacro: sin corrección ni interrupciones durante el test — se pasa
-    // directamente a la siguiente pregunta (o se finaliza si era la última).
-    if (modoExamen === "simulacro") {
-      await siguientePregunta();
-      return;
-    }
 
     setResultado(data);
     setEstado("corregido");
@@ -161,17 +213,20 @@ export default function TestPregunta({ params }) {
   // no desincronizarse si el intervalo se pausa (pestaña en segundo plano).
   useEffect(() => {
     if (modoExamen !== "simulacro" || !segundosTotales || !preguntas) return;
+    // Al retomar un simulacro el tiempo puede estar ya agotado en el primer
+    // tick: entonces se entrega sin llegar a crear el intervalo.
+    let intervalo = null;
     function tick() {
       const transcurridos = Math.round((Date.now() - horaInicioRef.current) / 1000);
       const restante = Math.max(0, segundosTotales - transcurridos);
       setTiempoTotalRestante(restante);
-      if (restante <= 0) {
-        clearInterval(intervalo);
-        finalizarPorTiempoRef.current();
-      }
+      if (restante > 0) return false;
+      clearInterval(intervalo);
+      finalizarPorTiempoRef.current();
+      return true;
     }
-    tick();
-    const intervalo = setInterval(tick, 1000);
+    if (tick()) return;
+    intervalo = setInterval(tick, 1000);
     return () => clearInterval(intervalo);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modoExamen, segundosTotales, preguntas]);
@@ -197,7 +252,7 @@ export default function TestPregunta({ params }) {
 
   async function siguientePregunta() {
     if (indice + 1 < preguntas.length) {
-      setIndice((i) => i + 1);
+      setIndice(indice + 1); // no (i) => i + 1: un doble clic no salta dos preguntas
       setSeleccionada(null);
       setEstado("respondiendo");
       setResultado(null);
@@ -208,7 +263,50 @@ export default function TestPregunta({ params }) {
       setTutorFalloError("");
       return;
     }
-    await finalizarSesion();
+    if (modoExamen === "simulacro") await entregar();
+    else await finalizarSesion();
+  }
+
+  // Entrega del simulacro en un solo envío; el servidor corrige. Lo guardado
+  // en este dispositivo solo se borra si la entrega se ha guardado (o ya lo
+  // estaba: 409); si falla, se puede reintentar sin perder nada.
+  async function entregar() {
+    if (entregandoRef.current || entregadoRef.current) return;
+    entregandoRef.current = true;
+    setEntrega("enviando");
+    const transcurridos = Math.round((Date.now() - horaInicioRef.current) / 1000);
+    const duracionSegundos = segundosTotales ? Math.min(transcurridos, segundosTotales) : transcurridos;
+    let res = null;
+    try {
+      res = await fetch(`/api/sesiones/${sesionId}/entregar`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          respuestas: preguntas.map((p) => ({ pregunta_id: p.id, respuesta_dada: respuestasRef.current[p.id] ?? null })),
+          duracion_segundos: duracionSegundos,
+        }),
+      });
+    } catch {
+      // sin conexión: se queda en "fallida"
+    }
+    if (res && (res.ok || res.status === 409)) {
+      const data = res.ok ? await res.json().catch(() => null) : null;
+      entregadoRef.current = true;
+      if (data && typeof window.gtag === "function") {
+        window.gtag("event", "test_complete", {
+          modo: "simulacro",
+          aciertos: data.aciertos,
+          total: data.total,
+          duracion_segundos: duracionSegundos,
+        });
+      }
+      borrarSimulacro(sesionId);
+      sessionStorage.removeItem(`mir_test_${sesionId}`);
+      router.push(`/resultados/${sesionId}`);
+      return;
+    }
+    entregandoRef.current = false;
+    setEntrega("fallida");
   }
 
   // Solo Premium: manda la pregunta actual al final de la cola de pendientes
@@ -216,10 +314,10 @@ export default function TestPregunta({ params }) {
   // que antes era la siguiente pregunta, el efecto es "avanzar" sin más.
   function saltarPregunta() {
     if (!esPremium) return;
-    setPreguntas((actuales) => {
-      const [actual, ...resto] = actuales.slice(indice);
-      return [...actuales.slice(0, indice), ...resto, actual];
-    });
+    const [actual, ...resto] = preguntas.slice(indice);
+    const nuevas = [...preguntas.slice(0, indice), ...resto, actual];
+    setPreguntas(nuevas);
+    persistir({ preguntas: nuevas });
     setSeleccionada(null);
   }
 
@@ -243,30 +341,16 @@ export default function TestPregunta({ params }) {
     }
   }
 
-  // Cuando se acaba el tiempo del simulacro, las preguntas no vistas cuentan
-  // como en blanco (sin penalización) en vez de quedar sin registrar.
+  // Cuando se acaba el tiempo del simulacro se entrega lo que haya: la
+  // opción marcada en la pregunta actual cuenta, y las no vistas van en blanco.
   async function finalizarPorTiempo() {
     if (finalizandoPorTiempoRef.current) return;
     finalizandoPorTiempoRef.current = true;
-    const restantes = preguntas.slice(indice);
-    for (let i = 0; i < restantes.length; i++) {
-      const pregunta = restantes[i];
-      const esActual = i === 0;
-      if (esActual && enviando) continue; // ya se está confirmando desde otro sitio
-      const respuestaDada = esActual ? seleccionada : null;
-      try {
-        const res = await fetch(`/api/sesiones/${sesionId}/respuestas`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pregunta_id: pregunta.id, respuesta_dada: respuestaDada }),
-        });
-        const data = await res.json().catch(() => null);
-        if (data?.correcta) aciertosRef.current += 1;
-      } catch (e) {
-        // seguimos con las siguientes preguntas aunque una falle
-      }
+    if (seleccionada && !(preguntaActual.id in respuestasRef.current)) {
+      respuestasRef.current = { ...respuestasRef.current, [preguntaActual.id]: seleccionada };
+      persistir({ respuestas: respuestasRef.current });
     }
-    await finalizarSesion();
+    await entregar();
   }
 
   // "Última versión" de finalizarPorTiempo en una ref: el efecto del
@@ -276,7 +360,17 @@ export default function TestPregunta({ params }) {
   const finalizarPorTiempoRef = useRef(() => {});
   finalizarPorTiempoRef.current = finalizarPorTiempo;
 
+  // En un simulacro, salir no borra nada: se puede seguir desde /inicio.
+  // Abandonarlo sí borra lo guardado (la sesión queda sin terminar, como
+  // cualquier test que se deja a medias).
   function salir() {
+    if (modoExamen !== "simulacro") sessionStorage.removeItem(`mir_test_${sesionId}`);
+    router.push("/inicio");
+  }
+
+  function abandonar() {
+    entregadoRef.current = true; // sin aviso del navegador al salir
+    borrarSimulacro(sesionId);
     sessionStorage.removeItem(`mir_test_${sesionId}`);
     router.push("/inicio");
   }
@@ -831,10 +925,22 @@ export default function TestPregunta({ params }) {
       {mostrarSalir && (
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
           <div className="w-full max-w-xs rounded-2xl bg-card p-5 shadow-lg">
-            <p className="text-lg font-bold text-ink">¿Salir del test?</p>
-            <p className="mt-1 text-sm text-ink-muted">
-              Perderás el progreso de esta sesión y no se guardará el resultado.
-            </p>
+            {modoExamen === "simulacro" ? (
+              <>
+                <p className="text-lg font-bold text-ink">¿Salir del simulacro?</p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  Tus respuestas quedan guardadas en este dispositivo y puedes seguir desde Inicio. El
+                  tiempo sigue contando.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-lg font-bold text-ink">¿Salir del test?</p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  Perderás el progreso de esta sesión y no se guardará el resultado.
+                </p>
+              </>
+            )}
             <div className="mt-5 flex gap-3">
               <button
                 type="button"
@@ -846,11 +952,56 @@ export default function TestPregunta({ params }) {
               <button
                 type="button"
                 onClick={salir}
-                className="h-11 flex-1 rounded-xl bg-danger font-bold text-on-status"
+                className={`h-11 flex-1 rounded-xl font-bold ${
+                  modoExamen === "simulacro" ? "bg-brand text-on-brand" : "bg-danger text-on-status"
+                }`}
               >
                 Salir
               </button>
             </div>
+            {modoExamen === "simulacro" && (
+              <button
+                type="button"
+                onClick={abandonar}
+                className="mt-3 min-h-11 w-full text-sm font-bold text-danger-text underline-offset-2 hover:underline"
+              >
+                Abandonar el simulacro (se borran tus respuestas)
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {entrega && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40 px-6">
+          <div
+            role={entrega === "fallida" ? "alertdialog" : "status"}
+            aria-labelledby="titulo-entrega"
+            className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-lg"
+          >
+            {entrega === "enviando" ? (
+              <p id="titulo-entrega" className="text-lg font-bold text-ink">
+                Entregando el simulacro…
+              </p>
+            ) : (
+              <>
+                <p id="titulo-entrega" className="text-lg font-bold text-ink">
+                  No se ha podido entregar
+                </p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  Revisa tu conexión. Tus respuestas siguen guardadas en este dispositivo: no se ha
+                  perdido nada.
+                </p>
+                <button
+                  type="button"
+                  autoFocus
+                  onClick={entregar}
+                  className="mt-5 h-12 w-full rounded-xl bg-brand font-bold text-on-brand active:bg-brand-dark"
+                >
+                  Reintentar la entrega
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}

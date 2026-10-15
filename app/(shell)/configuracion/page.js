@@ -9,6 +9,7 @@ import FieldCard from "../../components/FieldCard";
 import Chip from "../../components/Chip";
 import { getTemporizadorDefecto } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
+import { guardarSimulacro } from "../../lib/simulacroLocal";
 
 const ANIOS = ["2022", "2023", "2024", "2025", "2026"];
 // Examen real (MIR 2027): 4 h 30 min para todo el simulacro (no por pregunta).
@@ -173,15 +174,22 @@ export default function Configuracion() {
       if (!resSesion.ok) throw new Error("No se pudo crear la sesión");
       const { id } = await resSesion.json();
 
-      sessionStorage.setItem(
-        `mir_test_${id}`,
-        JSON.stringify({
-          preguntas,
-          segundosPorPregunta: null,
-          modoExamen: "simulacro",
-          segundosTotales: SEGUNDOS_SIMULACRO,
-        })
-      );
+      // En localStorage (no sessionStorage), para poder seguir el simulacro si
+      // se cierra la pestaña; si no se puede, al menos en esta pestaña.
+      const datos = {
+        preguntas,
+        segundosPorPregunta: null,
+        modoExamen: "simulacro",
+        segundosTotales: SEGUNDOS_SIMULACRO,
+      };
+      const guardado = guardarSimulacro(id, {
+        ...datos,
+        userId: session.user.id,
+        inicio: Date.now(),
+        respuestas: {},
+        indice: 0,
+      });
+      if (!guardado) sessionStorage.setItem(`mir_test_${id}`, JSON.stringify(datos));
 
       router.push(`/test/${id}`);
     } catch (e) {

@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Lock } from "lucide-react";
 import BloqueRepaso from "../../components/BloqueRepaso";
+import BloqueSimulacroPendiente from "../../components/BloqueSimulacroPendiente";
 import { getMetaDiaria, getTemporizadorDefecto, META_DIARIA_POR_DEFECTO } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
 import { fmtNumero, fmtPorcentaje } from "@/lib/formato";
@@ -375,6 +376,11 @@ export default function Inicio() {
           No se ha podido cargar tu progreso. Inténtalo de nuevo más tarde.
         </p>
       )}
+
+      {/* Simulacro empezado en este dispositivo y sin entregar. */}
+      <div className="mx-5 mt-5 empty:hidden lg:mx-0 lg:mt-8">
+        <BloqueSimulacroPendiente />
+      </div>
 
       {/* Repaso espaciado: solo aparece si el usuario tiene preguntas en repaso. */}
       <div className="mx-5 mt-5 empty:hidden lg:mx-0 lg:mt-8">
