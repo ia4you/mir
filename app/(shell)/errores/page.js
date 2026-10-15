@@ -50,6 +50,8 @@ export default function MisErrores() {
   }
 
   const todosLosIds = datos ? datos.grupos.flatMap((g) => g.preguntas.map((p) => p.id)) : [];
+  // Preguntas que solo se dejaron en blanco (nunca se fallaron contestando).
+  const enBlanco = datos ? datos.grupos.reduce((n, g) => n + g.preguntas.filter((p) => p.solo_en_blanco).length, 0) : 0;
 
   return (
     <div className="ancho-app min-h-screen pb-nav lg:px-8">
@@ -90,12 +92,10 @@ export default function MisErrores() {
         {!error && datos && datos.total_preguntas_falladas > 0 && (
           <>
             <div className="rounded-2xl bg-card p-4 shadow-sm lg:flex lg:flex-wrap lg:items-center lg:justify-between lg:gap-x-6 lg:p-5">
-              <p className="text-sm text-ink-muted">
-                Has fallado{" "}
-                <span className="font-bold text-danger">{datos.total_preguntas_falladas}</span>{" "}
-                {datos.total_preguntas_falladas === 1 ? "pregunta distinta" : "preguntas distintas"}{" "}
-                en total.
-              </p>
+              <ResumenErrores
+                falladas={datos.total_preguntas_falladas - enBlanco}
+                enBlanco={enBlanco}
+              />
               {errorRepaso && (
                 <p className="mt-3 rounded-xl bg-danger-bg p-2 text-xs font-semibold text-danger-text lg:order-last lg:w-full">
                   {errorRepaso}
@@ -194,5 +194,25 @@ function EtiquetaRepaso({ repaso }) {
       {e.tono === "dominada" ? "✓ " : ""}
       {e.texto}
     </span>
+  );
+}
+
+// "Has fallado N preguntas distintas y dejaste M en blanco", sin la parte que
+// sea 0.
+function ResumenErrores({ falladas, enBlanco }) {
+  const n = (x) => <span className="font-bold text-ink">{x}</span>;
+  if (falladas === 0) {
+    return (
+      <p className="text-sm text-ink-muted">
+        Dejaste {n(enBlanco)} {enBlanco === 1 ? "pregunta" : "preguntas"} en blanco.
+      </p>
+    );
+  }
+  return (
+    <p className="text-sm text-ink-muted">
+      Has fallado <span className="font-bold text-danger">{falladas}</span>{" "}
+      {falladas === 1 ? "pregunta distinta" : "preguntas distintas"}
+      {enBlanco > 0 && <> y dejaste {n(enBlanco)} en blanco</>}.
+    </p>
   );
 }
