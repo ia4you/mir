@@ -34,10 +34,13 @@ export async function GET(request, { params }) {
       return NextResponse.json({ error: "No tienes acceso a esta sesión" }, { status: 403 });
     }
 
+    // Por especialidad, solo con las preguntas abiertas: las no abiertas de un
+    // simulacro cuentan en la nota pero no en estos porcentajes.
     const desgloseRes = await query(
       `SELECT p.especialidad,
-              COUNT(*)::int AS total,
-              COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
+              COUNT(*) FILTER (WHERE rs.vista)::int AS total,
+              COUNT(*) FILTER (WHERE rs.vista AND rs.correcta)::int AS aciertos,
+              COUNT(*) FILTER (WHERE NOT rs.vista)::int AS sin_abrir
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
        WHERE rs.sesion_id = $1
@@ -45,6 +48,7 @@ export async function GET(request, { params }) {
        ORDER BY p.especialidad`,
       [sesionId]
     );
+    const desglose = desgloseRes.rows.filter((r) => r.total > 0);
 
     const falladasRes = await query(
       `SELECT rs.pregunta_id AS id
@@ -111,7 +115,8 @@ export async function GET(request, { params }) {
       fallos,
       porcentaje_aciertos: porcentajeAciertos,
       duracion_segundos: sesion.duracion_segundos,
-      desglose_especialidad: desgloseRes.rows.map((r) => ({
+      sin_abrir: desgloseRes.rows.reduce((n, r) => n + r.sin_abrir, 0),
+      desglose_especialidad: desglose.map((r) => ({
         especialidad: r.especialidad,
         total: r.total,
         aciertos: r.aciertos,

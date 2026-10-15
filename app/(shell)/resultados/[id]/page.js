@@ -329,6 +329,12 @@ export default function Resultados({ params }) {
               />
             ))}
           </div>
+          {datos.sin_abrir > 0 && (
+            <p className="mt-3 text-xs text-ink-muted">
+              {datos.sin_abrir} {datos.sin_abrir === 1 ? "pregunta sin abrir no cuenta" : "preguntas sin abrir no cuentan"}{" "}
+              en esta tabla (sí en la nota).
+            </p>
+          )}
         </section>
       )}
 

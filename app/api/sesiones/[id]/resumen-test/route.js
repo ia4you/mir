@@ -44,7 +44,7 @@ export async function GET(request, { params }) {
               COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1
+       WHERE rs.sesion_id = $1 AND rs.vista -- las no abiertas de un simulacro no cuentan
        GROUP BY p.especialidad`,
       [sesionId]
     );
@@ -74,7 +74,7 @@ export async function GET(request, { params }) {
               COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1
+       WHERE rs.sesion_id = $1 AND rs.vista
        GROUP BY p.año`,
       [sesionId]
     );
@@ -99,8 +99,6 @@ export async function GET(request, { params }) {
       }
     }
 
-    const fallos = sesion.total_preguntas - sesion.aciertos;
-
     // Clasificación de fallos por calidad de la explicación oficial: algunas
     // preguntas del banco tienen la respuesta oficial cuestionada por la
     // comunidad médica (controversia) o son de dificultad muy alta
@@ -110,7 +108,7 @@ export async function GET(request, { params }) {
       `SELECT p.explicacion_calidad
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1 AND rs.correcta = false`,
+       WHERE rs.sesion_id = $1 AND rs.correcta = false AND rs.vista`,
       [sesionId]
     );
 
@@ -122,6 +120,8 @@ export async function GET(request, { params }) {
       else if (explicacion_calidad === "orientativa") fallosDificiles++;
       else fallosNormales++;
     }
+    // Sin las no abiertas de un simulacro (en práctica coincide con total − aciertos).
+    const fallos = fallosCalidadRes.rows.length;
 
     const { texto: analisisNarrativo, proveedor } = await generarAnalisisNarrativo({
       totalPreguntas: sesion.total_preguntas,
