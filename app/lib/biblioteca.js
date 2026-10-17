@@ -5,19 +5,26 @@ import { slugify } from "./especialidades";
 
 // Biblioteca de /videos: los vídeos principales activos y disponibles, uno
 // por especialidad + tema, agrupados por especialidad (de más a menos vídeos)
-// y, dentro, por nº de preguntas válidas del tema. Un vídeo que cubre dos
+// y, dentro, por nº de preguntas válidas que lo muestran. Un vídeo que cubre dos
 // temas sale en los dos. Las especialidades sin vídeo no aparecen.
 export const getBiblioteca = cache(async () => {
   const [{ rows }, { rows: canales }] = await Promise.all([
     query(
-      `SELECT v.youtube_id, v.titulo, v.fecha_publicacion, v.duracion_seg,
+      // preguntas: las válidas que muestran de verdad este vídeo en esta
+      // tarjeta (pregunta_video, con las exclusiones aplicadas); solo ordena.
+      `WITH n AS (
+         SELECT pv.video_id, pv.especialidad, pv.tema, COUNT(*)::int AS preguntas
+         FROM pregunta_video pv JOIN preguntas p ON p.id = pv.pregunta_id
+         WHERE pv.video_id IS NOT NULL AND p.anulada = false
+         GROUP BY 1, 2, 3
+       )
+       SELECT v.youtube_id, v.titulo, v.fecha_publicacion, v.duracion_seg,
               c.nombre AS canal, c.url AS canal_url, vt.especialidad, vt.tema,
-              (SELECT COUNT(*) FROM preguntas p
-               WHERE p.especialidad = vt.especialidad AND p.tema = vt.tema
-                 AND p.origen = 'oficial' AND p.anulada = false)::int AS preguntas
+              COALESCE(n.preguntas, 0) AS preguntas
        FROM video_temas vt
        JOIN videos v ON v.id = vt.video_id
        JOIN video_canales c ON c.id = v.canal_id
+       LEFT JOIN n ON n.video_id = vt.video_id AND n.especialidad = vt.especialidad AND n.tema = vt.tema
        WHERE vt.principal AND v.estado = 'activo' AND v.disponibilidad = 'disponible'
        ORDER BY preguntas DESC, v.titulo`
     ),

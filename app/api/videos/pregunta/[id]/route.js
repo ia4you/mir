@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
-import { temaConVideo, temaCorto, elegirVideo, busquedaYouTube, tituloVisible } from "@/lib/videos";
+import { temaCorto, busquedaYouTube, tituloVisible } from "@/lib/videos";
 import { slugify } from "@/app/lib/especialidades";
 
 export const dynamic = "force-dynamic";
@@ -24,19 +24,17 @@ export async function GET(_request, { params }) {
 
     let cuerpo = {};
     if (pregunta.origen === "oficial") {
-      const tema = temaConVideo(pregunta.tema);
-      const { rows } = tema
-        ? await query(
-            `SELECT v.youtube_id, v.titulo, v.fecha_publicacion, v.duracion_seg, v.estado,
-                    v.disponibilidad, vt.principal, c.nombre AS canal, c.url AS canal_url
-             FROM video_temas vt
-             JOIN videos v ON v.id = vt.video_id
-             JOIN video_canales c ON c.id = v.canal_id
-             WHERE vt.especialidad = $1 AND vt.tema = $2`,
-            [pregunta.especialidad, tema]
-          )
-        : { rows: [] };
-      const v = elegirVideo(rows);
+      // pregunta_video ya aplica video_exclusiones; especialidad y tema son los
+      // de la tarjeta del vídeo en /videos (los de un alternativo, si lo es).
+      const { rows: [v] } = await query(
+        `SELECT v.youtube_id, v.titulo, v.fecha_publicacion, v.duracion_seg,
+                c.nombre AS canal, c.url AS canal_url, pv.especialidad, pv.tema
+         FROM pregunta_video pv
+         JOIN videos v ON v.id = pv.video_id
+         JOIN video_canales c ON c.id = v.canal_id
+         WHERE pv.pregunta_id = $1`,
+        [id]
+      );
       cuerpo = v
         ? {
             video: {
@@ -46,9 +44,9 @@ export async function GET(_request, { params }) {
               duracion_seg: v.duracion_seg,
               canal: v.canal,
               canal_url: v.canal_url,
-              especialidad: pregunta.especialidad,
-              especialidad_slug: slugify(pregunta.especialidad),
-              tema: temaCorto(tema),
+              especialidad: v.especialidad,
+              especialidad_slug: slugify(v.especialidad),
+              tema: temaCorto(v.tema),
             },
           }
         : { busqueda: busquedaYouTube(pregunta.especialidad, pregunta.tema) };

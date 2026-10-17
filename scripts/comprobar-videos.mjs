@@ -19,7 +19,9 @@
 //   datos llevan más de 30 días sin poder refrescarse, dejando en el log qué
 //   se borra y por qué.
 // - Avisa (sin tocar nada) de títulos cambiados, vídeos que superan la
-//   antigüedad de su tema y temas que ya no existen en `preguntas`.
+//   antigüedad de su tema, temas que ya no existen en `preguntas` y
+//   exclusiones de video_exclusiones que hay que revisar (alternativo que ya
+//   no se ve, o tema que ha cambiado de vídeo y deja la exclusión sin efecto).
 // - Manda un correo a SMTP_TO solo si hay algo que mirar: vídeos ocultados
 //   o borrados, avisos de antigüedad nuevos o un error de la API o la BD.
 //
@@ -262,6 +264,18 @@ async function comprobar(client, seco) {
        )`
     );
     for (const h of huerfanos) avisos.push(`Tema sin preguntas válidas (ya no se mostrará su vídeo tras fallar): ${h.especialidad} / ${h.tema}`);
+
+    // Exclusiones por pregunta (después de ocultar/borrar, dentro de la misma transacción).
+    const { rows: altOcultos } = await client.query(
+      `SELECT e.pregunta_id, v.youtube_id FROM video_exclusiones e JOIN videos v ON v.id = e.video_alternativo_id
+       WHERE v.estado <> 'activo' OR v.disponibilidad <> 'disponible' ORDER BY 1`
+    );
+    for (const e of altOcultos) avisos.push(`Pregunta ${e.pregunta_id}: su vídeo alternativo ${e.youtube_id} ya no se ve; se queda sin vídeo`);
+    const { rows: sinEfecto } = await client.query(
+      `SELECT e.pregunta_id FROM video_exclusiones e JOIN pregunta_video pv USING (pregunta_id)
+       WHERE pv.video_tema_id IS DISTINCT FROM e.video_excluido_id ORDER BY 1`
+    );
+    if (sinEfecto.length) avisos.push(`Exclusiones sin efecto porque su tema ha cambiado de vídeo (revisar): ${sinEfecto.map((e) => e.pregunta_id).join(", ")}`);
 
     await client.query(seco ? "ROLLBACK" : "COMMIT");
   } catch (e) {

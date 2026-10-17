@@ -18,13 +18,14 @@ export async function GET() {
   try {
     const [{ rows: fallos }, { rows: usuario }] = await Promise.all([
       query(
-        `SELECT p.especialidad, p.tema, COUNT(DISTINCT p.id)::int AS fallos
+        // Cada fallo cuenta para el vídeo que se le mostró (pregunta_video, con
+        // las exclusiones aplicadas): nada si se quedó sin vídeo.
+        `SELECT pv.especialidad, pv.tema, COUNT(DISTINCT p.id)::int AS fallos
          FROM respuestas_sesion rs
          JOIN preguntas p ON p.id = rs.pregunta_id
-         WHERE rs.user_id = $1 AND rs.correcta = false AND rs.vista
-           AND p.origen = 'oficial' AND p.anulada = false AND NULLIF(p.tema, '') IS NOT NULL
-           AND EXISTS (SELECT 1 FROM video_temas vt WHERE vt.especialidad = p.especialidad AND vt.tema = p.tema)
-         GROUP BY p.especialidad, p.tema`,
+         JOIN pregunta_video pv ON pv.pregunta_id = p.id AND pv.video_id IS NOT NULL
+         WHERE rs.user_id = $1 AND rs.correcta = false AND rs.vista AND p.anulada = false
+         GROUP BY pv.especialidad, pv.tema`,
         [userId]
       ),
       // Plan real de la BD (el del JWT puede ir desfasado tras un pago).
