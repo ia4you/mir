@@ -73,12 +73,13 @@ const ICONOS = {
 
 function mensaje(e) {
   if (e.tipo === "nueva") return "Empieza con un test corto y sabrás en qué punto estás.";
+  if (e.tipo === "pocas") return "Llevas pocas preguntas de esta especialidad. Un test corto te dirá cómo vas de verdad.";
   const pct = e.porcentaje;
   if (pct >= 60) return "Vas bien, pero es de tus especialidades menos fuertes. Un repaso te ayudará a mantenerla.";
   if (pct < 40) return "Aquí tienes tu mayor margen de mejora. Un test centrado en esta especialidad es la forma más rápida de subir.";
   if (pct < 50) return "Te falta poco para el aprobado. Repasar los fallos de esta especialidad es el camino más corto.";
   if (pct < 55) return "Vas por buen camino, pero aún se te escapan puntos fáciles. Un test centrado aquí te ayudará a afianzarla.";
-  return "Casi la tienes. Unas cuantas sesiones más y dejará de estar en esta lista.";
+  return "Casi la tienes. Unas cuantas sesiones más y será de tus fuertes.";
 }
 
 // Rojo por debajo del 50 %, dorado del 50 al 59 % y neutro del 60 % o sin
