@@ -33,9 +33,10 @@ import {
 import { fmtPorcentaje } from "@/lib/formato";
 import { leerConsentimiento, EVENTO_CAMBIO } from "../lib/consentimiento";
 
-// Ventana de /inicio con las especialidades más flojas del usuario (las elige
-// /inicio). Se cierra con la X, «Ahora no», Escape o al pulsar «Practicar», y
-// no vuelve a salir en esta pestaña hasta cerrar sesión (ver /perfil).
+// Ventana de /inicio con las especialidades de menos acierto del usuario (las
+// elige lib/reforzar.js). Se cierra con la X, «Ahora no», Escape o al pulsar
+// «Practicar», y no vuelve a salir en esta pestaña hasta cerrar sesión (ver
+// /perfil).
 const CLAVE = "mir_reforzar_cerrado";
 
 export function olvidarCarruselReforzar() {
@@ -70,11 +71,26 @@ const ICONOS = {
   Miscelánea: Shapes,
 };
 
-function mensaje(pct) {
+function mensaje(e) {
+  if (e.tipo === "nueva") return "Empieza con un test corto y sabrás en qué punto estás.";
+  const pct = e.porcentaje;
+  if (pct >= 60) return "Vas bien, pero es de tus especialidades menos fuertes. Un repaso te ayudará a mantenerla.";
   if (pct < 40) return "Aquí tienes tu mayor margen de mejora. Un test centrado en esta especialidad es la forma más rápida de subir.";
   if (pct < 50) return "Te falta poco para el aprobado. Repasar los fallos de esta especialidad es el camino más corto.";
   if (pct < 55) return "Vas por buen camino, pero aún se te escapan puntos fáciles. Un test centrado aquí te ayudará a afianzarla.";
   return "Casi la tienes. Unas cuantas sesiones más y dejará de estar en esta lista.";
+}
+
+// Rojo por debajo del 50 %, dorado del 50 al 59 % y neutro del 60 % o sin
+// practicar: cabecera, cifra y barra.
+const TONOS = {
+  rojo: ["bg-danger-bg text-danger-text", "text-danger-text", "bg-danger-bar"],
+  dorado: ["bg-brand-light text-accent", "text-accent", "bg-brand"],
+  neutro: ["bg-track text-ink-muted", "text-ink", "bg-ink-muted"],
+};
+function tono(e) {
+  if (e.tipo === "nueva" || e.porcentaje >= 60) return TONOS.neutro;
+  return e.porcentaje < 50 ? TONOS.rojo : TONOS.dorado;
 }
 
 // Ancho de una tarjeta más el hueco: lo que avanza cada flecha.
@@ -171,7 +187,7 @@ export default function CarruselReforzar({ especialidades, onPracticar, enviando
         <div className="flex flex-col gap-1.5 pr-14 sm:gap-2.5">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.12em] text-accent">Tu plan de repaso</p>
           <h2 id={titulo} className="font-serif text-[26px] leading-tight text-ink sm:text-4xl">
-            Estas especialidades te están costando más
+            Tus especialidades con menos acierto
           </h2>
           <p className="hidden max-w-xl text-ink-muted sm:block">
             Según tus respuestas. Elige una y te preparamos un test solo de esa especialidad.
@@ -198,36 +214,40 @@ export default function CarruselReforzar({ especialidades, onPracticar, enviando
           >
             {especialidades.map((e) => {
               const Icono = ICONOS[e.especialidad] ?? Stethoscope;
-              const flojo = e.porcentaje < 50;
+              const [cabecera, cifra, barra] = tono(e);
               return (
                 <li
                   key={e.especialidad}
                   className="flex w-full flex-shrink-0 snap-start flex-col overflow-hidden rounded-[18px] border border-track bg-card md:w-[calc((100%-1.25rem)/2)] lg:w-[calc((100%-2.5rem)/3)]"
                 >
                   <div
-                    className={`flex h-[110px] items-center justify-center sm:h-[150px] ${
-                      flojo ? "bg-danger-bg text-danger-text" : "bg-brand-light text-accent"
-                    }`}
+                    className={`flex h-[110px] items-center justify-center sm:h-[150px] ${cabecera}`}
                   >
                     <Icono className="h-14 w-14 sm:h-[72px] sm:w-[72px]" strokeWidth={1.4} aria-hidden="true" />
                   </div>
                   <div className="flex flex-1 flex-col gap-3 p-4 sm:gap-3.5 sm:px-[22px] sm:pb-[22px] sm:pt-5">
                     <div className="flex flex-wrap items-baseline justify-between gap-x-3">
                       <h3 className="text-xl font-bold text-ink sm:text-[22px]">{e.especialidad}</h3>
-                      <span className={`font-mono text-2xl font-semibold ${flojo ? "text-danger-text" : "text-accent"}`}>
-                        {fmtPorcentaje(e.porcentaje)}
-                      </span>
+                      {e.tipo !== "nueva" && (
+                        <span className={`font-mono text-2xl font-semibold ${cifra}`}>{fmtPorcentaje(e.porcentaje)}</span>
+                      )}
                     </div>
-                    <div className="flex flex-col gap-1.5">
-                      <div className="h-2 overflow-hidden rounded-full bg-track" aria-hidden="true">
-                        <div
-                          className={`h-full rounded-full ${flojo ? "bg-danger-bar" : "bg-brand"}`}
-                          style={{ width: `${e.porcentaje}%` }}
-                        />
+                    {e.tipo === "nueva" ? (
+                      <p className="font-mono text-xs text-ink-muted">Todavía no la has practicado</p>
+                    ) : (
+                      <div className="flex flex-col gap-1.5">
+                        <div className="h-2 overflow-hidden rounded-full bg-track" aria-hidden="true">
+                          <div className={`h-full rounded-full ${barra}`} style={{ width: `${e.porcentaje}%` }} />
+                        </div>
+                        <p className="font-mono text-xs text-ink-muted">Tu acierto · {e.total} respondidas</p>
+                        {e.tipo === "pocas" && (
+                          <span className="self-start rounded-full bg-track px-2.5 py-0.5 text-xs font-semibold text-ink-muted">
+                            Pocas respuestas todavía
+                          </span>
+                        )}
                       </div>
-                      <p className="font-mono text-xs text-ink-muted">Tu acierto · {e.total} respondidas</p>
-                    </div>
-                    <p className="flex-1 leading-relaxed text-ink-muted">{mensaje(e.porcentaje)}</p>
+                    )}
+                    <p className="flex-1 leading-relaxed text-ink-muted">{mensaje(e)}</p>
                     <button
                       type="button"
                       onClick={() => {

@@ -92,6 +92,7 @@ export async function GET(request) {
           total,
           aciertos,
           porcentaje: total > 0 ? Math.round((aciertos / total) * 100) : 0,
+          preguntas: r.preguntas,
           tendencia,
         };
       }),

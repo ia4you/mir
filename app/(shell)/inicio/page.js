@@ -12,6 +12,7 @@ import CarruselReforzar from "../../components/CarruselReforzar";
 import { getMetaDiaria, getTemporizadorDefecto, META_DIARIA_POR_DEFECTO } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
 import { fmtNumero, fmtPorcentaje } from "@/lib/formato";
+import { elegirParaReforzar } from "@/lib/reforzar";
 
 // Carga diferida: evita enviar @capacitor/core en el JS inicial de /inicio
 // para los visitantes web (el banner es solo para PWA/navegador, ver PushBanner.js).
@@ -21,10 +22,6 @@ const PushBanner = dynamic(() => import("../../components/PushBanner"), { ssr: f
 // Con menos respuestas, el % de acierto de una especialidad no es fiable para
 // recomendarla.
 const MIN_RESPUESTAS_ESPECIALIDAD = 5;
-// Ventana de especialidades para reforzar: más exigente, porque se abre sola.
-const MIN_RESPUESTAS_REFORZAR = 20;
-const MAX_PCT_REFORZAR = 60;
-const MAX_REFORZAR = 6;
 const INICIALES_DIA = ["L", "M", "X", "J", "V", "S", "D"];
 
 const MENSAJES_ERROR = {
@@ -295,9 +292,7 @@ export default function Inicio() {
     .sort((a, b) => a.porcentaje - b.porcentaje || b.total - a.total);
   const planHoy = masFlojas.slice(0, 2);
   const dondeGanar = masFlojas.slice(0, 3);
-  const paraReforzar = masFlojas
-    .filter((e) => e.total >= MIN_RESPUESTAS_REFORZAR && e.porcentaje < MAX_PCT_REFORZAR)
-    .slice(0, MAX_REFORZAR);
+  const paraReforzar = elegirParaReforzar(datos?.especialidades ?? []);
 
   // Reparte `cantidad` entre las especialidades (o todo el banco si no hay
   // ninguna) y arranca la sesión.
