@@ -1,5 +1,5 @@
 -- Exclusiones de vídeo por pregunta (revisión 2026-10). Crea la tabla video_exclusiones, la vista pregunta_video
--- (el vídeo que se muestra de verdad tras fallar) y carga 229 exclusiones: 59 con otro vídeo y 170 sin vídeo.
+-- (el vídeo que se muestra de verdad tras fallar) y carga 229 exclusiones: 54 con otro vídeo y 175 sin vídeo.
 -- Una exclusión solo se aplica mientras el tema de la pregunta siga mostrando video_excluido_id; si el tema cambia
 -- de vídeo, la pregunta recoge el nuevo. Si el alternativo deja de estar visible, la pregunta se queda sin vídeo.
 -- Comprobaciones al final: si algo no cuadra, ROLLBACK de todo.
@@ -80,7 +80,7 @@ INSERT INTO video_exclusiones (pregunta_id, video_excluido_id, video_alternativo
 (113, 74, NULL, 'cervicobraquialgia: el #74 no encaja y no hay otro en la biblioteca'),
 (117, 50, NULL, 'fractura de epitróclea en niños: el #50 no encaja y no hay otro en la biblioteca'),
 (119, 50, NULL, 'escoliosis idiopática: el #50 no encaja y no hay otro en la biblioteca'),
-(123, 6, 39, 'síndrome de QT largo: el #6 no encaja; #39 encaja en parte'),
+(123, 6, NULL, 'síndrome de QT largo (tratamiento y causas): el #6 no encaja y el #39 es de lectura del ECG'),
 (129, 29, 8, 'aneurisma de aorta torácica con ateroembolia: el #29 no encaja; #8 encaja en parte'),
 (130, 8, NULL, 'isquemia arterial aguda de una extremidad: el #8 no encaja y no hay otro en la biblioteca'),
 (141, 58, NULL, 'absceso tras apendicectomía: el #58 no encaja y no hay otro en la biblioteca'),
@@ -131,11 +131,11 @@ INSERT INTO video_exclusiones (pregunta_id, video_excluido_id, video_alternativo
 (383, 54, 104, 'MEN 1 (gastrinoma e hiperparatiroidismo): el #54 no encaja; #104 encaja'),
 (392, 28, NULL, 'fractura de mandíbula: el #28 no encaja y no hay otro en la biblioteca'),
 (393, 25, 56, 'carcinoma cutáneo en un agricultor: el #25 no encaja; #56 encaja'),
-(396, 76, 48, 'hipertensión intracraneal idiopática (oscurecimientos visuales): el #76 no encaja; #48 encaja en parte'),
+(396, 76, NULL, 'tratamiento de la hipertensión intracraneal idiopática: el #76 no encaja y el #48 (cefaleas) no trata el manejo'),
 (397, 38, 90, 'schwannoma vestibular: el #38 no encaja; #90 encaja'),
 (404, 24, 16, 'pólipo de vesícula: el #24 no encaja; #16 encaja en parte'),
 (405, 87, NULL, 'dacriocitos en la mielofibrosis: el #87 no encaja y no hay otro en la biblioteca'),
-(411, 32, 28, 'fractura de cadera: el #32 no encaja; #28 encaja'),
+(411, 32, NULL, 'fractura periprotésica de fémur distal con prótesis de rodilla: el #32 no encaja y no hay otro en la biblioteca'),
 (413, 38, NULL, 'adenopatías cervicales bilaterales (linfoma / cáncer de cavum): el #38 no encaja y no hay otro en la biblioteca'),
 (416, 5, NULL, 'alteraciones metabólicas de la diabetes: el #5 no encaja y no hay otro en la biblioteca'),
 (417, 57, NULL, 'sistema renina-angiotensina en la deshidratación: el #57 no encaja y no hay otro en la biblioteca'),
@@ -166,7 +166,7 @@ INSERT INTO video_exclusiones (pregunta_id, video_excluido_id, video_alternativo
 (534, 29, NULL, 'torsión testicular: el #29 no encaja y no hay otro en la biblioteca'),
 (536, 103, NULL, 'irradiación parcial de la mama: el #103 no encaja y no hay otro en la biblioteca'),
 (546, 54, NULL, 'osteoporosis en un anciano: el #54 no encaja y no hay otro en la biblioteca'),
-(549, 104, 47, 'yodo radiactivo en el cáncer de tiroides: el #104 no encaja; #47 encaja en parte'),
+(549, 104, NULL, 'yodo radiactivo en el cáncer de tiroides: el #104 no encaja y el #47 es de diagnóstico diferencial, no del tratamiento'),
 (563, 29, NULL, 'trombosis venosa profunda: el #29 no encaja y no hay otro en la biblioteca'),
 (565, 42, 75, 'arteritis de Takayasu: el #42 no encaja; #75 encaja'),
 (570, 33, NULL, 'cuidados paliativos y polifarmacia: el #33 no encaja y no hay otro en la biblioteca'),
@@ -213,7 +213,7 @@ INSERT INTO video_exclusiones (pregunta_id, video_excluido_id, video_alternativo
 (748, 52, NULL, 'cribado de diabetes gestacional en un paso: el #52 no encaja y no hay otro en la biblioteca'),
 (759, 10, NULL, 'gastroenteritis grave en una anciana: el #10 no encaja y no hay otro en la biblioteca'),
 (761, 59, NULL, 'histoplasmosis: el #59 no encaja y no hay otro en la biblioteca'),
-(763, 16, 60, 'pancreatitis crónica: el #16 no encaja; #60 encaja en parte'),
+(763, 16, NULL, 'HDL como marcador de consumo de alcohol: el #16 no encaja y el #60 (malabsorción) tampoco'),
 (767, 42, 75, 'arteritis de células gigantes: el #42 no encaja; #75 encaja'),
 (771, 10, NULL, 'debilidad adquirida en la UCI: el #10 no encaja y no hay otro en la biblioteca'),
 (773, 22, NULL, 'lesiones por electricidad: el #22 no encaja y no hay otro en la biblioteca'),
@@ -290,7 +290,7 @@ BEGIN
    WHERE e.video_alternativo_id IS NOT NULL AND pv.video_id = e.video_alternativo_id;
   SELECT count(*) INTO sin FROM video_exclusiones e JOIN pregunta_video pv USING (pregunta_id)
    WHERE e.video_alternativo_id IS NULL AND pv.video_id IS NULL;
-  IF alt <> 59 OR sin <> 170 THEN RAISE EXCEPTION 'alternativos % de 59, sin vídeo % de 170', alt, sin; END IF;
+  IF alt <> 54 OR sin <> 175 THEN RAISE EXCEPTION 'alternativos % de 54, sin vídeo % de 175', alt, sin; END IF;
   -- El resto de preguntas, exactamente igual que antes.
   SELECT count(*) INTO resto FROM antes a JOIN pregunta_video pv USING (pregunta_id)
    WHERE a.pregunta_id NOT IN (SELECT pregunta_id FROM video_exclusiones) AND a.video_id IS DISTINCT FROM pv.video_id;
