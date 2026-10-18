@@ -9,6 +9,7 @@ import Chip from "../../components/Chip";
 import ToggleSwitch from "../../components/ToggleSwitch";
 import ThemeToggle from "../../components/ThemeToggle";
 import EnlaceConfigurarCookies from "../../components/EnlaceConfigurarCookies";
+import { olvidarCarruselReforzar } from "../../components/CarruselReforzar";
 import {
   getMetaDiaria,
   setMetaDiaria,
@@ -99,6 +100,7 @@ export default function Perfil() {
     try {
       const res = await fetch("/api/perfil/cuenta", { method: "DELETE" });
       if (!res.ok) throw new Error();
+      olvidarCarruselReforzar();
       await signOut({ callbackUrl: "/" });
     } catch {
       setErrorEliminar("No se ha podido eliminar la cuenta. Inténtalo de nuevo.");
@@ -128,7 +130,10 @@ export default function Perfil() {
 
             <button
               type="button"
-              onClick={() => signOut({ callbackUrl: "/login" })}
+              onClick={() => {
+                olvidarCarruselReforzar();
+                signOut({ callbackUrl: "/login" });
+              }}
               className="mt-4 h-11 w-full rounded-xl border border-track font-bold text-ink"
             >
               Cerrar sesión
