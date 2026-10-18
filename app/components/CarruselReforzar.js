@@ -31,6 +31,7 @@ import {
   X,
 } from "lucide-react";
 import { fmtPorcentaje } from "@/lib/formato";
+import { leerConsentimiento, EVENTO_CAMBIO } from "../lib/consentimiento";
 
 // Ventana de /inicio con las especialidades más flojas del usuario (las elige
 // /inicio). Se cierra con la X, «Ahora no», Escape o al pulsar «Practicar», y
@@ -104,11 +105,21 @@ export default function CarruselReforzar({ especialidades, onPracticar, enviando
     try {
       if (sessionStorage.getItem(CLAVE)) return;
     } catch {}
-    if (!dialogo.current.open) dialogo.current.showModal();
     const actualizar = () => setPos(medir(lista.current));
-    actualizar();
-    window.addEventListener("resize", actualizar);
-    return () => window.removeEventListener("resize", actualizar);
+    function abrir() {
+      window.removeEventListener(EVENTO_CAMBIO, abrir);
+      if (!dialogo.current.open) dialogo.current.showModal();
+      actualizar();
+      window.addEventListener("resize", actualizar);
+    }
+    // Con el aviso de cookies pendiente, espera a que el usuario elija
+    // (aceptar, rechazar o configurar): la ventana lo dejaría inaccesible.
+    if (leerConsentimiento()) abrir();
+    else window.addEventListener(EVENTO_CAMBIO, abrir);
+    return () => {
+      window.removeEventListener(EVENTO_CAMBIO, abrir);
+      window.removeEventListener("resize", actualizar);
+    };
   }, []);
 
   function marcarVisto() {
