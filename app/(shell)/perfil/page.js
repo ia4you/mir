@@ -20,7 +20,7 @@ import {
 const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 
 const FUENTES = [
-  { anio: "2016", preguntas: 226, nota: "Transcrita de fuente no oficial." },
+  { anio: "2016", preguntas: 232, nota: "Transcrita de fuente no oficial; 3 preguntas anuladas." },
   {
     anio: "2022",
     preguntas: 207,

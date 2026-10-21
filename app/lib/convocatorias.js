@@ -4,10 +4,10 @@ import { slugify } from "./especialidades";
 
 // Anuladas/de reserva que NUNCA se cargaron en la BD (documentado en
 // fuentes_banco_preguntas.md); la BD no puede listarlas, así que se anotan aquí.
-const NO_CARGADAS = { 2016: [13, 14, 15, 16, 95, 119, 158, 206, 220], 2022: [189], 2026: [208] };
+const NO_CARGADAS = { 2022: [189], 2026: [208] };
 
-// Convocatorias con preguntas que faltan sin saber el motivo (no se afirma anuladas ni de reserva).
-const PARCIALES = new Set([2016]);
+// Convocatorias transcritas de fuente no oficial: textos neutros, sin citar al Ministerio.
+const NO_OFICIALES = new Set([2016]);
 
 export const slugConvocatoria = (anio) => `mir-${anio}`;
 
@@ -42,7 +42,7 @@ export async function getConvocatoria(slug) {
   const excluidas = [...conv.anuladas, ...(NO_CARGADAS[conv.anio] || [])].sort((a, b) => a - b);
   return {
     ...conv,
-    parcial: PARCIALES.has(conv.anio),
+    noOficial: NO_OFICIALES.has(conv.anio),
     excluidas,
     especialidades: rows.map((r) => ({ nombre: r.especialidad, slug: slugify(r.especialidad), total: r.total })),
   };
