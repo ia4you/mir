@@ -11,7 +11,7 @@ import { getTemporizadorDefecto } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
 import { guardarSimulacro } from "../../lib/simulacroLocal";
 
-const ANIOS = ["2022", "2023", "2024", "2025", "2026"];
+const ANIOS = ["2016", "2022", "2023", "2024", "2025", "2026"];
 // Examen real (MIR 2027): 4 h 30 min para todo el simulacro (no por pregunta).
 const SEGUNDOS_SIMULACRO = 4.5 * 60 * 60;
 const OPCIONES_CANTIDAD = [
