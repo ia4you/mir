@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { query } from "@/lib/db";
+import { ANIOS_FUERA_SIMULACRO } from "@/lib/simulacro";
 
 export const dynamic = "force-dynamic";
 
@@ -52,7 +53,7 @@ function barajar(array) {
 // examen real con el que calcular ese peso ni comparar resultados.
 async function generarSimulacro() {
   const { rows: pesos } = await query(`
-    WITH anios AS (SELECT DISTINCT año FROM preguntas WHERE origen = 'oficial' AND anulada = false),
+    WITH anios AS (SELECT DISTINCT año FROM preguntas WHERE origen = 'oficial' AND anulada = false AND año <> ALL($1::int[])),
          especialidades AS (SELECT DISTINCT especialidad FROM preguntas WHERE origen = 'oficial' AND anulada = false),
          combinaciones AS (
            SELECT a.año, e.especialidad FROM anios a CROSS JOIN especialidades e
@@ -62,7 +63,7 @@ async function generarSimulacro() {
            FROM combinaciones c
            LEFT JOIN (
              SELECT año, especialidad, COUNT(*) AS cnt FROM preguntas
-             WHERE origen = 'oficial' AND anulada = false
+             WHERE origen = 'oficial' AND anulada = false AND año <> ALL($1::int[])
              GROUP BY año, especialidad
            ) p ON p.año = c.año AND p.especialidad = c.especialidad
          ),
@@ -74,7 +75,7 @@ async function generarSimulacro() {
     SELECT especialidad, AVG(pct) AS pct_medio
     FROM pcts
     GROUP BY especialidad
-  `);
+  `, [ANIOS_FUERA_SIMULACRO]);
 
   const reparto = repartoPorMayorResto(pesos, TOTAL_SIMULACRO);
 
@@ -87,9 +88,10 @@ async function generarSimulacro() {
                   opcion_a, opcion_b, opcion_c, opcion_d, opcion_e, imagen_path
            FROM preguntas
            WHERE especialidad = $1 AND origen = 'oficial' AND anulada = false
+             AND año <> ALL($3::int[])
            ORDER BY RANDOM()
            LIMIT $2`,
-          [r.especialidad, r.cantidad]
+          [r.especialidad, r.cantidad, ANIOS_FUERA_SIMULACRO]
         )
       )
   );

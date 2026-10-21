@@ -5,9 +5,10 @@
 
 ## Información del Proyecto
 - URL: https://mir.turel.es
-- Propósito: Ayudar a candidatos al MIR a preparar la oposición con 1004+
-  preguntas de examen MIR oficiales (2021-2025) verificadas de los cuadernillos
-  del Ministerio de Sanidad, clasificadas en 23 especialidades.
+- Propósito: Ayudar a candidatos al MIR a preparar la oposición con 1.250+
+  preguntas de examen MIR oficiales (2016 y 2022-2026; las de 2022-2026,
+  verificadas de los cuadernillos del Ministerio de Sanidad), clasificadas en
+  23 especialidades.
 - Idioma: Español
 
 ## Secciones Principales

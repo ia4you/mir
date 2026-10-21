@@ -20,6 +20,7 @@ import {
 const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 
 const FUENTES = [
+  { anio: "2016", preguntas: 226, nota: "Transcrita de fuente no oficial." },
   {
     anio: "2022",
     preguntas: 207,
@@ -174,7 +175,7 @@ export default function Perfil() {
             <p className="text-sm text-ink">
               {totalBanco ? String(totalBanco).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "…"} preguntas de
               los exámenes MIR oficiales de Medicina, convocatorias
-              2022-2026. Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
+              2022-2026, más la de 2016 (transcrita de fuente no oficial). Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
               respuestas correctas de las plantillas definitivas del Ministerio de Sanidad
               tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
             </p>

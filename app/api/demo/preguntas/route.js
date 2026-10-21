@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { query } from "@/lib/db";
+import { ANIOS_FUERA_SIMULACRO } from "@/lib/simulacro";
 
 export const dynamic = "force-dynamic";
 
@@ -27,12 +28,12 @@ export async function GET(request) {
        FROM (
          SELECT *, ROW_NUMBER() OVER (PARTITION BY especialidad ORDER BY RANDOM()) AS rn
          FROM preguntas
-         WHERE origen = 'oficial' AND anulada = false
+         WHERE origen = 'oficial' AND anulada = false AND año <> ALL($2::int[])
        ) sub
        WHERE rn = 1
        ORDER BY RANDOM()
        LIMIT $1`,
-      [cantidad]
+      [cantidad, ANIOS_FUERA_SIMULACRO]
     );
     return NextResponse.json(rows);
   } catch (err) {

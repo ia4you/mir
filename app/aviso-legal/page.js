@@ -43,7 +43,7 @@ export default function AvisoLegalPage() {
               </a>
               . Se trata de documentos de dominio público, reutilizados al amparo de la Ley
               37/2007, de 16 de noviembre, sobre reutilización de la información del sector
-              público.
+              público. Las de 2016 proceden de una transcripción de fuente no oficial.
             </p>
           </section>
 

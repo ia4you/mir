@@ -13,6 +13,8 @@
 /.next/
 /out/
 
+/import2016/backup/
+
 # production
 /build
 

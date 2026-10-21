@@ -18,8 +18,12 @@ export async function generateMetadata({ params }) {
   const conv = await getConvocatoria(params.slug);
   if (!conv) return {};
   return {
-    title: `Examen MIR ${conv.anio} Desglosado: Preguntas y Respuestas Oficiales`,
-    description: `Examen MIR ${conv.anio} con ${conv.publicas} preguntas y respuestas oficiales del Ministerio de Sanidad. Resuélvelo online o filtra por especialidad.`,
+    title: conv.parcial
+      ? `MIR ${conv.anio}: preguntas y respuestas`
+      : `Examen MIR ${conv.anio} Desglosado: Preguntas y Respuestas Oficiales`,
+    description: conv.parcial
+      ? `MIR ${conv.anio}: preguntas y respuestas. ${conv.publicas} preguntas para resolver online o filtrar por especialidad.`
+      : `Examen MIR ${conv.anio} con ${conv.publicas} preguntas y respuestas oficiales del Ministerio de Sanidad. Resuélvelo online o filtra por especialidad.`,
     alternates: { canonical: `https://mir.turel.es/convocatorias/${params.slug}` },
   };
 }
@@ -57,14 +61,13 @@ export default async function ConvocatoriaPage({ params }) {
             </Link>
 
             <h1 className="mt-4 text-3xl font-extrabold leading-tight text-ink sm:text-4xl">
-              Examen Oficial MIR {conv.anio} - Cuadernillo Desglosado
+              {conv.parcial ? `MIR ${conv.anio}: preguntas y respuestas` : `Examen Oficial MIR ${conv.anio} - Cuadernillo Desglosado`}
             </h1>
 
             <p className="mt-4 text-ink-muted">
-              Se publican {conv.publicas} preguntas del examen MIR {conv.anio}, con la respuesta de la
-              plantilla oficial del Ministerio de Sanidad. No es el examen completo: no se incluyen las
-              preguntas anuladas ni las de reserva
-              {conv.excluidas.length > 0 && ` (n.º ${conv.excluidas.join(", ")})`}.
+              {conv.parcial
+                ? `Se publican ${conv.publicas} preguntas del examen MIR ${conv.anio}. No se incluyen todas las preguntas de esta convocatoria (n.º ${conv.excluidas.join(", ")}).`
+                : `Se publican ${conv.publicas} preguntas del examen MIR ${conv.anio}, con la respuesta de la plantilla oficial del Ministerio de Sanidad. No es el examen completo: no se incluyen las preguntas anuladas ni las de reserva${conv.excluidas.length > 0 ? ` (n.º ${conv.excluidas.join(", ")})` : ""}.`}
             </p>
 
             <CtaPractica
