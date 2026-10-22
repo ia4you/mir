@@ -147,7 +147,7 @@ const DIFERENCIALES = [
     etiqueta: "Origen del banco",
     titulo: "100% preguntas oficiales",
     texto:
-      "Convocatorias 2016 y 2022–2026; las de 2022–2026, verificadas contra los cuadernillos del Ministerio de Sanidad. Sin preguntas generadas por IA mezcladas en el banco.",
+      "Convocatorias oficiales del Ministerio de Sanidad: 2016, 2017 y 2022–2026, con cuadernillos y plantillas oficiales. Sin preguntas generadas por IA mezcladas en el banco.",
   },
   {
     etiqueta: "Contenido único",
@@ -255,7 +255,7 @@ export default async function LandingPage() {
 
           <p className="mx-auto mt-2 max-w-xl text-ink-muted sm:mt-3 sm:text-lg lg:col-start-1 lg:mx-0 lg:mt-6">
             {formatearMiles(totalPreguntas)} preguntas reales de las convocatorias{" "}
-            {anioMin}–{anioMax}, verificadas contra los cuadernillos oficiales. Sin preguntas generadas por
+            {anioMin}–{anioMax}, de los cuadernillos y plantillas oficiales. Sin preguntas generadas por
             IA mezcladas en el banco. Con las controversias de respuestas oficiales que otros
             bancos no señalan.
           </p>
@@ -289,7 +289,7 @@ export default async function LandingPage() {
 
           <p className="mx-auto mt-8 max-w-2xl text-sm font-semibold text-ink-muted lg:col-span-2 lg:mx-0 lg:mt-14 lg:max-w-none lg:border-t lg:border-track lg:pt-6">
             {formatearMiles(totalPreguntas)} preguntas oficiales · {totalEspecialidades}{" "}
-            especialidades · Verificadas con cuadernillos oficiales
+            especialidades · De cuadernillos oficiales
           </p>
         </div>
       </section>

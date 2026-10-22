@@ -20,7 +20,8 @@ import {
 const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 
 const FUENTES = [
-  { anio: "2016", preguntas: 232, nota: "Transcrita de fuente no oficial; 3 preguntas anuladas." },
+  { anio: "2016", preguntas: 232, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 3 preguntas anuladas." },
+  { anio: "2017", preguntas: 231, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 4 preguntas anuladas." },
   {
     anio: "2022",
     preguntas: 207,
@@ -174,10 +175,10 @@ export default function Perfil() {
           <FieldCard label="Fuentes del banco de preguntas" className="order-1 lg:order-none">
             <p className="text-sm text-ink">
               {totalBanco ? String(totalBanco).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "…"} preguntas de
-              los exámenes MIR oficiales de Medicina, convocatorias
-              2022-2026, más la de 2016 (transcrita de fuente no oficial). Cuadernillos oficiales del Ministerio de Sanidad (vía Mirial.es) y
-              respuestas correctas de las plantillas definitivas del Ministerio de Sanidad
-              tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
+              los exámenes MIR oficiales de Medicina, convocatorias 2016, 2017 y 2022-2026:
+              cuadernillos y plantillas oficiales del Ministerio de Sanidad. Los cuadernillos de
+              2022-2026 llegan vía Mirial.es y sus respuestas correctas son las de las plantillas
+              definitivas tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).
             </p>
             <div className="mt-3 flex flex-col divide-y divide-track">
               {FUENTES.map((f) => (

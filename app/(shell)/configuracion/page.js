@@ -11,7 +11,6 @@ import { getTemporizadorDefecto } from "../../lib/preferencias";
 import { iniciarPractica, LIMITE_DIARIO_FREE, SEGUNDOS_POR_PREGUNTA } from "../../lib/iniciarTest";
 import { guardarSimulacro } from "../../lib/simulacroLocal";
 
-const ANIOS = ["2016", "2022", "2023", "2024", "2025", "2026"];
 // Examen real (MIR 2027): 4 h 30 min para todo el simulacro (no por pregunta).
 const SEGUNDOS_SIMULACRO = 4.5 * 60 * 60;
 const OPCIONES_CANTIDAD = [
@@ -56,6 +55,7 @@ export default function Configuracion() {
   const [modoTest, setModoTest] = useState("practica"); // "practica" | "simulacro"
   const [especialidades, setEspecialidades] = useState([]);
   const [especialidad, setEspecialidad] = useState("");
+  const [anios, setAnios] = useState([]); // sale de /api/anios; si falla, solo "Todos los años"
   const [anio, setAnio] = useState("");
   const [cantidad, setCantidad] = useState("20");
   const [temporizadorActivo, setTemporizadorActivo] = useState(
@@ -73,6 +73,13 @@ export default function Configuracion() {
       .then((r) => r.json())
       .then(setEspecialidades)
       .catch(() => setEspecialidades([]));
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/anios")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((a) => setAnios(Array.isArray(a) ? a : []))
+      .catch(() => setAnios([]));
   }, []);
 
   useEffect(() => {
@@ -291,7 +298,7 @@ export default function Configuracion() {
               <FieldCard label="Año">
                 <SelectNativo value={anio} onChange={(e) => setAnio(e.target.value)}>
                   <option value="">Todos los años</option>
-                  {ANIOS.map((a) => (
+                  {anios.map((a) => (
                     <option key={a} value={a}>
                       {a}
                     </option>
