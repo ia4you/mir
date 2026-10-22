@@ -127,10 +127,11 @@ export default function MisErrores() {
                     {g.preguntas.map((p) => (
                       <div
                         key={p.id}
-                        className="flex items-start justify-between gap-3 border-b border-track pb-2.5 last:border-0 last:pb-0"
+                        className="flex flex-col gap-2 border-b border-track pb-2.5 last:border-0 last:pb-0 sm:flex-row sm:items-start sm:justify-between sm:gap-3"
                       >
                         <p className="line-clamp-2 flex-1 text-sm text-ink">{p.pregunta}</p>
-                        <div className="flex flex-shrink-0 flex-col items-end gap-1">
+                        {/* Móvil: las etiquetas van debajo del enunciado para no estrecharlo; desde sm, a la derecha. */}
+                        <div className="flex flex-wrap items-center gap-1 sm:flex-shrink-0 sm:flex-col sm:items-end">
                           {p.solo_en_blanco ? (
                             <span className="whitespace-nowrap rounded-full bg-track px-2.5 py-0.5 text-xs font-bold text-ink-muted">
                               En blanco{p.veces_fallada > 1 ? ` ${p.veces_fallada}×` : ""}

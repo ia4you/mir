@@ -88,7 +88,7 @@ export default function BloqueRepaso() {
             <span className={`font-mono text-lg font-semibold ${datos.porNivel[i] ? "text-ink" : "text-ink-subtle"}`}>
               {datos.porNivel[i]}
             </span>
-            <span className="text-[11px] text-ink-muted">
+            <span className="text-xs text-ink-muted">
               {dias} {dias === 1 ? "día" : "días"}
             </span>
           </li>

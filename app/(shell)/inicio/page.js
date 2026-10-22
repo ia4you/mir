@@ -121,7 +121,7 @@ function GraficoNotas({ serie }) {
             aria-hidden="true"
           />
           <span
-            className="absolute -translate-y-[160%] font-mono text-[11px] leading-none text-ink-muted"
+            className="absolute -translate-y-[160%] font-mono text-xs leading-none text-ink-muted"
             style={{ ...e.lado, top: `${(e.y / H) * 100}%` }}
           >
             {fmt1(e.nota)}

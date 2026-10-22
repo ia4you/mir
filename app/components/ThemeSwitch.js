@@ -51,19 +51,19 @@ export default function ThemeSwitch({ compactoMovil = false }) {
         </span>
       )}
       <span
-        className={`${compactoMovil ? "max-[404px]:hidden " : ""}flex h-7 w-[52px] items-center rounded-full border p-[3px] transition-colors duration-200 motion-reduce:transition-none sm:h-8 sm:w-[60px] ${
+        className={`${compactoMovil ? "max-[404px]:hidden " : ""}flex h-8 w-[58px] items-center rounded-full border p-[3px] transition-colors duration-200 motion-reduce:transition-none sm:h-9 sm:w-[68px] ${
           oscuro ? "border-[#3A3D44] bg-[#1B1D21]" : "border-[#D9D3C6] bg-[#ECE8DF]"
         }`}
       >
         <span
-          className={`flex h-5 w-5 items-center justify-center rounded-full shadow-sm transition-transform duration-200 motion-reduce:transition-none sm:h-6 sm:w-6 ${
-            oscuro ? "translate-x-6 bg-[#E3B95C] sm:translate-x-7" : "translate-x-0 bg-white"
+          className={`flex h-6 w-6 items-center justify-center rounded-full shadow-sm transition-transform duration-200 motion-reduce:transition-none sm:h-7 sm:w-7 ${
+            oscuro ? "translate-x-[26px] bg-[#E3B95C] sm:translate-x-8" : "translate-x-0 bg-white"
           }`}
         >
           {oscuro ? (
-            <Moon className="h-3 w-3 text-[#17130A] sm:h-3.5 sm:w-3.5" strokeWidth={2.5} aria-hidden="true" />
+            <Moon className="h-3.5 w-3.5 text-[#17130A] sm:h-4 sm:w-4" strokeWidth={2.5} aria-hidden="true" />
           ) : (
-            <Sun className="h-3 w-3 text-[#8A6514] sm:h-3.5 sm:w-3.5" strokeWidth={2.5} aria-hidden="true" />
+            <Sun className="h-3.5 w-3.5 text-[#8A6514] sm:h-4 sm:w-4" strokeWidth={2.5} aria-hidden="true" />
           )}
         </span>
       </span>

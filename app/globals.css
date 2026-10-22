@@ -101,6 +101,18 @@ body {
     text-wrap: balance;
   }
 
+  /* Texto de lectura (explicaciones, tutor IA, controversias): 15 px en móvil y
+     16 px desde lg, interlineado 1,6. */
+  .texto-lectura {
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+  @media (min-width: 1024px) {
+    .texto-lectura {
+      font-size: 1rem;
+    }
+  }
+
   /* Respeta el notch y la barra de gestos de iOS/Android */
   .pt-safe {
     padding-top: max(env(safe-area-inset-top), 0.75rem);

@@ -109,7 +109,7 @@ export default async function ControversiasPage() {
                   <p className="text-xs font-bold uppercase tracking-wide text-danger-text">
                     🔴 Respuesta oficial Ministerio
                   </p>
-                  <p className="mt-1 text-sm text-ink">
+                  <p className="texto-lectura mt-1 text-ink">
                     {c.correcta?.trim().toUpperCase()} —{" "}
                     {c[`opcion_${c.correcta?.trim().toLowerCase()}`]}
                   </p>
@@ -119,7 +119,7 @@ export default async function ControversiasPage() {
                   <p className="text-xs font-bold uppercase tracking-wide text-warning-text">
                     🟡 Respuesta alternativa defendible
                   </p>
-                  <p className="mt-1 text-sm text-ink">
+                  <p className="texto-lectura mt-1 text-ink">
                     {c.recomendada
                       ? `${c.recomendada.letra} — ${c.recomendada.texto}`
                       : "No se identifica una única alternativa clara — ver motivo de la discrepancia."}
@@ -130,7 +130,7 @@ export default async function ControversiasPage() {
                   <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
                     📚 Motivo de la discrepancia
                   </p>
-                  <p className="mt-1 text-sm text-ink-muted">
+                  <p className="texto-lectura mt-1 text-ink-muted">
                     {c.objecion || "Respuesta cuestionada — sin detalle documentado."}
                   </p>
                 </div>
@@ -139,7 +139,7 @@ export default async function ControversiasPage() {
                   <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
                     🎯 Consejo para el examen
                   </p>
-                  <p className="mt-1 text-sm text-ink-muted">
+                  <p className="texto-lectura mt-1 text-ink-muted">
                     En el MIR debes marcar la respuesta oficial aunque la evidencia clínica pueda
                     apuntar a otra dirección.
                   </p>

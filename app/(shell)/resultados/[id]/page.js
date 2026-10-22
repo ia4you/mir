@@ -157,7 +157,7 @@ export default function Resultados({ params }) {
                 Resumen de la sesión
               </h2>
               {resumen.iaDisponible && resumen.analisisNarrativo && (
-                <p className="whitespace-pre-line text-sm leading-relaxed text-ink">
+                <p className="whitespace-pre-line texto-lectura text-ink">
                   {resumen.analisisNarrativo}
                 </p>
               )}

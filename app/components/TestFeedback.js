@@ -9,6 +9,8 @@
 // mostrando bajo el botón exactamente como hoy, sin que este componente
 // necesite conocer esa lógica.
 
+import { partirExplicacion } from "../../lib/explicacion";
+
 function IconCheck() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} className="h-4 w-4">
@@ -73,7 +75,7 @@ export default function TestFeedback({
       };
 
   return (
-    <div className="w-full max-w-xl overflow-hidden rounded-2xl border border-track bg-card">
+    <div className="w-full max-w-xl overflow-hidden rounded-2xl border border-track bg-card lg:max-w-[44rem]">
       {/* Cabecera de estado */}
       <div className="px-6 pt-6 pb-5">
         <div className="flex items-center gap-2.5">
@@ -117,7 +119,11 @@ export default function TestFeedback({
       {/* Explicación */}
       <div className="px-6 py-5">
         <p className="mb-2 text-xs font-bold uppercase tracking-wide text-ink-muted">Explicación</p>
-        <p className="text-sm leading-relaxed text-ink">{explicacion}</p>
+        {partirExplicacion(explicacion).map((parrafo, i) => (
+          <p key={i} className={`texto-lectura text-ink ${i > 0 ? "mt-3" : ""}`}>
+            {parrafo}
+          </p>
+        ))}
       </div>
 
       {/* Acción secundaria: por qué fallé (+ sus sub-estados existentes).

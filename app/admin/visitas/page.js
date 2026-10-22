@@ -84,17 +84,17 @@ export default function AdminVisitas() {
               <CartesianGrid stroke="var(--track)" vertical={false} />
               <XAxis
                 dataKey="fechaCorta"
-                tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
+                tick={{ fontSize: 13, fill: "var(--ink-muted)" }}
                 tickLine={false}
                 axisLine={{ stroke: "var(--track)" }}
                 interval={2}
               />
               <YAxis
                 allowDecimals={false}
-                tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
+                tick={{ fontSize: 13, fill: "var(--ink-muted)" }}
                 tickLine={false}
                 axisLine={false}
-                width={32}
+                width={40}
               />
               <Tooltip content={<TooltipPersonalizado />} cursor={{ fill: "var(--panel)" }} />
               <Bar dataKey="total" fill="#00878E" radius={[4, 4, 0, 0]} />

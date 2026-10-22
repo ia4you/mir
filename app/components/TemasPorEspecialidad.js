@@ -150,7 +150,7 @@ export default function TemasPorEspecialidad({ temas, especialidades = [] }) {
                         <div className="flex items-center justify-between text-xs text-ink-muted">
                           <div className="flex items-center gap-2">
                             {!t.fiable && (
-                              <span className="rounded-full bg-track px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink-muted">
+                              <span className="rounded-full bg-track px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-ink-muted">
                                 Pocos datos
                               </span>
                             )}

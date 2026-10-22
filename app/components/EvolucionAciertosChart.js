@@ -124,7 +124,9 @@ export default function EvolucionAciertosChart({ sesionesEvolucion }) {
               <XAxis
                 dataKey="posicion"
                 tickFormatter={(v) => `Sesión ${v}`}
-                tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
+                minTickGap={12}
+                tickMargin={8}
+                tick={{ fontSize: 13, fill: "var(--ink-muted)" }}
                 tickLine={false}
                 axisLine={{ stroke: "var(--track)" }}
                 allowDecimals={false}
@@ -133,10 +135,10 @@ export default function EvolucionAciertosChart({ sesionesEvolucion }) {
                 domain={[0, 100]}
                 ticks={[0, 25, 50, 75, 100]}
                 tickFormatter={(v) => fmtPorcentaje(v)}
-                tick={{ fontSize: 11, fill: "var(--ink-muted)" }}
+                tick={{ fontSize: 13, fill: "var(--ink-muted)" }}
                 tickLine={false}
                 axisLine={false}
-                width={40}
+                width={52}
               />
               <Tooltip content={<TooltipPersonalizado />} />
               <Line

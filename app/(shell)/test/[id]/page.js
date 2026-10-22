@@ -392,7 +392,7 @@ export default function TestPregunta({ params }) {
                       <p className="mb-1 text-xs font-bold uppercase tracking-wide text-accent">
                         🎓 Tutor IA — ¿por qué he fallado esto?
                       </p>
-                      <p className="text-sm leading-relaxed text-ink">{tutorFallo}</p>
+                      <p className="texto-lectura text-ink">{tutorFallo}</p>
                     </div>
                   )}
                 </>
@@ -458,7 +458,7 @@ export default function TestPregunta({ params }) {
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-danger-text">🔴 Respuesta oficial Ministerio</p>
-                <p className="mt-1 text-sm text-ink">
+                <p className="texto-lectura mt-1 text-ink">
                   {res.controversia.respuesta_oficial.letra} — {res.controversia.respuesta_oficial.texto}
                 </p>
               </div>
@@ -467,7 +467,7 @@ export default function TestPregunta({ params }) {
                 <p className="text-xs font-bold uppercase tracking-wide text-warning-text">
                   🟡 Respuesta alternativa defendible
                 </p>
-                <p className="mt-1 text-sm text-ink">
+                <p className="texto-lectura mt-1 text-ink">
                   {res.controversia.respuesta_recomendada
                     ? `${res.controversia.respuesta_recomendada.letra} — ${res.controversia.respuesta_recomendada.texto}`
                     : "No se identifica una única alternativa clara — ver motivo de la discrepancia."}
@@ -476,14 +476,14 @@ export default function TestPregunta({ params }) {
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">📚 Motivo de la discrepancia</p>
-                <p className="mt-1 text-sm text-ink-muted">
+                <p className="texto-lectura mt-1 text-ink-muted">
                   {res.controversia.motivo || "Respuesta cuestionada — sin detalle documentado."}
                 </p>
               </div>
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">🎯 Consejo para el examen</p>
-                <p className="mt-1 text-sm text-ink-muted">
+                <p className="texto-lectura mt-1 text-ink-muted">
                   En el MIR debes marcar la respuesta oficial aunque la evidencia clínica pueda apuntar a otra
                   dirección.
                 </p>
@@ -498,7 +498,7 @@ export default function TestPregunta({ params }) {
               <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
                 🖼️ Sin imagen disponible
               </span>
-              <p className="text-sm leading-relaxed text-ink-muted">
+              <p className="texto-lectura text-ink-muted">
                 Esta pregunta hace referencia a una imagen clínica del examen original. Explicación no disponible.
               </p>
             </div>
@@ -507,7 +507,7 @@ export default function TestPregunta({ params }) {
               <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
                 📚 No disponible
               </span>
-              <p className="text-sm leading-relaxed text-ink-muted">Explicación no disponible para esta pregunta.</p>
+              <p className="texto-lectura text-ink-muted">Explicación no disponible para esta pregunta.</p>
             </div>
           )}
         </div>
@@ -540,7 +540,7 @@ export default function TestPregunta({ params }) {
                 <p className="mb-1 text-xs font-bold uppercase tracking-wide text-accent">
                   🎓 Tutor IA — ¿por qué he fallado esto?
                 </p>
-                <p className="text-sm leading-relaxed text-ink">{tutorFallo}</p>
+                <p className="texto-lectura text-ink">{tutorFallo}</p>
               </div>
             )}
 
@@ -854,7 +854,7 @@ export default function TestPregunta({ params }) {
         <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
           <div className="w-full max-w-xs rounded-2xl bg-card p-5 shadow-lg">
             <p className="text-lg font-bold text-ink">¿Salir del test?</p>
-            <p className="mt-1 text-sm text-ink-muted">
+            <p className="texto-lectura mt-1 text-ink-muted">
               Perderás el progreso de esta sesión y no se guardará el resultado.
             </p>
             <div className="mt-5 flex gap-3">

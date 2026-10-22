@@ -354,7 +354,7 @@ export default function Demo({ totalBanco }) {
                         ⚠️ Respuesta oficial cuestionada
                       </span>
                     )}
-                    <p className="text-sm leading-relaxed text-ink">{resultado.explicacion}</p>
+                    <p className="texto-lectura text-ink">{resultado.explicacion}</p>
                     {resultado.explicacion_calidad === "controversia" && (
                       <Link href="/controversias" target="_blank" className="text-sm font-bold text-accent">
                         Ver /controversias →
@@ -366,7 +366,7 @@ export default function Demo({ totalBanco }) {
                     <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
                       🖼️ Sin imagen disponible
                     </span>
-                    <p className="text-sm leading-relaxed text-ink-muted">
+                    <p className="texto-lectura text-ink-muted">
                       Esta pregunta hace referencia a una imagen clínica del examen original.
                       Explicación no disponible.
                     </p>
@@ -376,7 +376,7 @@ export default function Demo({ totalBanco }) {
                     <span className="flex items-center gap-1.5 rounded-full bg-danger-bg px-3 py-1 text-xs font-bold text-danger-text">
                       ⚠️ Respuesta cuestionada
                     </span>
-                    <p className="text-sm leading-relaxed text-ink-muted">
+                    <p className="texto-lectura text-ink-muted">
                       La respuesta oficial de esta pregunta ha sido cuestionada.{" "}
                       <Link href="/controversias" target="_blank" className="font-bold text-accent">
                         Ver /controversias
@@ -389,7 +389,7 @@ export default function Demo({ totalBanco }) {
                     <span className="flex items-center gap-1.5 rounded-full bg-track px-3 py-1 text-xs font-bold text-ink-muted">
                       📚 No disponible
                     </span>
-                    <p className="text-sm leading-relaxed text-ink-muted">
+                    <p className="texto-lectura text-ink-muted">
                       Explicación no disponible para esta pregunta.
                     </p>
                   </div>

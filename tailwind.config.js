@@ -58,6 +58,11 @@ module.exports = {
           text: "var(--badge-text)",
         },
       },
+      // Escala de texto pequeño: ningún texto legible por debajo de 13 px (xs) y cuerpo auxiliar a 15 px (sm).
+      fontSize: {
+        xs: ["0.8125rem", { lineHeight: "1.4" }], // 13 px
+        sm: ["0.9375rem", { lineHeight: "1.5" }], // 15 px
+      },
       fontFamily: {
         sans: ["var(--font-geist)", "system-ui", "sans-serif"], // interfaz
         serif: ["var(--font-instrument)", "Georgia", "serif"], // logo, saludo, títulos grandes

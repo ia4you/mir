@@ -35,9 +35,9 @@ function DiasMir() {
   return (
     <span
       title="Días que faltan para el MIR 2027 (23/01/2027)"
-      className="flex h-8 items-center gap-1 whitespace-nowrap rounded-full border border-track bg-panel px-3 text-xs font-semibold text-ink-muted"
+      className="flex h-9 items-center gap-1 whitespace-nowrap rounded-full border border-track bg-panel px-3 text-xs font-semibold text-ink-muted"
     >
-      <span className="font-mono text-sm text-accent">{dias ?? "–"}</span>
+      <span className="font-mono text-base text-accent">{dias ?? "–"}</span>
       días<span className="hidden sm:inline"> al MIR 2027</span>
     </span>
   );
@@ -65,7 +65,7 @@ export default function AppHeader({ forzar = false }) {
           <Logo className="flex min-h-[44px] items-center text-3xl" />
         </Link>
 
-        <nav aria-label="Principal" className="hidden items-center gap-1 xl:flex">
+        <nav aria-label="Principal" className="hidden items-center gap-1.5 xl:flex">
           {ENLACES.map((e) => {
             const activo = pathname.startsWith(e.href);
             return (
@@ -73,7 +73,7 @@ export default function AppHeader({ forzar = false }) {
                 key={e.href}
                 href={e.href}
                 aria-current={activo ? "page" : undefined}
-                className={`flex h-11 items-center whitespace-nowrap rounded-xl px-3 text-sm font-semibold ${
+                className={`flex h-11 items-center whitespace-nowrap rounded-xl px-3.5 text-base font-semibold ${
                   activo ? "bg-panel text-ink" : "text-ink-muted hover:text-ink"
                 }`}
               >
@@ -127,7 +127,7 @@ export default function AppHeader({ forzar = false }) {
               href={e.href}
               onClick={() => setAbierto(false)}
               aria-current={pathname.startsWith(e.href) ? "page" : undefined}
-              className={`rounded-lg px-2 py-2.5 text-sm font-semibold active:bg-panel ${
+              className={`rounded-lg px-2 py-2.5 text-base font-semibold active:bg-panel ${
                 pathname.startsWith(e.href) ? "text-ink" : "text-ink-muted hover:text-ink"
               }`}
             >

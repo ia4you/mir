@@ -127,7 +127,7 @@ export default function Registro() {
                   }`}
                 >
                   <span
-                    className={`flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[10px] ${
+                    className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-xs ${
                       cumplido ? "bg-success text-on-status" : "bg-track text-ink-muted"
                     }`}
                   >
