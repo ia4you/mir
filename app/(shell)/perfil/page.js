@@ -20,9 +20,9 @@ import {
 const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 
 const FUENTES = [
-  { anio: "2016", preguntas: 232, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 3 preguntas anuladas." },
-  { anio: "2017", preguntas: 231, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 4 preguntas anuladas." },
-  { anio: "2018", preguntas: 230, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 5 preguntas anuladas." },
+  { anio: "2017", preguntas: 232, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 3 preguntas anuladas." },
+  { anio: "2018", preguntas: 231, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 4 preguntas anuladas." },
+  { anio: "2019", preguntas: 230, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 5 preguntas anuladas." },
   {
     anio: "2022",
     preguntas: 207,
@@ -176,7 +176,7 @@ export default function Perfil() {
           <FieldCard label="Fuentes del banco de preguntas" className="order-1 lg:order-none">
             <p className="text-sm text-ink">
               {totalBanco ? String(totalBanco).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "…"} preguntas de
-              los exámenes MIR oficiales de Medicina, convocatorias 2016-2018 y 2022-2026:
+              los exámenes MIR oficiales de Medicina, convocatorias 2017-2019 y 2022-2026:
               cuadernillos y plantillas oficiales del Ministerio de Sanidad. Los cuadernillos de
               2022-2026 llegan vía Mirial.es y sus respuestas correctas son las de las plantillas
               definitivas tras el periodo de impugnaciones (vía ConSalud.es / isanidad.com).

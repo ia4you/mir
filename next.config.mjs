@@ -8,6 +8,11 @@ const nextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com", pathname: "/vi/**" }],
     minimumCacheTTL: 604800,
   },
+  // La convocatoria que se llamó «2016» pasó a ser 2017 (el año es el del examen). Es la única URL
+  // vieja que se redirige: mir-2017 y mir-2018 siguen existiendo, solo cambian de contenido.
+  async redirects() {
+    return [{ source: "/convocatorias/mir-2016", destination: "/convocatorias/mir-2017", permanent: true }];
+  },
 };
 
 export default nextConfig;

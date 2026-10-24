@@ -68,3 +68,7 @@ A esto se suman 10 preguntas de origen `ia_generada` (año 0, sin relación con 
 ## Nota sobre fiabilidad de fuentes
 
 No se usa ningún foro, red social ni fuente sin respaldo editorial. Las plantillas de 2022, 2023 y 2025 son PDFs oficiales "definitiva" del Ministerio de Sanidad, con RC en blanco confirmando cada anulada directamente en el propio documento. La de 2024 es la provisional (no se localizó la definitiva), corroborada por dos medios de prensa independientes que confirman explícitamente que no hubo cambios de valor respecto a ella. La de 2026 se documenta aparte, con su propia verificación de tres vías, por no proceder de un PDF oficial descargado directamente.
+
+## Regla de años (24-10-2026)
+
+testdesanidad nombra cada examen por el año de **inicio** de la convocatoria. El criterio del proyecto es el año del **examen**: **año del examen = año de testdesanidad + 1** (su «MIR 2021» parte 1 nº 1 es nuestra 2022 nº 1). Por eso lo cargado de testdesanidad como 2016, 2017 y 2018 pasa a ser 2017, 2018 y 2019 en la BD (reetiquetado de `preguntas."año"`), y el lote `import2019/` se carga como 2020. Los scripts de `import2016/`, `import2017/` e `import2018/` no se editan: cada carpeta lleva un `AVISO_ANIOS.md`. Las imágenes ya publicadas (`public/imagenes-mir/2015`, `2016`, `2017`) no se mueven.
