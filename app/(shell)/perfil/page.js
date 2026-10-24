@@ -22,7 +22,7 @@ const OPCIONES_SEGUNDOS = [30, 45, 60, 90];
 const FUENTES = [
   { anio: "2016", preguntas: 232, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 3 preguntas anuladas." },
   { anio: "2017", preguntas: 231, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 4 preguntas anuladas." },
-  { anio: "2018", preguntas: 229, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 5 preguntas anuladas." },
+  { anio: "2018", preguntas: 230, nota: "Cuadernillo y plantilla oficiales del Ministerio de Sanidad; 5 preguntas anuladas." },
   {
     anio: "2022",
     preguntas: 207,

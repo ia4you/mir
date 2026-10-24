@@ -5,7 +5,7 @@
 
 ## Información del Proyecto
 - URL: https://mir.turel.es
-- Propósito: Ayudar a candidatos al MIR a preparar la oposición con 1.717+
+- Propósito: Ayudar a candidatos al MIR a preparar la oposición con 1.718+
   preguntas de examen MIR oficiales (2016, 2017, 2018 y 2022-2026) del Ministerio de
   Sanidad, clasificadas en 23 especialidades.
 - Idioma: Español
