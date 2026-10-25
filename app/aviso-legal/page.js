@@ -32,7 +32,7 @@ export default function AvisoLegalPage() {
             <h2 className="text-lg font-bold text-ink">Fuentes del banco de preguntas</h2>
             <p className="mt-2">
               Las preguntas de este banco proceden de los cuadernillos oficiales del examen MIR
-              de las convocatorias 2017-2019 y 2022–2026, publicados por el{" "}
+              de las convocatorias 2017-2020 y 2022–2026, publicados por el{" "}
               <a
                 href="https://www.sanidad.gob.es"
                 rel="noopener noreferrer"

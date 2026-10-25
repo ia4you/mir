@@ -147,7 +147,7 @@ const DIFERENCIALES = [
     etiqueta: "Origen del banco",
     titulo: "100% preguntas oficiales",
     texto:
-      "Convocatorias oficiales del Ministerio de Sanidad: 2017-2019 y 2022–2026, con cuadernillos y plantillas oficiales. Sin preguntas generadas por IA mezcladas en el banco.",
+      "Convocatorias oficiales del Ministerio de Sanidad: 2017-2020 y 2022–2026, con cuadernillos y plantillas oficiales. Sin preguntas generadas por IA mezcladas en el banco.",
   },
   {
     etiqueta: "Contenido único",

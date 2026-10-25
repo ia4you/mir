@@ -6,7 +6,7 @@ import { slugify } from "./especialidades";
 // fuentes_banco_preguntas.md); la BD no puede listarlas, así que se anotan aquí.
 const NO_CARGADAS = { 2022: [189], 2026: [208] };
 
-// Convocatorias de fuente no oficial (textos neutros, sin citar al Ministerio). Hoy ninguna: 2017, 2018 y 2019 también son oficiales.
+// Convocatorias de fuente no oficial (textos neutros, sin citar al Ministerio). Hoy ninguna: 2017-2020 y 2022-2026 son todas oficiales.
 const NO_OFICIALES = new Set([]);
 
 export const slugConvocatoria = (anio) => `mir-${anio}`;
