@@ -147,7 +147,7 @@ const DIFERENCIALES = [
     etiqueta: "Origen del banco",
     titulo: "100% preguntas oficiales",
     texto:
-      "Convocatorias oficiales del Ministerio de Sanidad: 2017-2026, con cuadernillos y plantillas oficiales. Sin preguntas generadas por IA mezcladas en el banco.",
+      "Convocatorias oficiales del Ministerio de Sanidad: {ANIOS}, con cuadernillos y plantillas oficiales. Sin preguntas generadas por IA mezcladas en el banco.",
   },
   {
     etiqueta: "Contenido único",
@@ -301,7 +301,7 @@ export default async function LandingPage() {
             <div key={d.titulo} className="border-t-2 border-accent pt-4">
               <p className="text-xs font-bold uppercase tracking-wide text-accent">{d.etiqueta}</p>
               <h3 className="mt-1 text-lg font-bold text-ink">{d.titulo}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-ink-muted">{d.texto}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-muted">{d.texto.replace("{ANIOS}", `${anioMin}-${anioMax}`)}</p>
             </div>
           ))}
         </div>
