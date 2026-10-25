@@ -378,7 +378,7 @@ export default function Configuracion() {
             <FieldCard label="Cómo funciona el simulacro">
               <ul className="flex flex-col gap-2 text-sm text-ink">
                 <li>
-                  📝 Examen de 210 preguntas, combinando los 5 años disponibles (2022-2026) y
+                  📝 Examen de 210 preguntas, combinando las diez convocatorias disponibles (2017-2026) y
                   repartidas por especialidad según su peso histórico real en las convocatorias
                   oficiales.
                 </li>
