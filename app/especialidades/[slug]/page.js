@@ -8,6 +8,7 @@ import {
 } from "../../lib/especialidades";
 import { getConvocatorias, slugConvocatoria } from "../../lib/convocatorias";
 import { breadcrumb } from "../../lib/jsonld";
+import { metaSocial } from "../../lib/social";
 import ListaPreguntasEspecialidad from "../../components/ListaPreguntasEspecialidad";
 import PaginacionEspecialidad from "../../components/PaginacionEspecialidad";
 import CtaPractica from "../../components/CtaPractica";
@@ -29,12 +30,16 @@ export async function generateMetadata({ params }) {
   const especialidad = await getEspecialidadPorSlug(params.slug);
   if (!especialidad) return {};
 
+  const title = `Preguntas MIR de ${especialidad.nombre} (${especialidad.anioMin}-${especialidad.anioMax}) – Test Online Gratis | MIR Turel`;
+  const description = `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR ${especialidad.anioMin}–${especialidad.anioMax}. Practica gratis con preguntas oficiales verificadas.`;
+  const url = `https://mir.turel.es/especialidades/${especialidad.slug}`;
   return {
-    title: `Preguntas MIR de ${especialidad.nombre} (${especialidad.anioMin}-${especialidad.anioMax}) – Test Online Gratis | MIR Turel`,
-    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR ${especialidad.anioMin}–${especialidad.anioMax}. Practica gratis con preguntas oficiales verificadas.`,
+    title,
+    description,
     alternates: {
-      canonical: `https://mir.turel.es/especialidades/${especialidad.slug}`,
+      canonical: url,
     },
+    ...metaSocial({ title, description, url }),
   };
 }
 

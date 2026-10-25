@@ -9,6 +9,7 @@ import ListaPreguntasEspecialidad from "../../../../components/ListaPreguntasEsp
 import PaginacionEspecialidad from "../../../../components/PaginacionEspecialidad";
 import CtaPractica from "../../../../components/CtaPractica";
 import { breadcrumb } from "../../../../lib/jsonld";
+import { metaSocial } from "../../../../lib/social";
 
 // Mismo patrón ISR que /especialidades/[slug]: el build de Dokploy no tiene
 // acceso a mir-db, así que no se pueden enumerar páginas en build time.
@@ -29,9 +30,12 @@ export async function generateMetadata({ params }) {
   const especialidad = await getEspecialidadPorSlug(params.slug);
   if (!especialidad) return {};
 
+  const title = `Preguntas MIR de ${especialidad.nombre} — Página ${pagina} (${especialidad.anioMin}-${especialidad.anioMax}) | MIR Turel`;
+  const description = `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR ${especialidad.anioMin}-${especialidad.anioMax}. Página ${pagina}. Practica gratis con preguntas oficiales verificadas.`;
   return {
-    title: `Preguntas MIR de ${especialidad.nombre} — Página ${pagina} (${especialidad.anioMin}-${especialidad.anioMax}) | MIR Turel`,
-    description: `${especialidad.total} preguntas de ${especialidad.nombre} de las convocatorias MIR ${especialidad.anioMin}-${especialidad.anioMax}. Página ${pagina}. Practica gratis con preguntas oficiales verificadas.`,
+    title,
+    description,
+    ...metaSocial({ title, description, url: `https://mir.turel.es/especialidades/${especialidad.slug}/pagina/${pagina}` }),
     alternates: {
       // Autorreferencial a propósito: cada página de la paginación es su
       // propia canonical, no la página 1 — si no, Google nunca indexaría el

@@ -1,14 +1,19 @@
 import Link from "next/link";
+import { metaSocial } from "../lib/social";
 import { getConvocatorias, slugConvocatoria } from "../lib/convocatorias";
 
 // El build de Dokploy no tiene acceso a mir-db: SSR por request, no prerender.
 export const dynamic = "force-dynamic";
 
+const TITULO = "Exámenes MIR por convocatoria: preguntas y respuestas oficiales | MIR Turel";
+const DESCRIPCION =
+  "Todas las convocatorias MIR con preguntas y respuestas oficiales del Ministerio de Sanidad: accede al cuadernillo desglosado de cada año y practica por especialidad.";
+
 export const metadata = {
-  title: "Exámenes MIR por convocatoria: preguntas y respuestas oficiales | MIR Turel",
-  description:
-    "Todas las convocatorias MIR con preguntas y respuestas oficiales del Ministerio de Sanidad: accede al cuadernillo desglosado de cada año y practica por especialidad.",
+  title: TITULO,
+  description: DESCRIPCION,
   alternates: { canonical: "https://mir.turel.es/convocatorias" },
+  ...metaSocial({ title: TITULO, description: DESCRIPCION, url: "https://mir.turel.es/convocatorias" }),
 };
 
 export default async function ConvocatoriasPage() {

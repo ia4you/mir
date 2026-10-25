@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getConvocatoria, getConvocatorias, slugConvocatoria } from "../../lib/convocatorias";
 import { getControversias } from "../../lib/controversias";
 import { breadcrumb } from "../../lib/jsonld";
+import { metaSocial } from "../../lib/social";
 import { slugify } from "../../lib/especialidades";
 import CtaPractica from "../../components/CtaPractica";
 
@@ -17,14 +18,18 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }) {
   const conv = await getConvocatoria(params.slug);
   if (!conv) return {};
+  const title = conv.noOficial
+    ? `MIR ${conv.anio}: preguntas y respuestas`
+    : `Examen MIR ${conv.anio} Desglosado: Preguntas y Respuestas Oficiales`;
+  const description = conv.noOficial
+    ? `MIR ${conv.anio}: preguntas y respuestas. ${conv.publicas} preguntas para resolver online o filtrar por especialidad.`
+    : `Examen MIR ${conv.anio} con ${conv.publicas} preguntas y respuestas oficiales del Ministerio de Sanidad. Resuélvelo online o filtra por especialidad.`;
+  const url = `https://mir.turel.es/convocatorias/${params.slug}`;
   return {
-    title: conv.noOficial
-      ? `MIR ${conv.anio}: preguntas y respuestas`
-      : `Examen MIR ${conv.anio} Desglosado: Preguntas y Respuestas Oficiales`,
-    description: conv.noOficial
-      ? `MIR ${conv.anio}: preguntas y respuestas. ${conv.publicas} preguntas para resolver online o filtrar por especialidad.`
-      : `Examen MIR ${conv.anio} con ${conv.publicas} preguntas y respuestas oficiales del Ministerio de Sanidad. Resuélvelo online o filtra por especialidad.`,
-    alternates: { canonical: `https://mir.turel.es/convocatorias/${params.slug}` },
+    title,
+    description,
+    alternates: { canonical: url },
+    ...metaSocial({ title, description, url }),
   };
 }
 

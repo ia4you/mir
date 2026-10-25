@@ -36,7 +36,7 @@ const FUENTES = [
   {
     anio: "2026",
     preguntas: 203,
-    nota: "7 preguntas anuladas oficialmente (una de ellas, de reserva, no llegó a sustituir a ninguna y no forma parte del banco).",
+    nota: "7 preguntas anuladas oficialmente (una de ellas, de reserva, no llegó a sustituir a ninguna); ninguna se publica.",
   },
 ];
 

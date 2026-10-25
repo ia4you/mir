@@ -1,4 +1,4 @@
-import { getEspecialidadesConConteo, getTodasLasPreguntasParaSitemap } from "./lib/especialidades";
+import { getEspecialidadesConConteo, getTodasLasPreguntasParaSitemap, PREGUNTAS_POR_PAGINA } from "./lib/especialidades";
 import { getConvocatorias, slugConvocatoria } from "./lib/convocatorias";
 import { getTemasConConteo } from "./lib/temas";
 import { query } from "@/lib/db";
@@ -34,6 +34,9 @@ export default async function sitemap() {
     { url: `${BASE_URL}/temas`, priority: 0.7, changeFrequency: "monthly" },
     { url: `${BASE_URL}/videos`, priority: 0.7, changeFrequency: "monthly" },
     { url: `${BASE_URL}/blog`, priority: 0.7, changeFrequency: "weekly" },
+    { url: `${BASE_URL}/registro`, priority: 0.6, changeFrequency: "monthly" },
+    { url: `${BASE_URL}/premium`, priority: 0.6, changeFrequency: "monthly" },
+    { url: `${BASE_URL}/contacto`, priority: 0.4, changeFrequency: "yearly" },
     { url: `${BASE_URL}/aviso-legal`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE_URL}/privacidad`, priority: 0.2, changeFrequency: "yearly" },
     { url: `${BASE_URL}/cookies`, priority: 0.2, changeFrequency: "yearly" },
@@ -51,6 +54,15 @@ export default async function sitemap() {
     priority: 0.7,
     changeFrequency: "monthly",
   }));
+
+  // Páginas 2..N de cada especialidad (la 1 vive en /especialidades/<slug>); N con la misma cuenta que la página.
+  const especialidadesPaginadasUrls = especialidades.flatMap((e) =>
+    Array.from({ length: Math.max(1, Math.ceil(e.total / PREGUNTAS_POR_PAGINA)) - 1 }, (_, i) => ({
+      url: `${BASE_URL}/especialidades/${e.slug}/pagina/${i + 2}`,
+      priority: 0.5,
+      changeFrequency: "monthly",
+    }))
+  );
 
   const convocatoriasUrls = convocatorias.map((c) => ({
     url: `${BASE_URL}/convocatorias/${slugConvocatoria(c.anio)}`,
@@ -70,10 +82,14 @@ export default async function sitemap() {
     changeFrequency: "yearly",
   }));
 
-  return [...estaticas, ...blogUrls, ...especialidadesUrls, ...convocatoriasUrls, ...temasUrls, ...preguntasUrls].map(
-    (entry) => ({
-      ...entry,
-      lastModified: entry.lastModified || new Date(),
-    })
-  );
+  // Sin lastModified salvo en el blog (created_at): no hay fecha real de cambio para el resto.
+  return [
+    ...estaticas,
+    ...blogUrls,
+    ...especialidadesUrls,
+    ...especialidadesPaginadasUrls,
+    ...convocatoriasUrls,
+    ...temasUrls,
+    ...preguntasUrls,
+  ];
 }

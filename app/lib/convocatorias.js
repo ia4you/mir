@@ -11,8 +11,7 @@ const NO_OFICIALES = new Set([]);
 
 export const slugConvocatoria = (anio) => `mir-${anio}`;
 
-// Una fila por convocatoria con preguntas oficiales cargadas (año 0 = banco IA,
-// fuera por origen). `publicas` excluye anuladas, igual que el resto de páginas
+// Una fila por convocatoria con preguntas oficiales cargadas. `publicas` excluye anuladas, igual que el resto de páginas
 // indexables; las anuladas se listan aparte con su número de pregunta.
 export const getConvocatorias = cache(async function getConvocatorias() {
   const { rows } = await query(

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getEspecialidadesConConteo, resumenBanco, formatearMiles } from "../lib/especialidades";
 import { breadcrumb } from "../lib/jsonld";
+import { metaSocial } from "../lib/social";
 import TarjetaEspecialidad from "../components/TarjetaEspecialidad";
 import CtaPractica from "../components/CtaPractica";
 
@@ -10,10 +11,13 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata() {
   const especialidades = await getEspecialidadesConConteo();
   const { total, anioMin, anioMax } = resumenBanco(especialidades);
+  const title = `Preguntas MIR por especialidad (${formatearMiles(total)} oficiales) | MIR Turel`;
+  const description = `Las ${formatearMiles(total)} preguntas oficiales del MIR ${anioMin}–${anioMax}, organizadas en ${especialidades.length} especialidades. Consulta cuántas preguntas tiene cada una y practica gratis por especialidad.`;
   return {
-    title: `Preguntas MIR por especialidad (${formatearMiles(total)} oficiales) | MIR Turel`,
-    description: `Las ${formatearMiles(total)} preguntas oficiales del MIR ${anioMin}–${anioMax}, organizadas en ${especialidades.length} especialidades. Consulta cuántas preguntas tiene cada una y practica gratis por especialidad.`,
+    title,
+    description,
     alternates: { canonical: "https://mir.turel.es/especialidades" },
+    ...metaSocial({ title, description, url: "https://mir.turel.es/especialidades" }),
   };
 }
 
