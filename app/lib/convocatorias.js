@@ -2,9 +2,9 @@ import { cache } from "react";
 import { query } from "../../lib/db";
 import { slugify } from "./especialidades";
 
-// Anuladas/de reserva que NUNCA se cargaron en la BD (documentado en
-// fuentes_banco_preguntas.md); la BD no puede listarlas, así que se anotan aquí.
-const NO_CARGADAS = { 2022: [189], 2026: [208] };
+// Anuladas/de reserva que NO estén cargadas en la BD (la BD no puede listarlas, así que se anotan aquí).
+// Hoy ninguna: 2022 n.º 189 y 2026 n.º 208 ya están cargadas como anuladas.
+const NO_CARGADAS = {};
 
 // Convocatorias de fuente no oficial (textos neutros, sin citar al Ministerio). Hoy ninguna: 2017-2026 son todas oficiales.
 const NO_OFICIALES = new Set([]);
