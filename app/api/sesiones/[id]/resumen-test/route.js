@@ -44,7 +44,7 @@ export async function GET(request, { params }) {
               COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1 AND rs.vista -- las no abiertas de un simulacro no cuentan
+       WHERE rs.sesion_id = $1 AND rs.vista AND p.anulada = false -- las no abiertas de un simulacro no cuentan
        GROUP BY p.especialidad`,
       [sesionId]
     );
@@ -74,7 +74,7 @@ export async function GET(request, { params }) {
               COUNT(*) FILTER (WHERE rs.correcta)::int AS aciertos
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1 AND rs.vista
+       WHERE rs.sesion_id = $1 AND rs.vista AND p.anulada = false
        GROUP BY p.año`,
       [sesionId]
     );
@@ -108,7 +108,7 @@ export async function GET(request, { params }) {
       `SELECT p.explicacion_calidad
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1 AND rs.correcta = false AND rs.vista`,
+       WHERE rs.sesion_id = $1 AND rs.correcta = false AND rs.vista AND p.anulada = false`,
       [sesionId]
     );
 

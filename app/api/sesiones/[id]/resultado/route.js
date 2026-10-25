@@ -43,7 +43,7 @@ export async function GET(request, { params }) {
               COUNT(*) FILTER (WHERE NOT rs.vista)::int AS sin_abrir
        FROM respuestas_sesion rs
        JOIN preguntas p ON p.id = rs.pregunta_id
-       WHERE rs.sesion_id = $1
+       WHERE rs.sesion_id = $1 AND p.anulada = false
        GROUP BY p.especialidad
        ORDER BY p.especialidad`,
       [sesionId]
@@ -53,7 +53,8 @@ export async function GET(request, { params }) {
     const falladasRes = await query(
       `SELECT rs.pregunta_id AS id
        FROM respuestas_sesion rs
-       WHERE rs.sesion_id = $1 AND rs.correcta = false AND rs.vista`,
+       JOIN preguntas p ON p.id = rs.pregunta_id
+       WHERE rs.sesion_id = $1 AND rs.correcta = false AND rs.vista AND p.anulada = false`,
       [sesionId]
     );
 

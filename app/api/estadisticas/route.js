@@ -44,7 +44,8 @@ export async function GET(request) {
       `SELECT COUNT(*)::int AS total
        FROM respuestas_sesion rs
        JOIN sesiones s ON s.id = rs.sesion_id
-       WHERE ${diaCanarias("s.fecha")} = ${HOY_CANARIAS} AND rs.user_id = $1 AND rs.vista`,
+       JOIN preguntas p ON p.id = rs.pregunta_id
+       WHERE ${diaCanarias("s.fecha")} = ${HOY_CANARIAS} AND rs.user_id = $1 AND rs.vista AND p.anulada = false`,
       [userId]
     );
     const respondidasHoy = hoyRes.rows[0].total;

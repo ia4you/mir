@@ -35,11 +35,11 @@ export async function POST(request, { params }) {
     const { rows } = await query(
       `SELECT pregunta, especialidad, correcta, explicacion,
               opcion_a, opcion_b, opcion_c, opcion_d, opcion_e
-       FROM preguntas WHERE id = $1`,
+       FROM preguntas WHERE id = $1 AND anulada = false`,
       [preguntaId]
     );
     if (rows.length === 0) {
-      return NextResponse.json({ error: "Pregunta no encontrada" }, { status: 404 });
+      return NextResponse.json({ error: "Pregunta no encontrada" }, { status: 404 }); // también si está anulada
     }
     const p = rows[0];
     const respuestaCorrecta = p.correcta.trim();
