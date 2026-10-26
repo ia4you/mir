@@ -7,6 +7,7 @@ import LandingHeader from "./components/LandingHeader";
 import SocialLinks from "./components/SocialLinks";
 import TarjetaEspecialidad from "./components/TarjetaEspecialidad";
 import EnlaceConfigurarCookies from "./components/EnlaceConfigurarCookies";
+import AnuncioDiezAnios from "./components/AnuncioDiezAnios";
 
 // Imagen del hero con "art direction" real (móvil vs escritorio) vía
 // getImageProps + <picture>, en vez de dos <Image priority> alternados con
@@ -218,6 +219,7 @@ export default async function LandingPage() {
       />
 
       <LandingHeader />
+      <AnuncioDiezAnios />
 
       <section id="hero" className="px-5 pt-4 pb-14 sm:pt-6 sm:pb-20 lg:px-8 lg:pt-16">
         {/* Desde lg: rejilla de dos columnas. Todo el texto va a la columna 1 y
