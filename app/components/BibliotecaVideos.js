@@ -148,9 +148,9 @@ export default function BibliotecaVideos({ grupos, especialidadInicial = "", tem
             <option value="">Todos los temas</option>
             {gruposTema.map((g) => (
               <optgroup key={g.slug} label={g.especialidad}>
-                {g.videos.map((v) => (
-                  <option key={v.tema} value={`${g.slug}|${v.tema}`}>
-                    {v.tema}
+                {[...new Set(g.videos.map((v) => v.tema))].map((tema) => (
+                  <option key={tema} value={`${g.slug}|${tema}`}>
+                    {tema}
                   </option>
                 ))}
               </optgroup>

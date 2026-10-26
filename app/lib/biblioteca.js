@@ -3,10 +3,12 @@ import { query } from "../../lib/db";
 import { temaCorto, tituloVisible } from "../../lib/videos";
 import { slugify } from "./especialidades";
 
-// Biblioteca de /videos: los vídeos principales activos y disponibles, uno
-// por especialidad + tema, agrupados por especialidad (de más a menos vídeos)
-// y, dentro, por nº de preguntas válidas que lo muestran. Un vídeo que cubre dos
-// temas sale en los dos. Las especialidades sin vídeo no aparecen.
+// Biblioteca de /videos: los vídeos activos y disponibles que son el principal
+// de un tema o el alternativo de alguna pregunta (video_exclusiones), una
+// tarjeta por especialidad + tema + vídeo, agrupadas por especialidad (de más a
+// menos vídeos) y, dentro, por nº de preguntas válidas que lo muestran. Un tema
+// puede tener varias tarjetas (su principal y alternativos) y un vídeo que
+// cubre dos temas sale en los dos. Las especialidades sin vídeo no aparecen.
 export const getBiblioteca = cache(async () => {
   const [{ rows }, { rows: canales }] = await Promise.all([
     query(
@@ -25,7 +27,8 @@ export const getBiblioteca = cache(async () => {
        JOIN videos v ON v.id = vt.video_id
        JOIN video_canales c ON c.id = v.canal_id
        LEFT JOIN n ON n.video_id = vt.video_id AND n.especialidad = vt.especialidad AND n.tema = vt.tema
-       WHERE vt.principal AND v.estado = 'activo' AND v.disponibilidad = 'disponible'
+       WHERE (vt.principal OR EXISTS (SELECT 1 FROM video_exclusiones e WHERE e.video_alternativo_id = vt.video_id))
+         AND v.estado = 'activo' AND v.disponibilidad = 'disponible'
        ORDER BY preguntas DESC, v.titulo`
     ),
     // Solo los canales con al menos un vídeo visible en la biblioteca.
