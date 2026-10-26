@@ -46,14 +46,13 @@ export default async function ConvocatoriasPage() {
                     className="relative h-[130px]"
                     style={{ background: `linear-gradient(135deg, hsl(${h},45%,22%), hsl(${h + 24},40%,12%))` }}
                   >
-                    <svg aria-hidden="true" viewBox="0 0 200 130" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
-                      <polyline
-                        points="0,60 50,60 62,60 70,30 80,92 90,44 98,60 140,60 150,52 160,60 200,60"
+                    <svg aria-hidden="true" viewBox="0 0 220 130" preserveAspectRatio="none" className="absolute inset-0 h-full w-full">
+                      <path d="M0 40 H62 L74 40 L84 14 L98 64 L110 30 L120 40 H220"
                         fill="none" stroke="#e8b84a" strokeOpacity=".55" strokeWidth="2"
                         strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke"
                       />
                     </svg>
-                    <span className="absolute bottom-1 left-3 font-serif text-[56px] leading-none text-white/[.14]" aria-hidden="true">
+                    <span className="absolute bottom-[10px] left-4 font-serif text-[48px] leading-none text-white/[.14]" aria-hidden="true">
                       {c.anio}
                     </span>
                   </div>
