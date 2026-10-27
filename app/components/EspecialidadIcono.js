@@ -5,7 +5,8 @@ import {
 } from "lucide-react";
 
 // Icono de línea de cada especialidad. Clave: nombre en minúsculas y sin
-// tildes (el de la BD). Las no listadas usan el estetoscopio.
+// tildes (el de la BD). Las no listadas usan el estetoscopio. Color: en claro,
+// variables del tema (accent sobre brand-light); en oscuro, el dorado de siempre.
 const ICONOS = {
   cardiologia: HeartPulse,
   neurologia: Brain,
@@ -37,8 +38,8 @@ const clave = (n) => n.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().tr
 export default function EspecialidadIcono({ nombre }) {
   const Icono = ICONOS[clave(nombre)] || Stethoscope;
   return (
-    <span className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-xl bg-[rgba(232,184,74,.12)]" aria-hidden="true">
-      <Icono size={28} strokeWidth={1.7} color="#e8b84a" strokeLinecap="round" strokeLinejoin="round" />
+    <span className="mb-2.5 flex h-[46px] w-[46px] items-center justify-center rounded-xl border border-accent/30 bg-brand-light text-accent dark:border-transparent dark:bg-[rgba(232,184,74,.12)] dark:text-[#e8b84a]" aria-hidden="true">
+      <Icono size={28} strokeWidth={1.7} strokeLinecap="round" strokeLinejoin="round" />
     </span>
   );
 }
